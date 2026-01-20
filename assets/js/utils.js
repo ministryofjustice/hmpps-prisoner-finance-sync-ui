@@ -1,10 +1,10 @@
-function nodeListForEach(nodes, callback) {
+export default function nodeListForEach(nodes, callback) {
   if (window.NodeList.prototype.forEach) {
-    return nodes.forEach(callback)
+    nodes.forEach(callback)
+    return
   }
-  for (var i = 0; i < nodes.length; i++) {
+
+  for (let i = 0; i < nodes.length; i += 1) {
     callback.call(window, nodes[i], i, nodes)
   }
 }
-
-export { nodeListForEach }

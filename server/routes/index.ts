@@ -1,16 +1,17 @@
 import { Router } from 'express'
-
 import type { Services } from '../services'
 import { Page } from '../services/auditService'
 
-export default function routes({ auditService, exampleService, prisonSyncService }: Services): Router {
+export default function routes({ auditService, prisonSyncService }: Services): Router {
   const router = Router()
 
   router.get('/', async (req, res, next) => {
-    await auditService.logPageView(Page.EXAMPLE_PAGE, { who: res.locals.user.username, correlationId: req.id })
+    await auditService.logPageView(Page.EXAMPLE_PAGE, {
+      who: res.locals.user.username,
+      correlationId: req.id,
+    })
 
-    const currentTime = await exampleService.getCurrentTime()
-    return res.render('pages/index', { currentTime })
+    return res.render('pages/index')
   })
 
   router.post('/audithistory/', async (req, res, next) => {
@@ -32,6 +33,28 @@ export default function routes({ auditService, exampleService, prisonSyncService
     // place holder route for audit history transaction details 
 
     const currentTime = await exampleService.getCurrentTime()
+    return res.render('pages/audithistory', { currentTime })
+  })
+
+  router.post('/audithistory/', async (req, res, next) => {
+    await auditService.logPageView(Page.AUDITHISTORY, { who: res.locals.user.username, correlationId: req.id })
+    // initial page route
+
+    const searchValue = req.body.submittedValue
+
+    const tableData = await prisonSyncService.getTransactionData(searchValue)
+    
+    res.render('pages/audithistory', {
+      tableData,
+      submittedValue: searchValue
+    })
+  })
+
+  router.get('/audithistory/', async (req, res, next) => {
+    await auditService.logPageView(Page.AUDITHISTORY, { who: res.locals.user.username, correlationId: req.id })
+    // place holder route for audit history transaction details 
+
+    const currentTime = ""
     return res.render('pages/audithistory', { currentTime })
   })
 

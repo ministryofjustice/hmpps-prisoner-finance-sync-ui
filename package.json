@@ -1,7 +1,7 @@
 {
   "name": "hmpps-prisoner-finance-sync-ui",
   "version": "0.0.1",
-  "description": "HMPPS Prisoner Finance Sync Ui",
+  "description": "HMPPS Prisoner Finance Sync",
   "repository": "git@github.com:ministryofjustice/hmpps-prisoner-finance-sync-ui.git",
   "license": "MIT",
   "scripts": {
@@ -83,6 +83,7 @@
     "@types/supertest": "^6.0.3",
     "audit-ci": "^7.1.0",
     "aws-sdk-client-mock": "^4.1.0",
+    "cheerio": "1.1.2",
     "del": "8.0.1",
     "esbuild": "^0.27.2",
     "esbuild-plugin-copy": "^2.1.1",
