@@ -1,0 +1,101 @@
+{% extends "../partials/layout.njk" %}
+
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
+{% from "moj/components/search/macro.njk" import mojSearch %}
+{% from "moj/components/filter/macro.njk" import mojFilter %}
+
+{% set pageTitle = "Audit History" %}
+{% set mainClasses = "govuk-body" %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        <input type="hidden" name="dateFrom" value="{{ filters.applicationDateFrom | isoDateToDatePickerDate }}" />
+        <input type="hidden" name="dateTo" value="{{ filters.applicationDateTo | isoDateToDatePickerDate }}" />
+        {{ mojSearch({
+          action: "#",
+          method: "post",
+          input: {
+            id: "query",
+            name: "query",
+            value: query
+          },
+          label: {
+            text: "Search",
+            classes: "govuk-!-font-weight-bold"
+          },
+          hint: {
+            text: "You can search by transaction Id, prison Id"
+          },
+          button: {
+            text: "Search"
+          }
+        }) }}
+      </form>
+    <div>
+    <div class="govuk-grid-column-full">
+      {% set filterOptionsHtml %}
+
+        {{ mojDatePicker({
+            id: 'dateFrom',
+            name: 'dateFrom',
+            leadingZeros: 'true',
+            label: {
+                text: "Request date from",
+                classes: "govuk-label--s"
+            },
+            value: formResponses.dateFrom or (filters.applicationDateFrom | isoDateToDatePickerDate)
+        }) }}
+
+        {{ mojDatePicker({
+            id: 'dateTo',
+            name: 'dateTo',
+            leadingZeros: 'true',
+            label: {
+                text: "Request date to",
+                classes: "govuk-label--s"
+            },
+            value: formResponses.applicationDateTo or (filters.applicationDateTo | isoDateToDatePickerDate)
+        }) }}
+
+        <button class="govuk-button govuk-!-margin-top-7 govuk-!-margin-bottom-0" data-module="govuk-button">
+          Apply filters
+        </button>
+      {% endset %}
+
+      <div class="moj-filter-layout moj-filter-layout__flex govuk-!-margin-bottom-6" data-module="activities-list-filter">
+        <div class="moj-filter-layout__filter moj-filter-layout__flex moj-filter-layout__filter--small govuk-!-display-none-print">
+            <form method="POST">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                <input type="hidden" name="query" value="{{ query }}" />
+                {{ mojFilter({
+                    heading: {
+                        text: 'Filter'
+                    },
+                    attributes: {
+                        'data-filter-start-shown': 'true'
+                    },
+                    optionsHtml: filterOptionsHtml
+                }) }}
+            </form>
+        </div>
+
+        <div class="moj-filter-layout__content">
+            <div class="moj-action-bar govuk-!-display-none-print">
+                <div class="moj-action-bar__filter moj-action-bar__filter--no-actions"></div>
+            </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+{% endblock %}
