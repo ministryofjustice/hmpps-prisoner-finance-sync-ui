@@ -3,9 +3,10 @@ import nodeListForEach from './utils'
 import Card from './card'
 
 function initAll() {
-    var $filters = document.querySelectorAll('[data-module="moj-filter"]')
+    const $filters = document.querySelectorAll('[data-module="moj-filter"]')
     
     nodeListForEach($filters, function ($filter) {
+      // eslint-disable-next-line no-new
         new ListFilter($filter)
     })
 
@@ -16,6 +17,6 @@ function initAll() {
     })
 }
 
-export {
-  initAll
+export default {
+  initAll,
 }

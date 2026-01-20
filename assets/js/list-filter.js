@@ -3,6 +3,7 @@ import { FilterToggleButton } from '@ministryofjustice/frontend'
 function ListFilter(container) {
   this.container = container
 
+  // eslint-disable-next-line no-new
   new FilterToggleButton(container, {
     bigModeMediaQuery: '(min-width: 40.0625em)',
     startHidden: this.container.dataset.filterStartShown !== 'true',
