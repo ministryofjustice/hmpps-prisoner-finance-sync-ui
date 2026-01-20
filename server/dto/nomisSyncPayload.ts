@@ -1,4 +1,3 @@
-
 export interface NomisSyncPayloadDto {
   timestamp: Date
   legacyTransactionId?: number | null

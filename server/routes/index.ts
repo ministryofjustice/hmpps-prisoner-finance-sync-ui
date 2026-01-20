@@ -21,18 +21,18 @@ export default function routes({ auditService, prisonSyncService }: Services): R
     const searchValue = req.body.submittedValue
 
     const tableData = await prisonSyncService.getTransactionData(searchValue)
-    
+
     res.render('pages/audithistory', {
       tableData,
-      submittedValue: searchValue
+      submittedValue: searchValue,
     })
   })
 
   router.get('/audit-history/', async (req, res, next) => {
     await auditService.logPageView(Page.AUDITHISTORY, { who: res.locals.user.username, correlationId: req.id })
-    // place holder route for audit history transaction details 
+    // place holder route for audit history transaction details
 
-    const currentTime = ""
+    const currentTime = ''
     return res.render('pages/audithistory', { currentTime })
   })
 
