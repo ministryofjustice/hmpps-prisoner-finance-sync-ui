@@ -5,7 +5,7 @@ import Card from './card'
 function initAll() {
   const $filters = document.querySelectorAll('[data-module="moj-filter"]')
 
-  nodeListForEach($filters, function ($filter) {
+  nodeListForEach($filters, $filter => {
     // eslint-disable-next-line no-new
     new ListFilter($filter)
   })
