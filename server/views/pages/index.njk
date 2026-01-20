@@ -1,12 +1,27 @@
 {% extends "../partials/layout.njk" %}
+{% from "../components/card.njk" import card %}
 
 {% set pageTitle = applicationName + " - Home" %}
 {% set mainClasses = "govuk-body" %}
 
 {% block content %}
 
-  <h1>This site is under construction...</h1>
-  <p>Please check back later when there is content to view.</p>
-  <p data-qa="timestamp">The time is currently {{ currentTime }}</p>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-l">Prisoner Finance Sync</h1>
+  </div>
+</div>
+
+<div class="card-group govuk-grid-row">
+  <div class="govuk-grid-column-one-third card-group__item">
+    {{ card({
+      "href": "/audit-history",
+      "clickable": "true",
+      "heading": "View audit history",
+      "description": "View captured synchronisation history. Filter logs by date and prison to audit synchronised transactions.",
+      "data-qa": "audit-history-card"
+    }) }}
+  </div>
+</div>
 
 {% endblock %}
