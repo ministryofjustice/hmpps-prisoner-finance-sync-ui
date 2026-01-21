@@ -1,9 +1,9 @@
-export interface NomisSyncPayloadDto {
-  timestamp: Date
+export interface NomisSyncPayloadSummary {
   legacyTransactionId?: number | null
   synchronizedTransactionId: string
-  requestId: string
   caseloadId?: string | null
+  timestamp: Date
   requestTypeIdentifier?: string | null
+  requestId: string
   transactionTimestamp?: Date | null
 }

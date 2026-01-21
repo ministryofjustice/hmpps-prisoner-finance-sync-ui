@@ -48,7 +48,7 @@ export default function routes({ auditService, prisonSyncService }: Services): R
 
     // got the initial results
 
-    return res.render('pages/audithistory', { 
+    return res.render('pages/audithistory', {
       dateFrom,
       dateTo,
     })
