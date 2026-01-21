@@ -32,7 +32,7 @@
             classes: "govuk-!-font-weight-bold"
           },
           hint: {
-            text: "You can search by transaction Id, prison Id"
+            text: "You can search by NOMIS Transaction Id"
           },
           button: {
             text: "Search"
@@ -103,7 +103,7 @@
                 { text: row.requestTypeIdentifier },
                 {
                   html: '<a class="govuk-link" href="/audit-history/' 
-                        + row.legacyTransactionId 
+                        + row.requestId 
                         + '">View</a>'
                 }
               ]
@@ -114,7 +114,7 @@
             <table class="govuk-table">
               <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
-                  <th class="govuk-table__header">Nomis Id</th>
+                  <th class="govuk-table__header">NOMIS Id</th>
                   <th class="govuk-table__header">Syncronised Transaction Id</th>
                   <th class="govuk-table__header">Caseload Id</th>
                   <th class="govuk-table__header">Timestamp</th>
@@ -149,5 +149,8 @@
       </div>
     </div>
   </div>
+
+  <p>dateFrom: {{ dateFrom }}</p>
+<p>dateTo: {{ dateTo }}</p>
 
 {% endblock %}

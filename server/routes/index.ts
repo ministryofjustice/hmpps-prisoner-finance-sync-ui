@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import type { Services } from '../services'
 import { Page } from '../services/auditService'
+import { formatDatePickerDate } from '../utils/datePickerUtils'
 
 export default function routes({ auditService, prisonSyncService }: Services): Router {
   const router = Router()
@@ -36,10 +37,21 @@ export default function routes({ auditService, prisonSyncService }: Services): R
 
   router.get('/audit-history/', async (req, res, next) => {
     await auditService.logPageView(Page.AUDITHISTORY, { who: res.locals.user.username, correlationId: req.id })
-    // place holder route for audit history transaction details
+    // landing route when the page is first visited
 
-    const currentTime = ''
-    return res.render('pages/audithistory', { currentTime })
+    const today = new Date()
+    const thirtyDaysAgo = new Date()
+    thirtyDaysAgo.setDate(today.getDate() - 30)
+
+    const dateFrom = formatDatePickerDate(today)
+    const dateTo = formatDatePickerDate(thirtyDaysAgo)
+
+    // got the initial results
+
+    return res.render('pages/audithistory', { 
+      dateFrom,
+      dateTo,
+    })
   })
 
   return router
