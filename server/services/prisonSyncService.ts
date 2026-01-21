@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
-import { NomisSyncPayloadSummary } from '../dto/nomisSyncPayloadSummary'
+import { NomisSyncPayloadSummary } from '../dto/nomisSyncPayloadSummary1'
 
 export default class PrisonSyncService {
   async getTransactionData(dateFrom: string, dateTo: string, query: string): Promise<NomisSyncPayloadSummary[]> {
