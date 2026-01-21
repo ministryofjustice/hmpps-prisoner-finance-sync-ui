@@ -17,8 +17,8 @@
     <div class="govuk-grid-column-two-thirds">
       <form method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-        <input type="hidden" name="dateFrom" value="{{ filters.applicationDateFrom | isoDateToDatePickerDate }}" />
-        <input type="hidden" name="dateTo" value="{{ filters.applicationDateTo | isoDateToDatePickerDate }}" />
+        <input type="hidden" name="dateFrom" value="{{ dateFrom | isoDateToDatePickerDate }}" />
+        <input type="hidden" name="dateTo" value="{{ dateTo | isoDateToDatePickerDate }}" />
         {{ mojSearch({
           action: "#",
           method: "post",
@@ -39,7 +39,7 @@
           }
         }) }}
       </form>
-    <div>
+    </div>
     <div class="govuk-grid-column-full">
       {% set filterOptionsHtml %}
 
@@ -51,7 +51,7 @@
                 text: "Request date from",
                 classes: "govuk-label--s"
             },
-            value: formResponses.dateFrom or (filters.applicationDateFrom | isoDateToDatePickerDate)
+            value: dateFrom or (dateFrom | isoDateToDatePickerDate)
         }) }}
 
         {{ mojDatePicker({
@@ -62,7 +62,7 @@
                 text: "Request date to",
                 classes: "govuk-label--s"
             },
-            value: formResponses.applicationDateTo or (filters.applicationDateTo | isoDateToDatePickerDate)
+            value: dateTo or (dateTo | isoDateToDatePickerDate)
         }) }}
 
         <button class="govuk-button govuk-!-margin-top-7 govuk-!-margin-bottom-0" data-module="govuk-button">
@@ -70,31 +70,83 @@
         </button>
       {% endset %}
 
-      <div class="moj-filter-layout moj-filter-layout__flex govuk-!-margin-bottom-6" data-module="activities-list-filter">
+      <div class="moj-filter-layout moj-filter-layout__flex govuk-!-margin-bottom-6">
         <div class="moj-filter-layout__filter moj-filter-layout__flex moj-filter-layout__filter--small govuk-!-display-none-print">
-            <form method="POST">
-                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
-                <input type="hidden" name="query" value="{{ query }}" />
-                {{ mojFilter({
-                    heading: {
-                        text: 'Filter'
-                    },
-                    attributes: {
-                        'data-filter-start-shown': 'true'
-                    },
-                    optionsHtml: filterOptionsHtml
-                }) }}
-            </form>
+          <form method="POST">
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+            <input type="hidden" name="query" value="{{ query }}" />
+            {{ mojFilter({
+                heading: {
+                    text: 'Filter'
+                },
+                attributes: {
+                    'data-filter-start-shown': 'true'
+                },
+                optionsHtml: filterOptionsHtml
+            }) }}
+          </form>
         </div>
 
         <div class="moj-filter-layout__content">
-            <div class="moj-action-bar govuk-!-display-none-print">
-                <div class="moj-action-bar__filter moj-action-bar__filter--no-actions"></div>
-            </div>
+          <div class="moj-action-bar govuk-!-display-none-print">
+              <div class="moj-action-bar__filter moj-action-bar__filter--no-actions"></div>
+          </div>
+
+          {% set rows = [] %}
+          {% for row in tableData %}
+            {% set rows = (rows.push({
+              items: [
+                { text: row.legacyTransactionId },
+                { text: row.synchronizedTransactionId },
+                { text: row.caseloadId },
+                { text: row.transactionTimestamp },
+                { text: row.requestTypeIdentifier },
+                {
+                  html: '<a class="govuk-link" href="/audit-history/' 
+                        + row.legacyTransactionId 
+                        + '">View</a>'
+                }
+              ]
+            }), rows) %}
+          {% endfor %}
+
+          {% if rows | length > 0 %}
+            <table class="govuk-table">
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th class="govuk-table__header">Nomis Id</th>
+                  <th class="govuk-table__header">Syncronised Transaction Id</th>
+                  <th class="govuk-table__header">Caseload Id</th>
+                  <th class="govuk-table__header">Timestamp</th>
+                  <th class="govuk-table__header">Type</th>
+                  <th class="govuk-table__header">View</th>
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+                {% for row in rows %}
+                  <tr class="govuk-table__row">
+                    {% for cell in row.items %}
+                      <td class="govuk-table__cell">
+                        {% if cell.html %}
+                          {{ cell.html | safe }}
+                        {% else %}
+                          {{ cell.text }}
+                        {% endif %}
+                      </td>
+                    {% endfor %}
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-8">
+                <li>There are no matching NOMIS synced transactions.</li>
+                <li>Try a different search, or change the filters.</li>
+            </ul>
+          {% endif %}
         </div>
 
       </div>
-
     </div>
   </div>
 

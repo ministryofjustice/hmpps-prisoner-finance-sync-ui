@@ -18,13 +18,19 @@ export default function routes({ auditService, prisonSyncService }: Services): R
     await auditService.logPageView(Page.AUDITHISTORY, { who: res.locals.user.username, correlationId: req.id })
     // initial page route
 
-    const searchValue = req.body.submittedValue
+    const { query } = req.body
 
-    const tableData = await prisonSyncService.getTransactionData(searchValue)
+    const { dateFrom } = req.body
+
+    const { dateTo } = req.body
+
+    const tableData = await prisonSyncService.getTransactionData(dateFrom, dateTo, query)
 
     res.render('pages/audithistory', {
       tableData,
-      submittedValue: searchValue,
+      query,
+      dateFrom,
+      dateTo,
     })
   })
 
