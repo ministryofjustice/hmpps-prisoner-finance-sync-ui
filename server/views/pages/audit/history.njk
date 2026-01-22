@@ -1,4 +1,4 @@
-{% extends "../partials/layout.njk" %}
+{% extends "../../partials/layout.njk" %}
 
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
@@ -102,7 +102,7 @@
                 { text: row.transactionTimestamp },
                 { text: row.requestTypeIdentifier },
                 {
-                  html: '<a class="govuk-link" href="/audit-history/' 
+                  html: '<a class="govuk-link" href="/audit/' 
                         + row.requestId 
                         + '">View</a>'
                 }

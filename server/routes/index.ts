@@ -3,7 +3,7 @@ import type { Services } from '../services'
 import { Page } from '../services/auditService'
 import { formatDatePickerDate } from '../utils/datePickerUtils'
 
-export default function routes({ auditService, auditHistoryService , prisonSyncService}: Services): Router {
+export default function routes({ auditService, auditHistoryService }: Services): Router {
   const router = Router()
 
   router.get('/', async (req, res, next) => {
@@ -35,28 +35,26 @@ export default function routes({ auditService, auditHistoryService , prisonSyncS
     }
   })
 
-  router.post('/audit-history/', async (req, res, next) => {
-    await auditService.logPageView(Page.AUDITHISTORY, { who: res.locals.user.username, correlationId: req.id })
+  router.post('/audit/', async (req, res, next) => {
+    await auditService.logPageView(Page.AUDIT_HISTORY_PAGE, { who: res.locals.user.username, correlationId: req.id })
     // initial page route
 
     const { query } = req.body
-
     const { dateFrom } = req.body
-
     const { dateTo } = req.body
 
-    const tableData = await prisonSyncService.getTransactionData(dateFrom, dateTo, query)
+    const payloadSummaryData = await (await auditHistoryService.getPayloadSummary(dateFrom, dateTo, query)).content
 
-    res.render('pages/audithistory', {
-      tableData,
+    res.render('pages/audit/history', {
+      payloadSummaryData,
       query,
       dateFrom,
       dateTo,
     })
   })
 
-  router.get('/audit-history/', async (req, res, next) => {
-    await auditService.logPageView(Page.AUDITHISTORY, { who: res.locals.user.username, correlationId: req.id })
+  router.get('/audit/', async (req, res, next) => {
+    await auditService.logPageView(Page.AUDIT_HISTORY_PAGE, { who: res.locals.user.username, correlationId: req.id })
     // landing route when the page is first visited
 
     const today = new Date()
@@ -68,7 +66,7 @@ export default function routes({ auditService, auditHistoryService , prisonSyncS
 
     // got the initial results
 
-    return res.render('pages/audithistory', {
+    return res.render('pages/audit/history', {
       dateFrom,
       dateTo,
     })

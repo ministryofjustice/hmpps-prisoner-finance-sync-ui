@@ -1,4 +1,4 @@
-export interface NomisSyncPayloadDetail {
+export interface NomisSyncPayloadSummary {
   legacyTransactionId?: number
   synchronizedTransactionId: string
   caseloadId: string
@@ -6,5 +6,4 @@ export interface NomisSyncPayloadDetail {
   requestTypeIdentifier?: string
   requestId: string
   transactionTimestamp?: string
-  body: string | Record<string, unknown>
 }

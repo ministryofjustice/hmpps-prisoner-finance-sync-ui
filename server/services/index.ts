@@ -1,7 +1,6 @@
 import { dataAccess } from '../data'
 import AuditService from './auditService'
 import AuditHistoryService from './auditHistoryService'
-import PrisonSyncService from './prisonSyncService'
 
 export const services = () => {
   const { applicationInfo, hmppsAuditClient, prisonerFinanceSyncApiClient } = dataAccess()
@@ -10,7 +9,6 @@ export const services = () => {
     applicationInfo,
     auditService: new AuditService(hmppsAuditClient),
     auditHistoryService: new AuditHistoryService(prisonerFinanceSyncApiClient),
-    prisonSyncService: new PrisonSyncService(),
   }
 }
 

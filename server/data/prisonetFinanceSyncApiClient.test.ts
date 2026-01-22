@@ -22,6 +22,7 @@ describe('PrisonerFinanceSyncApiClient', () => {
     it('should call the API with the correct request ID', async () => {
       const requestId = '123e4567-e89b-12d3-a456-426614174000'
       const expectedResponse: NomisSyncPayloadDetail = {
+        caseloadId: null,
         requestId,
         synchronizedTransactionId: 'abc',
         timestamp: '2026-01-21T12:00:00Z',
