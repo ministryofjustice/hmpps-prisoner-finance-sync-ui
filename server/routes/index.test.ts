@@ -1,5 +1,6 @@
 import type { Express } from 'express'
 import request from 'supertest'
+import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from './testutils/appSetup'
 import AuditService, { Page } from '../services/auditService'
 import AuditHistoryService from '../services/auditHistoryService'
@@ -65,10 +66,12 @@ describe('GET /audit/:requestId', () => {
       .expect('Content-Type', /html/)
       .expect(200)
       .expect(res => {
-        expect(res.text).toContain('Payload Detail')
-        expect(res.text).toContain('MDI')
-        expect(res.text).toContain('Offender Transaction')
-        expect(res.text).toContain('&quot;some&quot;')
+        const $ = cheerio.load(res.text)
+
+        expect($('h1').text()).toContain('Payload Detail')
+        expect($('.govuk-summary-list').text()).toContain('MDI')
+        expect($('.govuk-summary-list').text()).toContain('Offender Transaction')
+        expect($('pre').text()).toContain('"some": "value"')
       })
       .expect(() => {
         expect(auditHistoryService.getPayloadByRequestId).toHaveBeenCalledWith(requestId)
