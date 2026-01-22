@@ -76,9 +76,7 @@ describe('GET /audit/:requestId', () => {
   })
 
   it('should handle API errors (e.g. 404 Not Found)', () => {
-    const error = new Error('Not Found')
-    // @ts-expect-error: status property does not exist on Error type
-    error.status = 404
+    const error = Object.assign(new Error('Not Found'), { status: 404 })
     auditHistoryService.getPayloadByRequestId.mockRejectedValue(error)
 
     return request(app).get(`/audit/${requestId}`).expect(404)
