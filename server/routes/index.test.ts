@@ -1,11 +1,16 @@
 import type { Express } from 'express'
 import request from 'supertest'
+import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from './testutils/appSetup'
 import AuditService, { Page } from '../services/auditService'
+import AuditHistoryService from '../services/auditHistoryService'
+import { NomisSyncPayloadDetail } from '../interfaces/nomisSyncPayloadDetail'
 
 jest.mock('../services/auditService')
+jest.mock('../services/auditHistoryService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
+const auditHistoryService = new AuditHistoryService(null) as jest.Mocked<AuditHistoryService>
 
 let app: Express
 
@@ -13,6 +18,7 @@ beforeEach(() => {
   app = appWithAllRoutes({
     services: {
       auditService,
+      auditHistoryService,
     },
     userSupplier: () => user,
   })
@@ -33,23 +39,55 @@ describe('GET /', () => {
       .expect(res => {
         expect(res.text).toContain('Prisoner Finance Sync')
         expect(res.text).toContain('View audit history')
-        expect(res.text).toContain('View captured synchronisation history')
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.EXAMPLE_PAGE, {
-          who: user.username,
-          correlationId: expect.any(String),
-        })
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.INDEX_PAGE, expect.anything())
+      })
+  })
+})
+
+describe('GET /audit/:requestId', () => {
+  const requestId = '07b4e637-79ce-4e17-ab72-c384239576f8'
+
+  it('should render the detail page with parsed JSON body', () => {
+    const mockPayload: NomisSyncPayloadDetail = {
+      requestId,
+      timestamp: '2026-01-21T12:00:00Z',
+      legacyTransactionId: 12345,
+      synchronizedTransactionId: 'abc-123',
+      caseloadId: 'MDI',
+      requestTypeIdentifier: 'Offender Transaction',
+      body: { some: 'value' },
+    }
+
+    auditHistoryService.getPayloadByRequestId.mockResolvedValue(mockPayload)
+    auditService.logPageView.mockResolvedValue(null)
+
+    return request(app)
+      .get(`/audit/${requestId}`)
+      .expect('Content-Type', /html/)
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+
+        expect($('h1').text()).toContain('Payload Detail')
+        expect($('.govuk-summary-list').text()).toContain('MDI')
+        expect($('.govuk-summary-list').text()).toContain('Offender Transaction')
+        expect($('pre').text()).toContain('"some": "value"')
+      })
+      .expect(() => {
+        expect(auditHistoryService.getPayloadByRequestId).toHaveBeenCalledWith(requestId)
       })
   })
 
-  it('should handle audit service errors gracefully', () => {
-    auditService.logPageView.mockRejectedValue(new Error('Audit logging failed'))
+  it('should handle API errors (e.g. 404 Not Found)', () => {
+    const error = Object.assign(new Error('Not Found'), { status: 404 })
+    auditHistoryService.getPayloadByRequestId.mockRejectedValue(error)
 
-    return request(app)
-      .get('/')
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(200)
-        expect(res.text).toContain('Prisoner Finance Sync')
-      })
+    return request(app).get(`/audit/${requestId}`).expect(404)
+  })
+
+  it('should handle API errors (e.g. 500)', () => {
+    auditHistoryService.getPayloadByRequestId.mockRejectedValue(new Error('API Error'))
+
+    return request(app).get(`/audit/${requestId}`).expect(500)
   })
 })

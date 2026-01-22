@@ -1,0 +1,61 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
+{% set pageTitle = applicationName + " - Payload Detail" %}
+{% set mainClasses = "govuk-body" %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {{ govukBackLink({
+        text: "Back",
+        href: "/audit-history"
+      }) }}
+
+      <h1 class="govuk-heading-l">Payload Detail</h1>
+
+      {{ govukSummaryList({
+        rows: [
+          {
+            key: { text: "Request Type", classes: "govuk-!-width-one-third" },
+            value: { text: auditDetail.requestTypeIdentifier | default("Unknown") }
+          },
+          {
+            key: { text: "Created At", classes: "govuk-!-width-one-third" },
+            value: { text: auditDetail.timestamp }
+          },
+          {
+            key: { text: "Transaction Time", classes: "govuk-!-width-one-third" },
+            value: { text: auditDetail.transactionTimestamp | default("-") }
+          },
+          {
+            key: { text: "Prison (Caseload)", classes: "govuk-!-width-one-third" },
+            value: { text: auditDetail.caseloadId | default("N/A") }
+          },
+          {
+            key: { text: "NOMIS Transaction ID", classes: "govuk-!-width-one-third" },
+            value: { text: auditDetail.legacyTransactionId | default("-") }
+          },
+          {
+            key: { text: "Synchronized Transaction ID", classes: "govuk-!-width-one-third" },
+            value: { text: auditDetail.synchronizedTransactionId | default("-") }
+          }
+        ]
+      }) }}
+
+      <h2 class="govuk-heading-m">Payload Body</h2>
+
+      {% if auditDetail.body %}
+        {# tabindex="0" ensures keyboard users can focus and scroll this area #}
+        <div class="app-json-viewer" tabindex="0">
+          <pre><code>{{ auditDetail.body | dump(2) }}</code></pre>
+        </div>
+      {% else %}
+        <p class="govuk-body">No body content recorded.</p>
+      {% endif %}
+
+    </div>
+  </div>
+{% endblock %}
