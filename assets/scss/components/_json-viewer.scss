@@ -1,0 +1,40 @@
+.app-json-viewer {
+  background-color: #f3f2f1;
+  border: 1px solid govuk-colour("mid-grey");
+  @include govuk-responsive-padding(3);
+  @include govuk-responsive-margin(2, 'bottom');
+
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: auto;
+
+  &:focus {
+    outline: 3px solid govuk-colour("yellow");
+    outline-offset: 0;
+  }
+
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #b1b4b6;
+    border-radius: 0;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: #626a6e;
+  }
+
+  pre {
+    margin: 0;
+  }
+
+  code {
+    @include govuk-font($size: 16);
+    font-family: monospace;
+    white-space: pre;
+  }
+}
