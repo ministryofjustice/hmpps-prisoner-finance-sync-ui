@@ -1,5 +1,6 @@
 import PrisonerFinanceSyncApiClient from '../data/prisonerFinanceSyncApiClient'
 import { NomisSyncPayloadDetail } from '../interfaces/nomisSyncPayloadDetail'
+import logger from '../../logger'
 
 export default class AuditHistoryService {
   constructor(private readonly prisonerFinanceSyncApiClient: PrisonerFinanceSyncApiClient) {}
@@ -10,8 +11,8 @@ export default class AuditHistoryService {
     if (detail.body && typeof detail.body === 'string') {
       try {
         detail.body = JSON.parse(detail.body)
-      } catch {
-        // Ignore parsing errors and return body as string
+      } catch (error) {
+        logger.error(error, `Failed to parse JSON body for requestId: ${requestId}`)
       }
     }
 
