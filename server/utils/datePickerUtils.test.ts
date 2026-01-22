@@ -1,8 +1,5 @@
 import { parse } from 'date-fns'
-import {
-  formatDatePickerDate,
-  isoDateToDatePickerDate,
-} from './datePickerUtils'
+import { formatDatePickerDate, isoDateToDatePickerDate } from './datePickerUtils'
 
 describe('Date Picker Utils', () => {
   describe('isoDateToDatePickerDate', () => {
@@ -21,4 +18,3 @@ describe('Date Picker Utils', () => {
     })
   })
 })
-
