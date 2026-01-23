@@ -39,14 +39,10 @@ const getAuditHistorySingleItem = (requestId: string, httpStatus = 200) =>
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: `/prisoner-finance-sync-api/audit/history`,
+      urlPath: `/prisoner-finance-sync-api/audit/history`,
       queryParameters: {
-        //startDate: { equalTo: '2025-12-24' },
-        //endDate: { equalTo: '2026-01-23' },
         startDate: { matches: '.*' },
         endDate: { matches: '.*' },
-        //page: { equalTo: '0' },
-        //size: { equalTo: '20' },
       },
     },
     response: {

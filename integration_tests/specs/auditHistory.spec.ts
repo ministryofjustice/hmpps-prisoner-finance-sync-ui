@@ -38,7 +38,7 @@ test.describe('Audit History Page', () => {
 
     await login(page)
 
-    await page.goto(`/audit?dateFrom=24%2F12%2F2025&dateTo=23%2F01%2F2026`)
+    await page.goto(`/audit/?dateFrom=24%2F12%2F2025&dateTo=23%2F01%2F2026&query=`)
 
     const auditHistory = await AuditHistoryPage.verifyOnPage(page)
 
@@ -46,7 +46,7 @@ test.describe('Audit History Page', () => {
 
     await auditHistory.clickApplyFilter()
 
-    await expect(page).toHaveURL(/\/audit\?dateFrom=.*&dateTo=.*&query=.*/)
+    await expect(page).toHaveURL(/\/audit\/\?legacyTransactionId=.*&startDate=.*&endDate=.*/)
   })
 
 })

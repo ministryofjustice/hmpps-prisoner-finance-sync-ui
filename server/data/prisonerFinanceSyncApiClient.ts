@@ -20,14 +20,15 @@ export default class PrisonerFinanceSyncApiClient extends RestClient {
     ) as Promise<NomisSyncPayloadDetail>
   }
 
-  async getPayloadSummary(prisonId: string, startDate: string, endDate: string) {
-    const queryParams = [prisonId, startDate, endDate].filter(x => x != null)
-
+  async getPayloadSummary(prisonId?: string, legacyTransactionId?: number, startDate?: string, endDate?: string) {
     return this.get(
       {
         path: `/audit/history`,
         query: {
-          ...queryParams,
+          prisonId: prisonId || undefined,
+          legacyTransactionId: legacyTransactionId,
+          startDate: startDate,
+          endDate: endDate,
         },
       },
       asSystem(),

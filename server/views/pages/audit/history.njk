@@ -16,19 +16,39 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
+      <p>{{ legacyTransactionId }}</p>
+      <p>{{ startDate }}</p>
+
       <h1 class="govuk-heading-l">NOMIS Sync transaction history</h1>
 
-      <form method="POST">
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-        <input type="hidden" name="dateFrom" value="{{ dateFrom | isoDateToDatePickerDate }}" />
-        <input type="hidden" name="dateTo" value="{{ dateTo | isoDateToDatePickerDate }}" />
-        {{ mojSearch({
+      <form method="GET" action="/audit">
+        <input type="hidden" name="startDate" value="{{ startDate | isoDateToDatePickerDate }}" />
+        <input type="hidden" name="endDate" value="{{ endDate | isoDateToDatePickerDate }}" />
+        {{ govukInput({
+            classes: "moj-search__input",
+            label: {
+              text: "Search",
+              classes: "govuk-!-font-weight-bold"
+            },
+            hint: {
+              text: "You can search by NOMIS Transaction Id"
+            },
+            id: "legacyTransactionId",
+            name: "legacyTransactionId",
+            value: legacyTransactionId
+          }) }}
+
+          {{ govukButton({
+            classes: "moj-search__button",
+            text: "Search"
+          }) }}
+        {# {{ mojSearch({
           action: "#",
           method: "post",
           input: {
-            id: "query",
-            name: "query",
-            value: query
+            id: "legacyTransactionId",
+            name: "legacyTransactionId",
+            value: legacyTransactionId
           },
           label: {
             text: "Search",
@@ -40,32 +60,32 @@
           button: {
             text: "Search"
           }
-        }) }}
+        }) }} #}
       </form>
     </div>
     <div class="govuk-grid-column-full">
       {% set filterOptionsHtml %}
 
         {{ mojDatePicker({
-            id: 'dateFrom',
-            name: 'dateFrom',
+            id: 'startDate',
+            name: 'startDate',
             leadingZeros: 'true',
             label: {
                 text: "Request date from",
                 classes: "govuk-label--s"
             },
-            value: dateFrom or (dateFrom | isoDateToDatePickerDate)
+            value: startDate or (startDate | isoDateToDatePickerDate)
         }) }}
 
         {{ mojDatePicker({
-            id: 'dateTo',
-            name: 'dateTo',
+            id: 'endDate',
+            name: 'endDate',
             leadingZeros: 'true',
             label: {
                 text: "Request date to",
                 classes: "govuk-label--s"
             },
-            value: dateTo or (dateTo | isoDateToDatePickerDate)
+            value: endDate or (endDate | isoDateToDatePickerDate)
         }) }}
 
         <button class="govuk-button govuk-!-margin-top-7 govuk-!-margin-bottom-0" data-module="govuk-button">
@@ -75,9 +95,8 @@
 
       <div class="moj-filter-layout moj-filter-layout__flex govuk-!-margin-bottom-6">
         <div class="moj-filter-layout__filter moj-filter-layout__flex moj-filter-layout__filter--small govuk-!-display-none-print">
-          <form method="POST">
-            <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
-            <input type="hidden" name="query" value="{{ query }}" />
+          <form method="GET">
+            <input type="hidden" name="legacyTransactionId" value="{{ legacyTransactionId }}" />
             {{ mojFilter({
                 heading: {
                     text: 'Filter'
@@ -106,8 +125,8 @@
                 { text: row.requestTypeIdentifier },
                 {
                   html: '<a class="govuk-link" href="/audit/' 
-                        + row.requestId 
-                        + '">View</a>'
+                          + row.requestId 
+                          + '">View</a>' 
                 }
               ]
             }), rows) %}
