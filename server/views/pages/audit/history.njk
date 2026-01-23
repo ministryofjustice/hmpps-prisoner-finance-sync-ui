@@ -93,7 +93,7 @@
           </div>
 
           {% set rows = [] %}
-          {% for row in tableData %}
+          {% for row in payloadSummaryData %}
             {% set rows = (rows.push({
               items: [
                 { text: row.legacyTransactionId },

@@ -1,7 +1,6 @@
 import PrisonerFinanceSyncApiClient from '../data/prisonerFinanceSyncApiClient'
 import { NomisSyncPayloadDetail } from '../interfaces/nomisSyncPayloadDetail'
 import logger from '../../logger'
-import { v4 as uuidv4 } from 'uuid'
 import { NomisSyncPayloadSummary } from '../interfaces/nomisSyncPayloadSummary'
 import { Page } from '../interfaces/page'
 import { parseDatePickerStringToIsoString } from '../utils/datePickerUtils'
@@ -24,12 +23,11 @@ export default class AuditHistoryService {
   }
 
   async getPayloadSummary(startDate: string, endDate: string, query: string): Promise<Page<NomisSyncPayloadSummary>> {
+    const startDateIso = parseDatePickerStringToIsoString(startDate)
+    const endDateIso = parseDatePickerStringToIsoString(endDate)
 
-    const startDateIso = parseDatePickerStringToIsoString(startDate);
-    const endDateIso = parseDatePickerStringToIsoString(endDate);
+    const payloadSummary = (await this.prisonerFinanceSyncApiClient.getPayloadSummary(null, startDateIso, endDateIso))
 
-    const payloadSummary = await this.prisonerFinanceSyncApiClient.getPayloadSummary(null, startDateIso, endDateIso)
-
-    return payloadSummary;
+    return payloadSummary
   }
 }

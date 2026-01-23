@@ -31,7 +31,7 @@ export const parseDatePickerStringToIsoString = (datePickerDate: string): string
 
   const dateFormatPattern = /(\d{1,2})([-/,. ])(\d{1,2})[-/,. ](\d{2,4})/
 
-  if (!dateFormatPattern.test(datePickerDate)) return "2001-01-01"
+  if (!dateFormatPattern.test(datePickerDate)) return '2001-01-01'
 
   const dateMatches = datePickerDate.match(dateFormatPattern)
 
