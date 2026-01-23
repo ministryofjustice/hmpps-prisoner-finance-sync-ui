@@ -35,6 +35,6 @@ test.describe('Audit Detail Page', () => {
 
     await detailPage.clickBack()
 
-    await expect(page).toHaveURL(/\/audit-history/)
+    await expect(page).toHaveURL(/\/audit/)
   })
 })
