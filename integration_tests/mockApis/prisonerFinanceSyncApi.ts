@@ -35,7 +35,65 @@ const getPayloadDetail = (requestId: string, httpStatus = 200) =>
     },
   })
 
+const getAuditHistorySingleItem = (requestId: string, httpStatus = 200) =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `/prisoner-finance-sync-api/audit/history`,
+      queryParameters: {
+        //startDate: { equalTo: '2025-12-24' },
+        //endDate: { equalTo: '2026-01-23' },
+        startDate: { matches: '.*' },
+        endDate: { matches: '.*' },
+        //page: { equalTo: '0' },
+        //size: { equalTo: '20' },
+      },
+    },
+    response: {
+      status: httpStatus,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        content: [
+          {
+            caseloadId: 'BWI',
+            legacyTransactionId: 5650123078997200000,
+            requestId,
+            requestTypeIdentifier: 'SyncOffenderTransactionRequest',
+            synchronizedTransactionId: '23571fdf-0182-452d-aac5-2308ee23fa95',
+            timestamp: '2026-01-13T14:53:30.623410Z',
+            transactionTimestamp: '2025-06-01T23:08:17Z',
+          },
+        ],
+        empty: false,
+        first: true,
+        last: true,
+        number: 0,
+        numberOfElements: 1,
+        pageable: {
+          offset: 0,
+          pageNumber: 0,
+          pageSize: 20,
+          paged: true,
+          sort: {
+            empty: false,
+            sorted: true,
+            unsorted: false,
+          },
+        },
+        size: 20,
+        sort: {
+          empty: false,
+          sorted: true,
+          unsorted: false,
+        },
+        totalElements: 1,
+        totalPages: 1,
+      },
+    },
+  })
+
 export default {
   stubPing,
   stubGetPayloadDetail: getPayloadDetail,
+  stubGetAuditHistorySingleItem : getAuditHistorySingleItem,
 }

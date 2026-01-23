@@ -15,7 +15,10 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <form method="post">
+
+      <h1 class="govuk-heading-l">NOMIS Sync transaction history</h1>
+
+      <form method="POST">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
         <input type="hidden" name="dateFrom" value="{{ dateFrom | isoDateToDatePickerDate }}" />
         <input type="hidden" name="dateTo" value="{{ dateTo | isoDateToDatePickerDate }}" />

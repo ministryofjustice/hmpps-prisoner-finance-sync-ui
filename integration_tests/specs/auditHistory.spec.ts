@@ -1,0 +1,52 @@
+import { expect, test } from '@playwright/test'
+import { login, resetStubs } from '../testUtils'
+import prisonerFinanceSyncApi from '../mockApis/prisonerFinanceSyncApi'
+import AuditHistoryPage from '../pages/auditHistoryPage'
+
+test.describe('Audit History Page', () => {
+  const requestId = '07b4e637-79ce-4e17-ab72-c384239576f8'
+
+  test.afterEach(async () => {
+    await resetStubs()
+  })
+
+  test('Loads the audit history page and displays correct date', async ({ page }) => {
+    await prisonerFinanceSyncApi.stubGetAuditHistorySingleItem(requestId)
+
+    await login(page)
+
+    await page.goto(`/audit/`)
+
+    const auditHistory = await AuditHistoryPage.verifyOnPage(page)
+  })
+
+  test('Loads the audit history page and displays one returned transaction', async ({ page }) => {
+    await prisonerFinanceSyncApi.stubGetAuditHistorySingleItem(requestId)
+
+    await login(page)
+
+    await page.goto(`/audit/`)
+
+    const auditHistory = await AuditHistoryPage.verifyOnPage(page)
+
+    await expect(auditHistory.applyFilter).toBeEnabled()
+    auditHistory.clickApplyFilter()
+  })
+
+  test('Loads the audit history page and displays one returned transaction - 1', async ({ page }) => {
+    await prisonerFinanceSyncApi.stubGetAuditHistorySingleItem(requestId)
+
+    await login(page)
+
+    await page.goto(`/audit?dateFrom=24%2F12%2F2025&dateTo=23%2F01%2F2026`)
+
+    const auditHistory = await AuditHistoryPage.verifyOnPage(page)
+
+    await expect(auditHistory.applyFilter).toBeEnabled()
+
+    await auditHistory.clickApplyFilter()
+
+    await expect(page).toHaveURL(/\/audit\?dateFrom=.*&dateTo=.*&query=.*/)
+  })
+
+})

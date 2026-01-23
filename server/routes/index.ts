@@ -35,40 +35,49 @@ export default function routes({ auditService, auditHistoryService }: Services):
     }
   })
 
-  router.post('/audit/', async (req, res, next) => {
-    await auditService.logPageView(Page.AUDIT_HISTORY_PAGE, { who: res.locals.user.username, correlationId: req.id })
-    // initial page route
+  router.post('/audit', async (req, res) => {
+    const { dateFrom, dateTo, query } = req.body
 
-    const { query } = req.body
-    const { dateFrom } = req.body
-    const { dateTo } = req.body
-
-    const payloadSummaryData = await (await auditHistoryService.getPayloadSummary(dateFrom, dateTo, query)).content
-
-    res.render('pages/audit/history', {
-      payloadSummaryData,
-      query,
+    const params = new URLSearchParams({
       dateFrom,
       dateTo,
+      query,
     })
+
+    return res.redirect(`/audit?${params.toString()}`)
   })
 
-  router.get('/audit/', async (req, res, next) => {
-    await auditService.logPageView(Page.AUDIT_HISTORY_PAGE, { who: res.locals.user.username, correlationId: req.id })
-    // landing route when the page is first visited
+  router.get('/audit', async (req, res) => {
+    await auditService.logPageView(Page.AUDIT_HISTORY_PAGE, {
+      who: res.locals.user.username,
+      correlationId: req.id,
+    })
 
-    const today = new Date()
-    const thirtyDaysAgo = new Date()
-    thirtyDaysAgo.setDate(today.getDate() - 30)
+    let { dateFrom, dateTo, query } = req.query
+    let payloadSummaryData
 
-    const dateFrom = formatDatePickerDate(today)
-    const dateTo = formatDatePickerDate(thirtyDaysAgo)
+    if (!dateFrom || !dateTo) {
+      const today = new Date()
+      const thirtyDaysAgo = new Date()
+      thirtyDaysAgo.setDate(today.getDate() - 30)
 
-    // got the initial results
+      dateFrom = formatDatePickerDate(thirtyDaysAgo)
+      dateTo = formatDatePickerDate(today)
+    } else {
+      const dateFromStr = String(dateFrom)
+      const dateToStr = String(dateTo)
+      const queryStr = query ? String(query) : ''
+
+      payloadSummaryData = (
+        await auditHistoryService.getPayloadSummary(dateFromStr, dateToStr, queryStr)
+      ).content
+    }
 
     return res.render('pages/audit/history', {
       dateFrom,
       dateTo,
+      query,
+      payloadSummaryData,
     })
   })
 
