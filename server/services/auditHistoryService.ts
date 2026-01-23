@@ -26,7 +26,7 @@ export default class AuditHistoryService {
     const startDateIso = parseDatePickerStringToIsoString(startDate)
     const endDateIso = parseDatePickerStringToIsoString(endDate)
 
-    const payloadSummary = (await this.prisonerFinanceSyncApiClient.getPayloadSummary(null, startDateIso, endDateIso))
+    const payloadSummary = await this.prisonerFinanceSyncApiClient.getPayloadSummary(query, startDateIso, endDateIso)
 
     return payloadSummary
   }
