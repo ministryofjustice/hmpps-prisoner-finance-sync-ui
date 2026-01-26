@@ -26,9 +26,9 @@ export default class PrisonerFinanceSyncApiClient extends RestClient {
         path: `/audit/history`,
         query: {
           prisonId: prisonId || undefined,
-          legacyTransactionId: legacyTransactionId,
-          startDate: startDate,
-          endDate: endDate,
+          legacyTransactionId,
+          startDate,
+          endDate,
         },
       },
       asSystem(),

@@ -48,5 +48,4 @@ test.describe('Audit History Page', () => {
 
     await expect(page).toHaveURL(/\/audit\/\?legacyTransactionId=.*&startDate=.*&endDate=.*/)
   })
-
 })

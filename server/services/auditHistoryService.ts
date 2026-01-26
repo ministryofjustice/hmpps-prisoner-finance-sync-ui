@@ -22,11 +22,21 @@ export default class AuditHistoryService {
     return detail
   }
 
-  async getPayloadSummary(prisonId: string, legacyTransactionId: number, startDate: string, endDate: string): Promise<Page<NomisSyncPayloadSummary>> {
+  async getPayloadSummary(
+    prisonId: string,
+    legacyTransactionId: number,
+    startDate: string,
+    endDate: string,
+  ): Promise<Page<NomisSyncPayloadSummary>> {
     const startDateIso = parseDatePickerStringToIsoString(startDate)
     const endDateIso = parseDatePickerStringToIsoString(endDate)
 
-    const payloadSummary = await this.prisonerFinanceSyncApiClient.getPayloadSummary(prisonId, legacyTransactionId, startDateIso, endDateIso,)
+    const payloadSummary = await this.prisonerFinanceSyncApiClient.getPayloadSummary(
+      prisonId,
+      legacyTransactionId,
+      startDateIso,
+      endDateIso,
+    )
 
     return payloadSummary
   }
