@@ -4,6 +4,7 @@ import logger from '../../logger'
 import { NomisSyncPayloadSummary } from '../interfaces/nomisSyncPayloadSummary'
 import { Page } from '../interfaces/page'
 import { parseDatePickerStringToIsoString } from '../utils/datePickerUtils'
+import { AuditHistorySearchParams } from '../interfaces/auditHistorySearchParams'
 
 export default class AuditHistoryService {
   constructor(private readonly prisonerFinanceSyncApiClient: PrisonerFinanceSyncApiClient) {}
@@ -22,22 +23,19 @@ export default class AuditHistoryService {
     return detail
   }
 
-  async getPayloadSummary(
-    prisonId: string,
-    legacyTransactionId: number,
-    startDate: string,
-    endDate: string,
-  ): Promise<Page<NomisSyncPayloadSummary>> {
+  async getPayloadSummary(searchParams: AuditHistorySearchParams): Promise<Page<NomisSyncPayloadSummary>> {
+    const { prisonId, legacyTransactionId, startDate, endDate, page, size } = searchParams
+
     const startDateIso = parseDatePickerStringToIsoString(startDate)
     const endDateIso = parseDatePickerStringToIsoString(endDate)
 
-    const payloadSummary = await this.prisonerFinanceSyncApiClient.getPayloadSummary(
+    return this.prisonerFinanceSyncApiClient.getPayloadSummary({
       prisonId,
       legacyTransactionId,
-      startDateIso,
-      endDateIso,
-    )
-
-    return payloadSummary
+      startDate: startDateIso,
+      endDate: endDateIso,
+      page,
+      size,
+    })
   }
 }

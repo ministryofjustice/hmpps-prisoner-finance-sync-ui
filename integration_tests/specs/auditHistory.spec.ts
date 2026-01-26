@@ -17,7 +17,7 @@ test.describe('Audit History Page', () => {
 
     await page.goto(`/audit/`)
 
-    const auditHistory = await AuditHistoryPage.verifyOnPage(page)
+    await AuditHistoryPage.verifyOnPage(page)
   })
 
   test('Loads the audit history page and displays one returned transaction', async ({ page }) => {

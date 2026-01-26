@@ -1,39 +1,3 @@
 .govuk-main-wrapper {
   min-height: 600px;
 }
-
-$button-shadow-size: 2px;
-
-.govuk-button--blue {
-  background-color: govuk-colour('blue');
-
-  $govuk-blue-button-shadow-colour: govuk-shade(govuk-colour('blue'), 40%);
-  $govuk-blue-button-hover-colour: govuk-shade(govuk-colour('blue'), 20%);
-  box-shadow: 0 $button-shadow-size 0 $govuk-blue-button-shadow-colour;
-
-  &,
-  &:link,
-  &:visited,
-  &:active,
-  &:hover {
-    color: govuk-colour('white');
-  }
-
-  &:hover {
-    background-color: $govuk-blue-button-hover-colour;
-
-    &[disabled] {
-      background-color: govuk-colour('blue');
-    }
-  }
-}
-
-.govuk-form-group {
-  .govuk-input {
-    margin-bottom: 30px;
-  }
-}
-
-.moj-search__button {
-  margin-bottom: 30px !important;
-}
