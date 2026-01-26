@@ -15,7 +15,6 @@ export default function routes({ auditService, auditHistoryService }: Services):
     return res.render('pages/index')
   })
 
-
   router.get('/audit/:requestId', async (req, res, next) => {
     try {
       const { requestId } = req.params
@@ -42,7 +41,7 @@ export default function routes({ auditService, auditHistoryService }: Services):
       correlationId: req.id,
     })
 
-    const { startDate, prisonId, legacyTransactionId } = req.query
+    const { endDate, startDate, prisonId, legacyTransactionId } = req.query
 
     const today = new Date()
 
@@ -60,7 +59,7 @@ export default function routes({ auditService, auditHistoryService }: Services):
 
     return res.render('pages/audit/history', {
       startDate: searchStartDate,
-      endDate: undefined,
+      endDate,
       legacyTransactionId: legacyTransactionIdNumber,
       payloadSummaryData,
     })

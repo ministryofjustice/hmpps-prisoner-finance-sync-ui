@@ -16,15 +16,13 @@
   <div class="govuk-grid-row audit-history-page">
     <div class="govuk-grid-column-two-thirds">
 
-      <p>{{ legacyTransactionId }}</p>
-      <p>{{ startDate }}</p>
-
       <h1 class="govuk-heading-l">NOMIS Sync transaction history</h1>
 
       <form method="GET" action="/audit">
-        <input type="hidden" name="startDate" value="{{ startDate | isoDateToDatePickerDate }}" />
-        <input type="hidden" name="endDate" value="{{ endDate | isoDateToDatePickerDate }}" />
-        {{ govukInput({
+        <input type="hidden" name="startDate" value="{{ startDate }}" />
+        <input type="hidden" name="endDate" value="{{ endDate }}" />
+        <div class="moj-search">
+          {{ govukInput({
             classes: "moj-search__input",
             label: {
               text: "Search",
@@ -42,25 +40,7 @@
             classes: "moj-search__button",
             text: "Search"
           }) }}
-        {# {{ mojSearch({
-          action: "#",
-          method: "post",
-          input: {
-            id: "legacyTransactionId",
-            name: "legacyTransactionId",
-            value: legacyTransactionId
-          },
-          label: {
-            text: "Search",
-            classes: "govuk-!-font-weight-bold"
-          },
-          hint: {
-            text: "You can search by NOMIS Transaction Id"
-          },
-          button: {
-            text: "Search"
-          }
-        }) }} #}
+        </div>
       </form>
     </div>
     <div class="govuk-grid-column-full">

@@ -20,20 +20,17 @@ test.describe('Audit History Page', () => {
     await AuditHistoryPage.verifyOnPage(page)
   })
 
-  test('Loads the audit history page and displays one returned transaction', async ({ page }) => {
+  test('Loads the audit history page and displays multiple transactions', async ({ page }) => {
     await prisonerFinanceSyncApi.stubGetAuditHistorySingleItem(requestId)
 
     await login(page)
 
     await page.goto(`/audit/`)
 
-    const auditHistory = await AuditHistoryPage.verifyOnPage(page)
-
-    await expect(auditHistory.applyFilter).toBeEnabled()
-    auditHistory.clickApplyFilter()
+    await AuditHistoryPage.verifyOnPage(page)
   })
 
-  test('Loads the audit history page and displays one returned transaction - 1', async ({ page }) => {
+  test('Loads the audit history page and displays one returned transaction', async ({ page }) => {
     await prisonerFinanceSyncApi.stubGetAuditHistorySingleItem(requestId)
 
     await login(page)

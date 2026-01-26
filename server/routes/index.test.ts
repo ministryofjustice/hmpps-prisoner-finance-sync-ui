@@ -1,10 +1,14 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
+import { randomUUID } from 'crypto'
 import { appWithAllRoutes, user } from './testutils/appSetup'
-import AuditService, { Page } from '../services/auditService'
+import AuditService, { Page as AuditPage } from '../services/auditService'
+import { Page } from '../interfaces/page'
 import AuditHistoryService from '../services/auditHistoryService'
 import { NomisSyncPayloadDetail } from '../interfaces/nomisSyncPayloadDetail'
+import { NomisSyncPayloadSummary } from '../interfaces/nomisSyncPayloadSummary'
+import { formatDatePickerDate } from '../utils/datePickerUtils'
 
 jest.mock('../services/auditService')
 jest.mock('../services/auditHistoryService')
@@ -39,7 +43,48 @@ describe('GET /', () => {
       .expect(res => {
         expect(res.text).toContain('Prisoner Finance Sync')
         expect(res.text).toContain('View audit history')
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.INDEX_PAGE, expect.anything())
+        expect(auditService.logPageView).toHaveBeenCalledWith(AuditPage.INDEX_PAGE, expect.anything())
+      })
+  })
+})
+
+describe('GET /audit', () => {
+  it('should render the audit history page with the default - today no filters', () => {
+    const todaysDate = new Date()
+
+    const mockPayload: Page<NomisSyncPayloadSummary> = {
+      content: [
+        {
+          legacyTransactionId: 12345,
+          synchronizedTransactionId: randomUUID().toString(),
+          caseloadId: 'BWI',
+          timestamp: todaysDate.toISOString(),
+          requestTypeIdentifier: 'OffenderTransaction',
+          requestId: randomUUID().toString(),
+          transactionTimestamp: new Date().toISOString(),
+        },
+      ],
+      totalElements: 1,
+      totalPages: 1,
+      numberOfElements: 1,
+      number: 0,
+      size: 20,
+    }
+
+    auditHistoryService.getPayloadSummary.mockResolvedValue(mockPayload)
+    auditService.logPageView.mockResolvedValue(null)
+
+    return request(app)
+      .get('/audit')
+      .expect('Content-Type', /html/)
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+
+        expect($('h1').text()).toContain('NOMIS Sync transaction history')
+
+        expect($('[name="startDate"]').val()).toEqual(`${formatDatePickerDate(todaysDate)}`)
+        expect($('[name="endDate"]').val()).toEqual(``)
       })
   })
 })
