@@ -84,7 +84,30 @@ describe('GET /audit', () => {
         expect($('h1').text()).toContain('NOMIS Sync transaction history')
 
         expect($('[name="startDate"]').val()).toEqual(`${formatDatePickerDate(todaysDate)}`)
-        expect($('[name="endDate"]').val()).toEqual(``)
+        expect($('[name="endDate"]').val()).toEqual('')
+        expect($('[name="legacyTransactionId"]').val()).toEqual('')
+
+        const tableData = $('tbody tr')
+          .map((i, row) => {
+            return [
+              $(row)
+                .find('td')
+                .map((j, cell) => $(cell).text().trim())
+                .get(),
+            ]
+          })
+          .get()
+
+        expect(tableData).toEqual([
+          [
+            mockPayload.content[0].legacyTransactionId.toString(),
+            mockPayload.content[0].synchronizedTransactionId,
+            mockPayload.content[0].caseloadId,
+            mockPayload.content[0].timestamp,
+            mockPayload.content[0].requestTypeIdentifier,
+            'View',
+          ],
+        ])
       })
   })
 })

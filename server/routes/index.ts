@@ -60,7 +60,7 @@ export default function routes({ auditService, auditHistoryService }: Services):
     return res.render('pages/audit/history', {
       startDate: searchStartDate,
       endDate,
-      legacyTransactionId: legacyTransactionIdNumber,
+      legacyTransactionId: legacyTransactionIdNumber ?? '',
       payloadSummaryData,
     })
   })
