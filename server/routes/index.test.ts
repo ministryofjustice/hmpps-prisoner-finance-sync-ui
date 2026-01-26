@@ -8,7 +8,6 @@ import { Page } from '../interfaces/page'
 import AuditHistoryService from '../services/auditHistoryService'
 import { NomisSyncPayloadDetail } from '../interfaces/nomisSyncPayloadDetail'
 import { NomisSyncPayloadSummary } from '../interfaces/nomisSyncPayloadSummary'
-import { formatDatePickerDate } from '../utils/datePickerUtils'
 
 jest.mock('../services/auditService')
 jest.mock('../services/auditHistoryService')
@@ -49,15 +48,13 @@ describe('GET /', () => {
 })
 
 describe('GET /audit', () => {
-  const todaysDate = new Date()
-
-  const mockPayload: Page<NomisSyncPayloadSummary> = {
+  const mockPayloadSummary: Page<NomisSyncPayloadSummary> = {
     content: [
       {
         legacyTransactionId: 12345,
         synchronizedTransactionId: randomUUID().toString(),
         caseloadId: 'BWI',
-        timestamp: todaysDate.toISOString(),
+        timestamp: new Date().toISOString(),
         requestTypeIdentifier: 'OffenderTransaction',
         requestId: randomUUID().toString(),
         transactionTimestamp: new Date().toISOString(),
@@ -70,8 +67,17 @@ describe('GET /audit', () => {
     size: 20,
   }
 
+  const mockPayloadSummaryNoResults: Page<NomisSyncPayloadSummary> = {
+    content: [],
+    totalElements: 0,
+    totalPages: 0,
+    numberOfElements: 0,
+    number: 0,
+    size: 20,
+  }
+
   it('should render the audit history page with the default - no filters', () => {
-    auditHistoryService.getPayloadSummary.mockResolvedValue(mockPayload)
+    auditHistoryService.getPayloadSummary.mockResolvedValue(mockPayloadSummary)
     auditService.logPageView.mockResolvedValue(null)
 
     return request(app)
@@ -100,11 +106,11 @@ describe('GET /audit', () => {
 
         expect(tableData).toEqual([
           [
-            mockPayload.content[0].legacyTransactionId.toString(),
-            mockPayload.content[0].synchronizedTransactionId,
-            mockPayload.content[0].caseloadId,
-            mockPayload.content[0].timestamp,
-            mockPayload.content[0].requestTypeIdentifier,
+            mockPayloadSummary.content[0].legacyTransactionId.toString(),
+            mockPayloadSummary.content[0].synchronizedTransactionId,
+            mockPayloadSummary.content[0].caseloadId,
+            mockPayloadSummary.content[0].timestamp,
+            mockPayloadSummary.content[0].requestTypeIdentifier,
             'View',
           ],
         ])
@@ -112,7 +118,7 @@ describe('GET /audit', () => {
   })
 
   it('should render results filtered by legacy transaction Id', () => {
-    auditHistoryService.getPayloadSummary.mockResolvedValue(mockPayload)
+    auditHistoryService.getPayloadSummary.mockResolvedValue(mockPayloadSummary)
     auditService.logPageView.mockResolvedValue(null)
 
     const query = 'legacyTransactionId=678910'
@@ -133,6 +139,91 @@ describe('GET /audit', () => {
           startDate: null,
           endDate: null,
         })
+      })
+  })
+
+  it('should render results filtered by date range', () => {
+    const startDate = '01/01/2000'
+    const endDate = '30/01/2000'
+
+    auditHistoryService.getPayloadSummary.mockResolvedValue(mockPayloadSummary)
+    auditService.logPageView.mockResolvedValue(null)
+
+    const query = `startDate=${startDate}&endDate=${endDate}`
+
+    return request(app)
+      .get(`/audit?${query}`)
+      .expect('Content-Type', /html/)
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+
+        expect($('[name="startDate"]').val()).toEqual(startDate)
+        expect($('[name="endDate"]').val()).toEqual(endDate)
+      })
+      .expect(() => {
+        expect(auditHistoryService.getPayloadSummary).toHaveBeenCalledWith({
+          prisonId: '',
+          legacyTransactionId: null,
+          startDate,
+          endDate,
+        })
+      })
+  })
+
+  it('should render results filtered by prisonId', () => {
+    const prisonId = 'BWI'
+
+    auditHistoryService.getPayloadSummary.mockResolvedValue(mockPayloadSummary)
+    auditService.logPageView.mockResolvedValue(null)
+
+    const query = `prisonId=${prisonId}`
+
+    return request(app)
+      .get(`/audit?${query}`)
+      .expect('Content-Type', /html/)
+      .expect(200)
+      .expect(res => {
+        // const $ = cheerio.load(res.text)
+        // TODO: we need to add the prisonId input box to the page
+        // expect($('[name="prisonId"]').val()).toEqual(prisonId)
+      })
+      .expect(() => {
+        expect(auditHistoryService.getPayloadSummary).toHaveBeenCalledWith({
+          prisonId,
+          legacyTransactionId: null,
+          startDate: null,
+          endDate: null,
+        })
+      })
+  })
+
+  it('service errors are handled', () => {
+    auditService.logPageView.mockResolvedValue(null)
+    auditHistoryService.getPayloadSummary.mockRejectedValue(new Error('Some problem calling external api!'))
+
+    return request(app)
+      .get('/audit')
+      .expect('Content-Type', /html/)
+      .expect(500)
+      .expect(res => {
+        expect(res.text).toContain('Some problem calling external api!')
+      })
+  })
+
+  it('should render user friendly message when no returned results', () => {
+    auditHistoryService.getPayloadSummary.mockResolvedValue(mockPayloadSummaryNoResults)
+    auditService.logPageView.mockResolvedValue(null)
+
+    return request(app)
+      .get(`/audit`)
+      .expect('Content-Type', /html/)
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+
+        expect($('[name="no-results-message"]')).toBeDefined()
+        expect($('[name="no-results-message"]').text()).toContain('There are no matching NOMIS synced transactions')
       })
   })
 })

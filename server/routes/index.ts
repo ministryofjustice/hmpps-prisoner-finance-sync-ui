@@ -15,26 +15,22 @@ export default function routes({ auditService, auditHistoryService }: Services):
   })
 
   router.get('/audit/:requestId', async (req, res, next) => {
-    try {
-      const { requestId } = req.params
-      const { user } = res.locals
+    const { requestId } = req.params
+    const { user } = res.locals
 
-      await auditService.logPageView(Page.AUDIT_DETAIL_PAGE, {
-        who: user.username,
-        correlationId: req.id,
-      })
+    await auditService.logPageView(Page.AUDIT_DETAIL_PAGE, {
+      who: user.username,
+      correlationId: req.id,
+    })
 
-      const auditDetail = await auditHistoryService.getPayloadByRequestId(requestId)
+    const auditDetail = await auditHistoryService.getPayloadByRequestId(requestId)
 
-      return res.render('pages/audit/detail', {
-        auditDetail,
-      })
-    } catch (error) {
-      return next(error)
-    }
+    return res.render('pages/audit/detail', {
+      auditDetail,
+    })
   })
 
-  router.get('/audit', async (req, res) => {
+  router.get('/audit', async (req, res, next) => {
     await auditService.logPageView(Page.AUDIT_HISTORY_PAGE, {
       who: res.locals.user.username,
       correlationId: req.id,

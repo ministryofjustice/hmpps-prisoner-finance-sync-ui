@@ -101,7 +101,7 @@
                 { text: row.legacyTransactionId },
                 { text: row.synchronizedTransactionId },
                 { text: row.caseloadId },
-                { text: row.transactionTimestamp },
+                { text: row.timestamp },
                 { text: row.requestTypeIdentifier },
                 {
                   html: '<a class="govuk-link" href="/audit/'
@@ -141,7 +141,7 @@
               </tbody>
             </table>
           {% else %}
-            <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-8">
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-8" name="no-results-message">
                 <li>There are no matching NOMIS synced transactions.</li>
                 <li>Try a different search, or change the filters.</li>
             </ul>
