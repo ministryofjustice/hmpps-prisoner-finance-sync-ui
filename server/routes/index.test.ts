@@ -49,28 +49,28 @@ describe('GET /', () => {
 })
 
 describe('GET /audit', () => {
-  it('should render the audit history page with the default - today no filters', () => {
-    const todaysDate = new Date()
+  const todaysDate = new Date()
 
-    const mockPayload: Page<NomisSyncPayloadSummary> = {
-      content: [
-        {
-          legacyTransactionId: 12345,
-          synchronizedTransactionId: randomUUID().toString(),
-          caseloadId: 'BWI',
-          timestamp: todaysDate.toISOString(),
-          requestTypeIdentifier: 'OffenderTransaction',
-          requestId: randomUUID().toString(),
-          transactionTimestamp: new Date().toISOString(),
-        },
-      ],
-      totalElements: 1,
-      totalPages: 1,
-      numberOfElements: 1,
-      number: 0,
-      size: 20,
-    }
+  const mockPayload: Page<NomisSyncPayloadSummary> = {
+    content: [
+      {
+        legacyTransactionId: 12345,
+        synchronizedTransactionId: randomUUID().toString(),
+        caseloadId: 'BWI',
+        timestamp: todaysDate.toISOString(),
+        requestTypeIdentifier: 'OffenderTransaction',
+        requestId: randomUUID().toString(),
+        transactionTimestamp: new Date().toISOString(),
+      },
+    ],
+    totalElements: 2,
+    totalPages: 1,
+    numberOfElements: 2,
+    number: 0,
+    size: 20,
+  }
 
+  it('should render the audit history page with the default - no filters', () => {
     auditHistoryService.getPayloadSummary.mockResolvedValue(mockPayload)
     auditService.logPageView.mockResolvedValue(null)
 
@@ -83,7 +83,7 @@ describe('GET /audit', () => {
 
         expect($('h1').text()).toContain('NOMIS Sync transaction history')
 
-        expect($('[name="startDate"]').val()).toEqual(`${formatDatePickerDate(todaysDate)}`)
+        expect($('[name="startDate"]').val()).toEqual('')
         expect($('[name="endDate"]').val()).toEqual('')
         expect($('[name="legacyTransactionId"]').val()).toEqual('')
 
@@ -108,6 +108,31 @@ describe('GET /audit', () => {
             'View',
           ],
         ])
+      })
+  })
+
+  it('should render results filtered by legacy transaction Id', () => {
+    auditHistoryService.getPayloadSummary.mockResolvedValue(mockPayload)
+    auditService.logPageView.mockResolvedValue(null)
+
+    const query = 'legacyTransactionId=678910'
+
+    return request(app)
+      .get(`/audit?${query}`)
+      .expect('Content-Type', /html/)
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+
+        expect($('[name="legacyTransactionId"]').val()).toEqual('678910')
+      })
+      .expect(() => {
+        expect(auditHistoryService.getPayloadSummary).toHaveBeenCalledWith({
+          prisonId: '',
+          legacyTransactionId: 678910,
+          startDate: null,
+          endDate: null,
+        })
       })
   })
 })

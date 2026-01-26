@@ -1,7 +1,6 @@
 import { Router } from 'express'
 import type { Services } from '../services'
 import { Page } from '../services/auditService'
-import { formatDatePickerDate } from '../utils/datePickerUtils'
 
 export default function routes({ auditService, auditHistoryService }: Services): Router {
   const router = Router()
@@ -43,9 +42,8 @@ export default function routes({ auditService, auditHistoryService }: Services):
 
     const { endDate, startDate, prisonId, legacyTransactionId } = req.query
 
-    const today = new Date()
-
-    const searchStartDate = (startDate as string) || formatDatePickerDate(today)
+    const searchStartDate = (startDate as string) || null
+    const searchEndDate = (endDate as string) || null
     const prisonIdStr = prisonId ? String(prisonId) : ''
     const legacyTransactionIdNumber = legacyTransactionId ? parseInt(legacyTransactionId as string, 10) : null
 
@@ -54,6 +52,7 @@ export default function routes({ auditService, auditHistoryService }: Services):
         prisonId: prisonIdStr,
         legacyTransactionId: legacyTransactionIdNumber,
         startDate: searchStartDate,
+        endDate: searchEndDate,
       })
     ).content
 
