@@ -14,7 +14,7 @@ export default function routes({ auditService, auditHistoryService }: Services):
 
     return res.render('pages/index')
   })
-  
+
   router.get('/audit/:requestId', async (req, res, next) => {
     try {
       const { requestId } = req.params
@@ -41,26 +41,25 @@ export default function routes({ auditService, auditHistoryService }: Services):
       correlationId: req.id,
     })
 
-    let { startDate, endDate, prisonId, legacyTransactionId} = req.query
-    let payloadSummaryData
+    const { startDate, prisonId, legacyTransactionId } = req.query
 
     const today = new Date()
-    const thirtyDaysAgo = new Date()
-    thirtyDaysAgo.setDate(today.getDate() - 30)
 
+    const searchStartDate = (startDate as string) || formatDatePickerDate(today)
+    const prisonIdStr = prisonId ? String(prisonId) : ''
+    const legacyTransactionIdNumber = legacyTransactionId ? parseInt(legacyTransactionId as string, 10) : null
 
-      const searchStartDate = (startDate as string) || formatDatePickerDate(thirtyDaysAgo)
-      const searchEndDate = (endDate as string) || formatDatePickerDate(today)
-      const prisonIdStr = prisonId ? String(prisonId) : ''
-      const legacyTransactionIdNumber = legacyTransactionId ? parseInt(legacyTransactionId as string) : null
-
-      payloadSummaryData = (
-        await auditHistoryService.getPayloadSummary(prisonIdStr, legacyTransactionIdNumber, searchStartDate, searchEndDate)
-      ).content
+    const payloadSummaryData = (
+      await auditHistoryService.getPayloadSummary({
+        prisonId: prisonIdStr,
+        legacyTransactionId: legacyTransactionIdNumber,
+        startDate: searchStartDate,
+      })
+    ).content
 
     return res.render('pages/audit/history', {
       startDate: searchStartDate,
-      endDate: searchEndDate,
+      endDate: undefined,
       legacyTransactionId: legacyTransactionIdNumber,
       payloadSummaryData,
     })

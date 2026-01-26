@@ -12,9 +12,7 @@ export default class AuditHistoryPage extends AbstractPage {
     super(page)
     this.header = page.locator('h1', { hasText: 'NOMIS Sync transaction history' })
     this.backLink = page.locator('.govuk-back-link')
-    this.applyFilter = page
-        .getByRole('button', { name: 'Apply filters' })
-        .first()
+    this.applyFilter = page.getByRole('button', { name: 'Apply filters' }).first()
   }
 
   static async verifyOnPage(page: Page): Promise<AuditHistoryPage> {
@@ -25,8 +23,8 @@ export default class AuditHistoryPage extends AbstractPage {
 
   async clickApplyFilter(): Promise<void> {
     await Promise.all([
-        //this.page.waitForURL(/\/audit\?.+/),
-        this.applyFilter.click(),
+      // this.page.waitForURL(/\/audit\?.+/),
+      this.applyFilter.click(),
     ])
   }
 

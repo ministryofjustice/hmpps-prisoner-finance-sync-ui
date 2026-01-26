@@ -91,5 +91,5 @@ const getAuditHistorySingleItem = (requestId: string, httpStatus = 200) =>
 export default {
   stubPing,
   stubGetPayloadDetail: getPayloadDetail,
-  stubGetAuditHistorySingleItem : getAuditHistorySingleItem,
+  stubGetAuditHistorySingleItem: getAuditHistorySingleItem,
 }
