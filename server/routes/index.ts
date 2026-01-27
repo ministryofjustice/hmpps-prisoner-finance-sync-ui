@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import type { Services } from '../services'
 import { Page } from '../services/auditService'
-import mojPaginationFromPageResponse from '../utils/mojPagination/pagination'
+import paginationFromPageResponse from '../utils/pagination'
 
 export default function routes({ auditService, auditHistoryService }: Services): Router {
   const router = Router()
@@ -56,7 +56,7 @@ export default function routes({ auditService, auditHistoryService }: Services):
       size: 20,
     })
 
-    const pagination = mojPaginationFromPageResponse(
+    const pagination = paginationFromPageResponse(
       payloadSummaryPage,
       new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`),
     )
