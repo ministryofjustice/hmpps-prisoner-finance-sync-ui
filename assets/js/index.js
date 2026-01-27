@@ -1,8 +1,20 @@
 import * as govukFrontend from 'govuk-frontend'
 import * as mojFrontend from '@ministryofjustice/frontend'
-import * as initAll from './all'
+import Card from './card'
+import ListFilter from './list-filter'
+import nodeListForEach from './utils'
 
 govukFrontend.initAll()
 mojFrontend.initAll()
 
-initAll.initAll()
+const $filters = document.querySelectorAll('[data-module="moj-filter"]')
+nodeListForEach($filters, $filter => {
+  // eslint-disable-next-line no-new
+  new ListFilter($filter)
+})
+
+const $cards = document.querySelectorAll('.card--clickable')
+nodeListForEach($cards, $card => {
+  // eslint-disable-next-line no-new
+  new Card($card)
+})

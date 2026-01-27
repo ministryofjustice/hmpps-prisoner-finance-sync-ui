@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import type { Services } from '../services'
 import { Page } from '../services/auditService'
+import mojPaginationFromPageResponse from '../utils/mojPagination/pagination'
 
 export default function routes({ auditService, auditHistoryService }: Services): Router {
   const router = Router()
@@ -36,27 +37,36 @@ export default function routes({ auditService, auditHistoryService }: Services):
       correlationId: req.id,
     })
 
-    const { endDate, startDate, prisonId, legacyTransactionId } = req.query
+    const { endDate, startDate, prisonId, legacyTransactionId, page } = req.query
 
     const searchStartDate = (startDate as string) || null
     const searchEndDate = (endDate as string) || null
     const prisonIdStr = prisonId ? String(prisonId) : ''
     const legacyTransactionIdNumber = legacyTransactionId ? parseInt(legacyTransactionId as string, 10) : null
 
-    const payloadSummaryData = (
-      await auditHistoryService.getPayloadSummary({
-        prisonId: prisonIdStr,
-        legacyTransactionId: legacyTransactionIdNumber,
-        startDate: searchStartDate,
-        endDate: searchEndDate,
-      })
-    ).content
+    const pageNumber = page ? parseInt(page as string, 10) : 1
+    const safePageNumber = Number.isNaN(pageNumber) || pageNumber < 1 ? 1 : pageNumber
+
+    const payloadSummaryPage = await auditHistoryService.getPayloadSummary({
+      prisonId: prisonIdStr,
+      legacyTransactionId: legacyTransactionIdNumber,
+      startDate: searchStartDate,
+      endDate: searchEndDate,
+      page: safePageNumber - 1,
+      size: 20,
+    })
+
+    const pagination = mojPaginationFromPageResponse(
+      payloadSummaryPage,
+      new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`),
+    )
 
     return res.render('pages/audit/history', {
       startDate: searchStartDate,
-      endDate : searchEndDate,
+      endDate: searchEndDate,
       legacyTransactionId: legacyTransactionIdNumber ?? '',
-      payloadSummaryData,
+      payloadSummaryData: payloadSummaryPage.content,
+      pagination,
     })
   })
 
