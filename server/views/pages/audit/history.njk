@@ -102,7 +102,7 @@
                 { text: row.synchronizedTransactionId },
                 { text: row.caseloadId },
                 { text: row.timestamp },
-                { text: row.requestTypeIdentifier },
+                { text: row.requestTypeIdentifier | formatTransactionType},
                 {
                   html: '<a class="govuk-link" href="/audit/'
                           + row.requestId

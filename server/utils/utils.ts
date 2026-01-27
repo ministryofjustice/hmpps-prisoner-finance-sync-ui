@@ -50,3 +50,18 @@ export const formatDate = (date: unknown, fmt = 'EEEE, d MMMM yyyy', inContextNa
   }
   return format(richDate, fmt)
 }
+
+export const formatTransactionType = (requestTypeIdentifier: string) : string => {
+  switch(requestTypeIdentifier)
+  {
+    case "SyncOffenderTransactionRequest" : {
+      return "Offender"
+    }
+    case "SyncGeneralLedgerTransactionRequest" : {
+      return "General Ledger"
+    }
+    default : {
+      return "Unknown"
+    }
+  }
+}
