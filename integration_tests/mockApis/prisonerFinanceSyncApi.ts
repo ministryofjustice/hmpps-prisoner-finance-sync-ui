@@ -41,8 +41,8 @@ const getAuditHistorySingleItem = (requestId: string, httpStatus = 200) =>
       method: 'GET',
       urlPath: `/prisoner-finance-sync-api/audit/history`,
       queryParameters: {
-        startDate: { matches: '.*' },
-        endDate: { matches: '.*' },
+        page: { equalTo: '0' },
+        size: { equalTo: '20' },
       },
     },
     response: {
@@ -93,6 +93,10 @@ const getAuditHistoryMultipleItemItems = (requestId: string, httpStatus = 200) =
     request: {
       method: 'GET',
       urlPath: `/prisoner-finance-sync-api/audit/history`,
+      queryParameters: {
+        page: { equalTo: '0' },
+        size: { equalTo: '20' },
+      },
     },
     response: {
       status: httpStatus,

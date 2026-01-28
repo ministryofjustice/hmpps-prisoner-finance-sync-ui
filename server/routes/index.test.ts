@@ -8,6 +8,7 @@ import { Page } from '../interfaces/page'
 import AuditHistoryService from '../services/auditHistoryService'
 import { NomisSyncPayloadDetail } from '../interfaces/nomisSyncPayloadDetail'
 import { NomisSyncPayloadSummary } from '../interfaces/nomisSyncPayloadSummary'
+import { formatTransactionType } from '../utils/utils'
 
 jest.mock('../services/auditService')
 jest.mock('../services/auditHistoryService')
@@ -55,7 +56,7 @@ describe('GET /audit', () => {
         synchronizedTransactionId: randomUUID().toString(),
         caseloadId: 'BWI',
         timestamp: new Date().toISOString(),
-        requestTypeIdentifier: 'OffenderTransaction',
+        requestTypeIdentifier: 'SyncOffenderTransactionRequest',
         requestId: randomUUID().toString(),
         transactionTimestamp: new Date().toISOString(),
       },
@@ -110,7 +111,7 @@ describe('GET /audit', () => {
             mockPayloadSummary.content[0].synchronizedTransactionId,
             mockPayloadSummary.content[0].caseloadId,
             mockPayloadSummary.content[0].timestamp,
-            mockPayloadSummary.content[0].requestTypeIdentifier,
+            formatTransactionType(mockPayloadSummary.content[0].requestTypeIdentifier),
             'View',
           ],
         ])
@@ -134,10 +135,12 @@ describe('GET /audit', () => {
       })
       .expect(() => {
         expect(auditHistoryService.getPayloadSummary).toHaveBeenCalledWith({
-          prisonId: '',
-          legacyTransactionId: 678910,
-          startDate: null,
           endDate: null,
+          legacyTransactionId: 678910,
+          page: 0,
+          prisonId: '',
+          size: 20,
+          startDate: null,
         })
       })
   })
@@ -167,6 +170,8 @@ describe('GET /audit', () => {
           legacyTransactionId: null,
           startDate,
           endDate,
+          page: 0,
+          size: 20,
         })
       })
   })
@@ -194,6 +199,8 @@ describe('GET /audit', () => {
           legacyTransactionId: null,
           startDate: null,
           endDate: null,
+          page: 0,
+          size: 20,
         })
       })
   })
@@ -238,7 +245,7 @@ describe('GET /audit/:requestId', () => {
       legacyTransactionId: 12345,
       synchronizedTransactionId: 'abc-123',
       caseloadId: 'MDI',
-      requestTypeIdentifier: 'Offender Transaction',
+      requestTypeIdentifier: 'SyncOffenderTransactionRequest',
       body: { some: 'value' },
     }
 
@@ -254,7 +261,7 @@ describe('GET /audit/:requestId', () => {
 
         expect($('h1').text()).toContain('Payload Detail')
         expect($('.govuk-summary-list').text()).toContain('MDI')
-        expect($('.govuk-summary-list').text()).toContain('Offender Transaction')
+        expect($('.govuk-summary-list').text()).toContain('Offender')
         expect($('pre').text()).toContain('"some": "value"')
       })
       .expect(() => {

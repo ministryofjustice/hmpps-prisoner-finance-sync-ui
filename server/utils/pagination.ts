@@ -40,37 +40,73 @@ export default function paginationFromPageResponse(pageData: Page<unknown>, url:
   }
 }
 
+/* MAX_VISIBLE_PAGES (7): If total pages are <= 7, show all of them. */
+const MAX_VISIBLE_PAGES = 7
+
 function getPaginationItems(current: number, total: number, url: URL): NumberedPageLink[] | null {
-  if (total <= 1) return null
 
-  const pages: (number | 'dots')[] = []
+  if (total <= MAX_VISIBLE_PAGES) return null
 
-  // Logic: Always show 1..5 if we are near the start
-  if (total <= 7) {
-    for (let i = 1; i <= total; i++) pages.push(i)
-  } else if (current <= 5) {
-    // Start Pattern: 1 2 3 4 5 ... N
-    pages.push(1, 2, 3, 4, 5, 'dots', total)
-  } else if (current >= total - 4) {
-    // End Pattern: 1 ... N-4 N-3 N-2 N-1 N
-    pages.push(1, 'dots', total - 4, total - 3, total - 2, total - 1, total)
-  } else {
-    // Middle Pattern: 1 ... 4 5 6 ... N
-    pages.push(1, 'dots', current - 1, current, current + 1, 'dots', total)
-  }
+  const items = calculatePageItems(current, total)
 
-  return pages.map(item => {
+  return items.map((item: string | number) => {
     if (item === 'dots') {
       return { text: '...', type: 'dots' }
     }
-    url.searchParams.set('page', item.toString())
+
+    const linkUrl = new URL(url.toString())
+    linkUrl.searchParams.set('page', item.toString())
+
     return {
       text: item.toString(),
-      href: url.href,
+      href: linkUrl.href,
       selected: item === current,
       type: 'number',
     }
   })
+}
+
+/**
+ * Calculates the list of page numbers and 'dots' (ellipses) to display in the pagination component.
+ *
+ * The logic is defined by 4 constants:
+ * - START_EDGE_COUNT (5): If near the start, show the first 5 pages.
+ * - END_EDGE_OFFSET (4): If near the end, show the last 5 pages (Total - 4).
+ * - PAGES_AROUND_CURRENT (1): In the middle, show current page +/- 1 neighbor.
+ *
+ * Examples (Total Pages = 100):
+ * 1. Start Pattern (Current <= 5):
+ * [1, 2, 3, 4, 5, ..., 100]
+ *
+ * 2. End Pattern (Current >= 96):
+ * [1, ..., 96, 97, 98, 99, 100]
+ *
+ * 3. Middle Pattern (Current = 50):
+ * [1, ..., 49, 50, 51, ..., 100]
+ *
+ * 4. Small Result Set (Total = 5):
+ * [1, 2, 3, 4, 5]
+ */
+const START_EDGE_COUNT = 5
+const END_EDGE_OFFSET = 4
+const PAGES_AROUND_CURRENT = 1
+
+function calculatePageItems(current: number, total: number): (number | 'dots')[] {
+  const range = (start: number, count: number) => Array.from({ length: count }, (_, i) => start + i)
+
+  if (total <= MAX_VISIBLE_PAGES) {
+    return range(1, total)
+  }
+
+  if (current <= START_EDGE_COUNT) {
+    return [...range(1, START_EDGE_COUNT), 'dots', total]
+  }
+
+  if (current >= total - END_EDGE_OFFSET) {
+    return [1, 'dots', ...range(total - END_EDGE_OFFSET, END_EDGE_OFFSET + 1)]
+  }
+
+  return [1, 'dots', ...range(current - PAGES_AROUND_CURRENT, PAGES_AROUND_CURRENT * 2 + 1), 'dots', total]
 }
 
 function getPreviousLink(current: number, url: URL): PageLink | null {
