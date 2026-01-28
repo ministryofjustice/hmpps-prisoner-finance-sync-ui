@@ -44,7 +44,6 @@ export default function paginationFromPageResponse(pageData: Page<unknown>, url:
 const MAX_VISIBLE_PAGES = 7
 
 function getPaginationItems(current: number, total: number, url: URL): NumberedPageLink[] | null {
-
   if (total <= MAX_VISIBLE_PAGES) return null
 
   const items = calculatePageItems(current, total)
