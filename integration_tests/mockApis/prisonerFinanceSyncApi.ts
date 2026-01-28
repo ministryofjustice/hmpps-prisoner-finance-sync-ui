@@ -52,7 +52,7 @@ const getAuditHistorySingleItem = (requestId: string, httpStatus = 200) =>
         content: [
           {
             caseloadId: 'BWI',
-            legacyTransactionId: 5650123078997200000,
+            legacyTransactionId: 1234567,
             requestId,
             requestTypeIdentifier: 'SyncOffenderTransactionRequest',
             synchronizedTransactionId: '23571fdf-0182-452d-aac5-2308ee23fa95',
@@ -145,7 +145,62 @@ const getAuditHistoryMultipleItems = (requestId: string, httpStatus = 200) =>
           unsorted: false,
         },
         totalElements: 2,
+        totalPages: 1,
+      },
+    },
+  })
+
+const getAuditHistoryEmpty = (httpStatus = 200) =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPath: `/prisoner-finance-sync-api/audit/history`,
+    },
+    response: {
+      status: httpStatus,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        content: [], // Empty Array
+        empty: true,
+        totalElements: 0,
         totalPages: 0,
+        size: 20,
+        number: 0,
+      },
+    },
+  })
+
+const getAuditHistoryManyPages = () =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPath: `/prisoner-finance-sync-api/audit/history`,
+      queryParameters: {
+        page: { equalTo: '1' },
+        size: { equalTo: '20' },
+      },
+    },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        content: [
+          {
+            caseloadId: 'MDI',
+            legacyTransactionId: 1234567,
+            requestId: '65372332',
+            requestTypeIdentifier: 'SyncOffenderTransactionRequest',
+            synchronizedTransactionId: '23571fdf-0182-452d-aac5-2308ee23fa95',
+            timestamp: '2026-01-13T14:53:30.623410Z',
+            transactionTimestamp: '2025-06-01T23:08:17Z',
+          },
+        ],
+        totalElements: 25,
+        totalPages: 2,
+        size: 20,
+        number: 0,
+        first: true,
+        last: false,
       },
     },
   })
@@ -155,4 +210,6 @@ export default {
   stubGetPayloadDetail: getPayloadDetail,
   stubGetAuditHistorySingleItem: getAuditHistorySingleItem,
   stubGetAuditHistoryMultipleItems: getAuditHistoryMultipleItems,
+  stubGetAuditHistoryEmpty: getAuditHistoryEmpty,
+  stubGetAuditHistoryManyPages: getAuditHistoryManyPages,
 }

@@ -10,39 +10,86 @@ test.describe('Audit History Page', () => {
     await resetStubs()
   })
 
-  test('Loads the audit history page and displays correct data', async ({ page }) => {
+  test('Displays the transaction history table with correct data', async ({ page }) => {
     await prisonerFinanceSyncApi.stubGetAuditHistorySingleItem(requestId)
-
     await login(page)
+    await page.goto(`/audit/`)
 
+    const auditPage = await AuditHistoryPage.verifyOnPage(page)
+
+    await expect(page.getByText('1234567')).toBeVisible()
+
+    await expect(page.getByText('2026-01-13')).toBeVisible()
+
+    await expect(auditPage.pagination).toBeVisible()
+  })
+
+  test('Filters apply correct query parameters', async ({ page }) => {
+    await prisonerFinanceSyncApi.stubGetAuditHistorySingleItem(requestId)
+    await login(page)
+    await page.goto(`/audit/`)
+
+    const auditPage = await AuditHistoryPage.verifyOnPage(page)
+
+    await auditPage.filterByDate('24/12/2025', '23/01/2026')
+
+    await expect(page).toHaveURL(/.*startDate=24%2F12%2F2025/)
+    await expect(page).toHaveURL(/.*endDate=23%2F01%2F2026/)
+  })
+
+  test('Displays single transaction correctly', async ({ page }) => {
+    await prisonerFinanceSyncApi.stubGetAuditHistorySingleItem(requestId)
+    await login(page)
     await page.goto(`/audit/`)
 
     await AuditHistoryPage.verifyOnPage(page)
+    await expect(page.getByText('1234567')).toBeVisible()
   })
 
-  test('Loads the audit history page and displays multiple transactions', async ({ page }) => {
-    await prisonerFinanceSyncApi.stubGetAuditHistorySingleItem(requestId)
-
+  test('Displays multiple transactions', async ({ page }) => {
+    await prisonerFinanceSyncApi.stubGetAuditHistoryMultipleItems(requestId)
     await login(page)
-
     await page.goto(`/audit/`)
 
-    await AuditHistoryPage.verifyOnPage(page)
+    const auditPage = await AuditHistoryPage.verifyOnPage(page)
+
+    await expect(auditPage.tableRows).toHaveCount(2)
   })
 
-  test('Loads the audit history page and displays one returned transaction', async ({ page }) => {
+  test('Search by Transaction ID updates query parameters', async ({ page }) => {
     await prisonerFinanceSyncApi.stubGetAuditHistorySingleItem(requestId)
+    await login(page)
+    await page.goto(`/audit/`)
+
+    const auditPage = await AuditHistoryPage.verifyOnPage(page)
+
+    await auditPage.searchByTransactionId('12345')
+
+    await expect(page).toHaveURL(/.*legacyTransactionId=12345/)
+  })
+
+  test('Displays "No results" message when API returns empty', async ({ page }) => {
+    await prisonerFinanceSyncApi.stubGetAuditHistoryEmpty()
 
     await login(page)
+    await page.goto(`/audit/`)
 
-    await page.goto(`/audit/?dateFrom=24%2F12%2F2025&dateTo=23%2F01%2F2026&query=`)
+    const auditPage = await AuditHistoryPage.verifyOnPage(page)
 
-    const auditHistory = await AuditHistoryPage.verifyOnPage(page)
+    await expect(auditPage.tableRows).toHaveCount(0)
+    await expect(auditPage.noResultsMessage).toBeVisible()
+    await expect(auditPage.noResultsMessage).toContainText('There are no matching NOMIS synced transactions')
+  })
 
-    await expect(auditHistory.applyFilter).toBeEnabled()
+  test('Pagination navigates to the next page', async ({ page }) => {
+    await prisonerFinanceSyncApi.stubGetAuditHistoryManyPages()
+    await login(page)
+    await page.goto(`/audit/`)
 
-    await auditHistory.clickApplyFilter()
+    const auditPage = await AuditHistoryPage.verifyOnPage(page)
 
-    await expect(page).toHaveURL(/\/audit\/\?legacyTransactionId=.*&startDate=.*&endDate=.*/)
+    await auditPage.clickNextPage()
+
+    await expect(page).toHaveURL(/.*page=2/)
   })
 })
