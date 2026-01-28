@@ -22,10 +22,6 @@ export default class AuditHistoryPage extends AbstractPage {
   }
 
   async clickApplyFilter(): Promise<void> {
-    await Promise.all([this.applyFilter.click()])
-  }
-
-  async clickBack(): Promise<void> {
-    await this.backLink.click()
+    this.applyFilter.click()
   }
 }

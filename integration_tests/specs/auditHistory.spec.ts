@@ -10,7 +10,7 @@ test.describe('Audit History Page', () => {
     await resetStubs()
   })
 
-  test('Loads the audit history page and displays correct date', async ({ page }) => {
+  test('Loads the audit history page and displays correct data', async ({ page }) => {
     await prisonerFinanceSyncApi.stubGetAuditHistorySingleItem(requestId)
 
     await login(page)

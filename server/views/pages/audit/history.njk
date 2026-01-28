@@ -24,7 +24,7 @@
         <input type="hidden" name="endDate" value="{{ endDate }}" />
         <div class="moj-search">
           {{ govukInput({
-            classes: "moj-search__input",
+            classes: "moj-search__input govuk-!-margin-bottom-6",
             label: {
               text: "Search",
               classes: "govuk-!-font-weight-bold"
@@ -38,7 +38,7 @@
           }) }}
 
           {{ govukButton({
-            classes: "moj-search__button",
+            classes: "moj-search__button govuk-!-margin-bottom-6",
             text: "Search"
           }) }}
         </div>
@@ -115,7 +115,7 @@
 
           {% if rows | length > 0 %}
             {{ mojPagination(pagination) }}
-            <table class="govuk-table">
+            <table class="govuk-table" data-testid="audit-history-table">
               <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
                   <th class="govuk-table__header">NOMIS Id</th>

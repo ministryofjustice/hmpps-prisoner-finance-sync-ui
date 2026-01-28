@@ -88,7 +88,7 @@ const getAuditHistorySingleItem = (requestId: string, httpStatus = 200) =>
     },
   })
 
-const getAuditHistoryMultipleItemItems = (requestId: string, httpStatus = 200) =>
+const getAuditHistoryMultipleItems = (requestId: string, httpStatus = 200) =>
   stubFor({
     request: {
       method: 'GET',
@@ -126,7 +126,7 @@ const getAuditHistoryMultipleItemItems = (requestId: string, httpStatus = 200) =
         first: true,
         last: true,
         number: 0,
-        numberOfElements: 1,
+        numberOfElements: 2,
         pageable: {
           offset: 0,
           pageNumber: 0,
@@ -144,8 +144,8 @@ const getAuditHistoryMultipleItemItems = (requestId: string, httpStatus = 200) =
           sorted: true,
           unsorted: false,
         },
-        totalElements: 1,
-        totalPages: 1,
+        totalElements: 2,
+        totalPages: 0,
       },
     },
   })
@@ -154,5 +154,5 @@ export default {
   stubPing,
   stubGetPayloadDetail: getPayloadDetail,
   stubGetAuditHistorySingleItem: getAuditHistorySingleItem,
-  stubGetAuditHistoryMultipleItemItems: getAuditHistoryMultipleItemItems,
+  stubGetAuditHistoryMultipleItems: getAuditHistoryMultipleItems,
 }
