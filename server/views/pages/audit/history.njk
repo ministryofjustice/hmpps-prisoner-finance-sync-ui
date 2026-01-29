@@ -1,0 +1,158 @@
+{% extends "../../partials/layout.njk" %}
+
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
+{% from "moj/components/search/macro.njk" import mojSearch %}
+{% from "moj/components/filter/macro.njk" import mojFilter %}
+{% from "moj/components/pagination/macro.njk" import mojPagination %}
+
+{% set pageTitle = "Audit History" %}
+{% set mainClasses = "govuk-body" %}
+
+{% block content %}
+
+  <div class="govuk-grid-row audit-history-page">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">NOMIS Sync transaction history</h1>
+
+      <form method="GET" action="/audit">
+        <input type="hidden" name="startDate" value="{{ startDate }}" />
+        <input type="hidden" name="endDate" value="{{ endDate }}" />
+        <div class="moj-search">
+          {{ govukInput({
+            classes: "moj-search__input govuk-!-margin-bottom-6",
+            label: {
+              text: "Search",
+              classes: "govuk-!-font-weight-bold"
+            },
+            hint: {
+              text: "You can search by NOMIS Transaction Id"
+            },
+            id: "legacyTransactionId",
+            name: "legacyTransactionId",
+            value: legacyTransactionId
+          }) }}
+
+          {{ govukButton({
+            classes: "moj-search__button govuk-!-margin-bottom-6",
+            text: "Search"
+          }) }}
+        </div>
+      </form>
+    </div>
+    <div class="govuk-grid-column-full">
+      {% set filterOptionsHtml %}
+
+        {{ mojDatePicker({
+            id: 'startDate',
+            name: 'startDate',
+            leadingZeros: 'true',
+            label: {
+                text: "Request date from",
+                classes: "govuk-label--s"
+            },
+            value: startDate or (startDate | isoDateToDatePickerDate)
+        }) }}
+
+        {{ mojDatePicker({
+            id: 'endDate',
+            name: 'endDate',
+            leadingZeros: 'true',
+            label: {
+                text: "Request date to",
+                classes: "govuk-label--s"
+            },
+            value: endDate or (endDate | isoDateToDatePickerDate)
+        }) }}
+
+        <button class="govuk-button govuk-!-margin-top-7 govuk-!-margin-bottom-0" data-module="govuk-button">
+          Apply filters
+        </button>
+      {% endset %}
+
+      <div class="moj-filter-layout moj-filter-layout__flex govuk-!-margin-bottom-6">
+        <div class="moj-filter-layout__filter moj-filter-layout__flex moj-filter-layout__filter--small govuk-!-display-none-print">
+          <form method="GET">
+            <input type="hidden" name="legacyTransactionId" value="{{ legacyTransactionId }}" />
+            {{ mojFilter({
+                heading: {
+                    text: 'Filter'
+                },
+                attributes: {
+                    'data-filter-start-shown': 'true'
+                },
+                optionsHtml: filterOptionsHtml
+            }) }}
+          </form>
+        </div>
+
+        <div class="moj-filter-layout__content">
+          <div class="moj-action-bar govuk-!-display-none-print">
+              <div class="moj-action-bar__filter moj-action-bar__filter--no-actions"></div>
+          </div>
+
+          {% set rows = [] %}
+          {% for row in payloadSummaryData %}
+            {% set rows = (rows.push({
+              items: [
+                { text: row.legacyTransactionId },
+                { text: row.synchronizedTransactionId },
+                { text: row.caseloadId },
+                { text: row.timestamp },
+                { text: row.requestTypeIdentifier | formatTransactionType},
+                {
+                  html: '<a class="govuk-link" href="/audit/'
+                          + row.requestId
+                          + '">View</a>'
+                }
+              ]
+            }), rows) %}
+          {% endfor %}
+
+          {% if rows | length > 0 %}
+            {{ mojPagination(pagination) }}
+            <table class="govuk-table" data-testid="audit-history-table">
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th class="govuk-table__header">NOMIS Id</th>
+                  <th class="govuk-table__header">Syncronised Transaction Id</th>
+                  <th class="govuk-table__header">Caseload Id</th>
+                  <th class="govuk-table__header">Timestamp</th>
+                  <th class="govuk-table__header">Type</th>
+                  <th class="govuk-table__header">View</th>
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+                {% for row in rows %}
+                  <tr class="govuk-table__row">
+                    {% for cell in row.items %}
+                      <td class="govuk-table__cell">
+                        {% if cell.html %}
+                          {{ cell.html | safe }}
+                        {% else %}
+                          {{ cell.text }}
+                        {% endif %}
+                      </td>
+                    {% endfor %}
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {{ mojPagination(pagination) }}
+          {% else %}
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-8" name="no-results-message">
+                <li>There are no matching NOMIS synced transactions.</li>
+                <li>Try a different search, or change the filters.</li>
+            </ul>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

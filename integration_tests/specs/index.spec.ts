@@ -16,6 +16,6 @@ test.describe('Index Page', () => {
     await expect(indexPage.auditHistoryCard).toContainText('View audit history')
 
     await indexPage.clickAuditHistory()
-    await expect(page).toHaveURL(/\/audit-history/)
+    await expect(page).toHaveURL(/\/audit/)
   })
 })

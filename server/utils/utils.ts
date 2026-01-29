@@ -1,3 +1,5 @@
+import { format, isToday, isTomorrow, isYesterday, parse } from 'date-fns'
+
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
 
@@ -20,4 +22,45 @@ export const initialiseName = (fullName?: string): string | null => {
 
   const array = fullName.split(' ')
   return `${array[0][0]}. ${array.reverse()[0]}`
+}
+
+export const parseDate = (date: string, fromFormat = 'yyyy-MM-dd') => {
+  if (!date) return null
+  return parse(date, fromFormat, new Date())
+}
+
+export const formatDate = (date: unknown, fmt = 'EEEE, d MMMM yyyy', inContextName = false) => {
+  if (!date) return null
+
+  let richDate = date as Date
+  if (typeof date === 'string') {
+    richDate = parseDate(date as string)
+  }
+
+  if (inContextName) {
+    if (isToday(richDate)) {
+      return 'today'
+    }
+    if (isTomorrow(richDate)) {
+      return 'tomorrow'
+    }
+    if (isYesterday(richDate)) {
+      return 'yesterday'
+    }
+  }
+  return format(richDate, fmt)
+}
+
+export const formatTransactionType = (requestTypeIdentifier: string): string => {
+  switch (requestTypeIdentifier) {
+    case 'SyncOffenderTransactionRequest': {
+      return 'Offender'
+    }
+    case 'SyncGeneralLedgerTransactionRequest': {
+      return 'General Ledger'
+    }
+    default: {
+      return 'Unknown'
+    }
+  }
 }
