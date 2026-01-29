@@ -53,6 +53,6 @@ export default class AuditHistoryPage extends AbstractPage {
   }
 
   async clickNextPage(): Promise<void> {
-    await this.pagination.locator('.moj-pagination__item--next a').click()
+    await this.pagination.locator('.govuk-pagination__next a').click()
   }
 }

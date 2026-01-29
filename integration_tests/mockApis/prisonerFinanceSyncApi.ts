@@ -160,7 +160,7 @@ const getAuditHistoryEmpty = (httpStatus = 200) =>
       status: httpStatus,
       headers: { 'Content-Type': 'application/json;charset=UTF-8' },
       jsonBody: {
-        content: [], // Empty Array
+        content: [],
         empty: true,
         totalElements: 0,
         totalPages: 0,
@@ -176,7 +176,7 @@ const getAuditHistoryManyPages = () =>
       method: 'GET',
       urlPath: `/prisoner-finance-sync-api/audit/history`,
       queryParameters: {
-        page: { equalTo: '1' },
+        page: { equalTo: '0' },
         size: { equalTo: '20' },
       },
     },

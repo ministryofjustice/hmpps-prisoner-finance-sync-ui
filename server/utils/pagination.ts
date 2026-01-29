@@ -40,11 +40,9 @@ export default function paginationFromPageResponse(pageData: Page<unknown>, url:
   }
 }
 
-/* MAX_VISIBLE_PAGES (7): If total pages are <= 7, show all of them. */
-const MAX_VISIBLE_PAGES = 7
-
 function getPaginationItems(current: number, total: number, url: URL): NumberedPageLink[] | null {
-  if (total <= MAX_VISIBLE_PAGES) return null
+  // Only hide pagination if there is 1 page or fewer
+  if (total <= 1) return null
 
   const items = calculatePageItems(current, total)
 
@@ -69,6 +67,7 @@ function getPaginationItems(current: number, total: number, url: URL): NumberedP
  * Calculates the list of page numbers and 'dots' (ellipses) to display in the pagination component.
  *
  * The logic is defined by 4 constants:
+ * - MAX_VISIBLE_PAGES (7): If total pages are <= 7, show all of them.
  * - START_EDGE_COUNT (5): If near the start, show the first 5 pages.
  * - END_EDGE_OFFSET (4): If near the end, show the last 5 pages (Total - 4).
  * - PAGES_AROUND_CURRENT (1): In the middle, show current page +/- 1 neighbor.
@@ -86,6 +85,7 @@ function getPaginationItems(current: number, total: number, url: URL): NumberedP
  * 4. Small Result Set (Total = 5):
  * [1, 2, 3, 4, 5]
  */
+const MAX_VISIBLE_PAGES = 7
 const START_EDGE_COUNT = 5
 const END_EDGE_OFFSET = 4
 const PAGES_AROUND_CURRENT = 1
