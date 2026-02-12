@@ -3,6 +3,6 @@ export interface AuditHistorySearchParams {
   legacyTransactionId?: number
   startDate?: string
   endDate?: string
-  page?: number
+  cursor?: string
   size?: number
 }

@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import type { Services } from '../services'
 import { Page } from '../services/auditService'
-import paginationFromPageResponse from '../utils/pagination'
+import paginationFromCursor from '../utils/pagination/cursor'
 
 export default function routes({ auditService, auditHistoryService }: Services): Router {
   const router = Router()
@@ -37,35 +37,26 @@ export default function routes({ auditService, auditHistoryService }: Services):
       correlationId: req.id,
     })
 
-    const { endDate, startDate, prisonId, legacyTransactionId, page } = req.query
+    const { page, cursor, prev, ...filters } = req.query as Record<string, string>
 
-    const searchStartDate = (startDate as string) || null
-    const searchEndDate = (endDate as string) || null
-    const prisonIdStr = prisonId ? String(prisonId) : ''
-    const legacyTransactionIdNumber = legacyTransactionId ? parseInt(legacyTransactionId as string, 10) : null
+    const pageNumber = parseInt(page, 10) || 1
+    const prevCursors = cursor ? prev || '' : ''
 
-    const pageNumber = page ? parseInt(page as string, 10) : 1
-    const safePageNumber = Number.isNaN(pageNumber) || pageNumber < 1 ? 1 : pageNumber
-
-    const payloadSummaryPage = await auditHistoryService.getPayloadSummary({
-      prisonId: prisonIdStr,
-      legacyTransactionId: legacyTransactionIdNumber,
-      startDate: searchStartDate,
-      endDate: searchEndDate,
-      page: safePageNumber - 1,
+    const cursorPage = await auditHistoryService.getMatchingPayloads({
+      ...filters,
+      cursor: cursor || null,
       size: 20,
     })
 
-    const pagination = paginationFromPageResponse(
-      payloadSummaryPage,
-      new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`),
-    )
+    const currentUrl = new URL(req.originalUrl, `${req.protocol}://${req.get('host')}`)
+    const pagination = paginationFromCursor(cursorPage, currentUrl, prevCursors, pageNumber)
 
     return res.render('pages/audit/history', {
-      startDate: searchStartDate,
-      endDate: searchEndDate,
-      legacyTransactionId: legacyTransactionIdNumber ?? '',
-      payloadSummaryData: payloadSummaryPage.content,
+      startDate: filters.startDate || '',
+      endDate: filters.endDate || '',
+      legacyTransactionId: filters.legacyTransactionId || '',
+      prisonId: filters.prisonId || '',
+      payloadSummaryData: cursorPage.content,
       pagination,
     })
   })

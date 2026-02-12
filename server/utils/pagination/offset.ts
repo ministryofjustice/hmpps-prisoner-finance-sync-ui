@@ -1,25 +1,7 @@
-import { Page } from '../interfaces/page'
+import { Page } from '../../interfaces/page'
+import { PaginationViewModel, PageLink, NumberedPageLink } from './types'
 
-type PageLink = {
-  text: string
-  href: string
-}
-
-type NumberedPageLink = {
-  text: string
-  href?: string
-  selected?: boolean
-  type?: 'dots' | 'number'
-}
-
-type PageViewModel = {
-  results: { from: number; to: number; count: number }
-  previous: PageLink | null
-  next: PageLink | null
-  items: NumberedPageLink[] | null
-}
-
-export default function paginationFromPageResponse(pageData: Page<unknown>, url: URL): PageViewModel {
+export default function paginationFromPageResponse(pageData: Page<unknown>, url: URL): PaginationViewModel {
   const currentPage = pageData.number + 1
   const pageSize = pageData.size
   const { totalElements } = pageData

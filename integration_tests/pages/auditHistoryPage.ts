@@ -31,7 +31,7 @@ export default class AuditHistoryPage extends AbstractPage {
     this.endDateInput = page.locator('#endDate')
     this.applyFiltersButton = page.getByRole('button', { name: 'Apply filters' }).first()
     this.tableRows = page.locator('.govuk-table__body .govuk-table__row')
-    this.pagination = page.locator('.moj-pagination').first()
+    this.pagination = page.locator('.cursor-navigation').first()
     this.noResultsMessage = page.locator('ul[name="no-results-message"]')
   }
 
@@ -53,6 +53,10 @@ export default class AuditHistoryPage extends AbstractPage {
   }
 
   async clickNextPage(): Promise<void> {
-    await this.pagination.locator('.govuk-pagination__next a').click()
+    await this.pagination.locator('a[rel="next"]').click()
+  }
+
+  async clickPreviousPage(): Promise<void> {
+    await this.pagination.locator('a[rel="prev"]').click()
   }
 }

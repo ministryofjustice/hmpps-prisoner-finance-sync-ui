@@ -2,6 +2,7 @@ import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients
 import PrisonerFinanceSyncApiClient from './prisonerFinanceSyncApiClient'
 import { NomisSyncPayloadDetail } from '../interfaces/nomisSyncPayloadDetail'
 import { NomisSyncPayloadSummary } from '../interfaces/nomisSyncPayloadSummary'
+import { CursorPage } from '../interfaces/cursorPage'
 
 describe('PrisonerFinanceSyncApiClient', () => {
   let client: PrisonerFinanceSyncApiClient
@@ -48,23 +49,22 @@ describe('PrisonerFinanceSyncApiClient', () => {
   })
 
   describe('getPayloadSummary', () => {
-    const mockPageResponse = {
+    const mockCursorPageResponse: CursorPage<NomisSyncPayloadSummary> = {
       content: [] as NomisSyncPayloadSummary[],
       totalElements: 0,
-      totalPages: 0,
+      nextCursor: null,
       size: 20,
-      number: 0,
     }
 
     it('should call the API with ALL parameters', async () => {
-      const getSpy = jest.spyOn(client, 'get').mockResolvedValue(mockPageResponse)
+      const getSpy = jest.spyOn(client, 'get').mockResolvedValue(mockCursorPageResponse)
 
       await client.getPayloadSummary({
         prisonId: 'MDI',
         legacyTransactionId: 12345,
         startDate: '2023-01-01',
         endDate: '2023-01-31',
-        page: 2,
+        cursor: 'some-cursor-token',
         size: 10,
       })
 
@@ -76,7 +76,7 @@ describe('PrisonerFinanceSyncApiClient', () => {
             legacyTransactionId: '12345',
             startDate: '2023-01-01',
             endDate: '2023-01-31',
-            page: '2',
+            cursor: 'some-cursor-token',
             size: '10',
           },
         },
@@ -85,7 +85,7 @@ describe('PrisonerFinanceSyncApiClient', () => {
     })
 
     it('should call the API with defaults (skipping optional args)', async () => {
-      const getSpy = jest.spyOn(client, 'get').mockResolvedValue(mockPageResponse)
+      const getSpy = jest.spyOn(client, 'get').mockResolvedValue(mockCursorPageResponse)
 
       await client.getPayloadSummary({})
 
@@ -93,7 +93,6 @@ describe('PrisonerFinanceSyncApiClient', () => {
         {
           path: '/audit/history',
           query: {
-            page: '0',
             size: '20',
           },
         },
@@ -102,7 +101,7 @@ describe('PrisonerFinanceSyncApiClient', () => {
     })
 
     it('should call the API with ONLY legacyTransactionId', async () => {
-      const getSpy = jest.spyOn(client, 'get').mockResolvedValue(mockPageResponse)
+      const getSpy = jest.spyOn(client, 'get').mockResolvedValue(mockCursorPageResponse)
 
       await client.getPayloadSummary({ legacyTransactionId: 9999 })
 
@@ -111,7 +110,6 @@ describe('PrisonerFinanceSyncApiClient', () => {
           path: '/audit/history',
           query: {
             legacyTransactionId: '9999',
-            page: '0',
             size: '20',
           },
         },
@@ -120,7 +118,7 @@ describe('PrisonerFinanceSyncApiClient', () => {
     })
 
     it('should call the API with ONLY prisonId', async () => {
-      const getSpy = jest.spyOn(client, 'get').mockResolvedValue(mockPageResponse)
+      const getSpy = jest.spyOn(client, 'get').mockResolvedValue(mockCursorPageResponse)
 
       await client.getPayloadSummary({ prisonId: 'MDI' })
 
@@ -129,7 +127,6 @@ describe('PrisonerFinanceSyncApiClient', () => {
           path: '/audit/history',
           query: {
             prisonId: 'MDI',
-            page: '0',
             size: '20',
           },
         },
@@ -138,7 +135,7 @@ describe('PrisonerFinanceSyncApiClient', () => {
     })
 
     it('should call the API with a date range', async () => {
-      const getSpy = jest.spyOn(client, 'get').mockResolvedValue(mockPageResponse)
+      const getSpy = jest.spyOn(client, 'get').mockResolvedValue(mockCursorPageResponse)
 
       await client.getPayloadSummary({ startDate: '2023-01-01', endDate: '2023-02-01' })
 
@@ -148,7 +145,6 @@ describe('PrisonerFinanceSyncApiClient', () => {
           query: {
             startDate: '2023-01-01',
             endDate: '2023-02-01',
-            page: '0',
             size: '20',
           },
         },
@@ -157,7 +153,7 @@ describe('PrisonerFinanceSyncApiClient', () => {
     })
 
     it('should call the API with only a start date', async () => {
-      const getSpy = jest.spyOn(client, 'get').mockResolvedValue(mockPageResponse)
+      const getSpy = jest.spyOn(client, 'get').mockResolvedValue(mockCursorPageResponse)
 
       await client.getPayloadSummary({ startDate: '2023-01-01' })
 
@@ -166,7 +162,6 @@ describe('PrisonerFinanceSyncApiClient', () => {
           path: '/audit/history',
           query: {
             startDate: '2023-01-01',
-            page: '0',
             size: '20',
           },
         },
@@ -175,7 +170,7 @@ describe('PrisonerFinanceSyncApiClient', () => {
     })
 
     it('should call the API with only an end date', async () => {
-      const getSpy = jest.spyOn(client, 'get').mockResolvedValue(mockPageResponse)
+      const getSpy = jest.spyOn(client, 'get').mockResolvedValue(mockCursorPageResponse)
 
       await client.getPayloadSummary({ endDate: '2023-02-02' })
 
@@ -184,7 +179,6 @@ describe('PrisonerFinanceSyncApiClient', () => {
           path: '/audit/history',
           query: {
             endDate: '2023-02-02',
-            page: '0',
             size: '20',
           },
         },

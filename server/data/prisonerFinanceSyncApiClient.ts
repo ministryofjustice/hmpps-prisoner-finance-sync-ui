@@ -4,7 +4,7 @@ import config from '../config'
 import logger from '../../logger'
 import { NomisSyncPayloadDetail } from '../interfaces/nomisSyncPayloadDetail'
 import { NomisSyncPayloadSummary } from '../interfaces/nomisSyncPayloadSummary'
-import { Page } from '../interfaces/page'
+import { CursorPage } from '../interfaces/cursorPage'
 import { AuditHistorySearchParams } from '../interfaces/auditHistorySearchParams'
 
 export default class PrisonerFinanceSyncApiClient extends RestClient {
@@ -21,27 +21,13 @@ export default class PrisonerFinanceSyncApiClient extends RestClient {
     )
   }
 
-  async getPayloadSummary({
-    prisonId,
-    legacyTransactionId,
-    startDate,
-    endDate,
-    page = 0,
-    size = 20,
-  }: AuditHistorySearchParams = {}): Promise<Page<NomisSyncPayloadSummary>> {
-    return this.get(
-      {
-        path: `/audit/history`,
-        query: {
-          ...(prisonId && { prisonId }),
-          ...(legacyTransactionId && { legacyTransactionId: legacyTransactionId.toString() }),
-          ...(startDate && { startDate }),
-          ...(endDate && { endDate }),
-          page: page.toString(),
-          size: size.toString(),
-        },
-      },
-      asSystem(),
-    )
+  async getPayloadSummary(params: AuditHistorySearchParams): Promise<CursorPage<NomisSyncPayloadSummary>> {
+    const query = {
+      ...params,
+      legacyTransactionId: params.legacyTransactionId?.toString(),
+      size: (params.size || 20).toString(),
+    }
+
+    return this.get({ path: `/audit/history`, query }, asSystem())
   }
 }
