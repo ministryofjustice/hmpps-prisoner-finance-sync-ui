@@ -7,7 +7,7 @@
 {% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
 {% from "moj/components/search/macro.njk" import mojSearch %}
 {% from "moj/components/filter/macro.njk" import mojFilter %}
-{% from "moj/components/pagination/macro.njk" import mojPagination %}
+{% from "../../components/cursor-pagination.njk" import cursorPagination %}
 
 {% set pageTitle = "Audit History" %}
 {% set mainClasses = "govuk-body" %}
@@ -114,7 +114,7 @@
           {% endfor %}
 
           {% if rows | length > 0 %}
-            {{ mojPagination(pagination) }}
+            {{ cursorPagination(pagination) }}
             <table class="govuk-table" data-testid="audit-history-table">
               <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
@@ -142,7 +142,7 @@
                 {% endfor %}
               </tbody>
             </table>
-            {{ mojPagination(pagination) }}
+            {{ cursorPagination(pagination) }}
           {% else %}
             <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-8" name="no-results-message">
                 <li>There are no matching NOMIS synced transactions.</li>

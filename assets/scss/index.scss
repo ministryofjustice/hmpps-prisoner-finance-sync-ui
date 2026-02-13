@@ -11,5 +11,6 @@ $govuk-page-width: $moj-page-width;
 @import './components/card';
 @import './components/json-viewer';
 @import './components/audit-history';
+@import './components/cursor-pagination';
 @import './overrides/local';
 

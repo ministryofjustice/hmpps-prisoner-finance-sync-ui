@@ -2,13 +2,13 @@ import PrisonerFinanceSyncApiClient from '../data/prisonerFinanceSyncApiClient'
 import AuditHistoryService from './auditHistoryService'
 import { NomisSyncPayloadDetail } from '../interfaces/nomisSyncPayloadDetail'
 import { NomisSyncPayloadSummary } from '../interfaces/nomisSyncPayloadSummary'
-import { Page } from '../interfaces/page'
+import { CursorPage } from '../interfaces/cursorPage'
 import logger from '../../logger'
 import { parseDatePickerStringToIsoString } from '../utils/datePickerUtils'
 
 jest.mock('../data/prisonerFinanceSyncApiClient')
 jest.mock('../../logger')
-jest.mock('../utils/datePickerUtils') // Mock the date parser
+jest.mock('../utils/datePickerUtils')
 
 describe('AuditHistoryService', () => {
   const apiClient = new PrisonerFinanceSyncApiClient(null) as jest.Mocked<PrisonerFinanceSyncApiClient>
@@ -78,47 +78,45 @@ describe('AuditHistoryService', () => {
   })
 
   describe('getPayloadSummary', () => {
-    const mockPageResponse: Page<NomisSyncPayloadSummary> = {
+    const mockCursorPageResponse: CursorPage<NomisSyncPayloadSummary> = {
       content: [],
       totalElements: 0,
-      totalPages: 0,
-      numberOfElements: 0,
+      nextCursor: null,
       size: 20,
-      number: 0,
     }
 
     it('should convert UI dates to ISO and call the API with correct params', async () => {
-      apiClient.getPayloadSummary.mockResolvedValue(mockPageResponse)
+      apiClient.getPayloadSummary.mockResolvedValue(mockCursorPageResponse)
 
       const inputParams = {
         prisonId: 'MDI',
         legacyTransactionId: 12345,
         startDate: '01/01/2023',
         endDate: '31/01/2023',
-        page: 2,
+        cursor: 'abc-123',
         size: 50,
       }
 
-      await service.getPayloadSummary(inputParams)
+      await service.getMatchingPayloads(inputParams)
 
       expect(apiClient.getPayloadSummary).toHaveBeenCalledWith({
         prisonId: 'MDI',
         legacyTransactionId: 12345,
         startDate: '2023-01-01',
         endDate: '2023-01-31',
-        page: 2,
+        cursor: 'abc-123',
         size: 50,
       })
     })
 
-    it('should call the API client with empty parameters when defaults are used', async () => {
-      apiClient.getPayloadSummary.mockResolvedValue(mockPageResponse)
+    it('should call the API client with null dates when defaults are used', async () => {
+      apiClient.getPayloadSummary.mockResolvedValue(mockCursorPageResponse)
 
-      await service.getPayloadSummary({})
+      await service.getMatchingPayloads({})
 
       expect(apiClient.getPayloadSummary).toHaveBeenCalledWith({
-        startDate: undefined,
-        endDate: undefined,
+        startDate: null,
+        endDate: null,
       })
     })
   })

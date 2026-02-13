@@ -91,5 +91,24 @@ test.describe('Audit History Page', () => {
     await auditPage.clickNextPage()
 
     await expect(page).toHaveURL(/.*page=2/)
+    await expect(page).toHaveURL(/.*cursor=cursor-for-page-2/)
+  })
+
+  test('Pagination navigates backwards using the previous link', async ({ page }) => {
+    await prisonerFinanceSyncApi.stubGetAuditHistoryManyPages()
+    await prisonerFinanceSyncApi.stubGetAuditHistoryPageTwo()
+
+    await login(page)
+    await page.goto(`/audit/`)
+    const auditPage = await AuditHistoryPage.verifyOnPage(page)
+
+    await auditPage.clickNextPage()
+    await expect(page).toHaveURL(/.*page=2/)
+    await expect(page).toHaveURL(/.*cursor=cursor-for-page-2/)
+
+    await auditPage.clickPreviousPage()
+
+    await expect(page).toHaveURL(/.*page=1/)
+    await expect(page).not.toHaveURL(/.*cursor=/)
   })
 })

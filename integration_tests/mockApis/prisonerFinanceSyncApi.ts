@@ -41,7 +41,6 @@ const getAuditHistorySingleItem = (requestId: string, httpStatus = 200) =>
       method: 'GET',
       urlPath: `/prisoner-finance-sync-api/audit/history`,
       queryParameters: {
-        page: { equalTo: '0' },
         size: { equalTo: '20' },
       },
     },
@@ -60,30 +59,9 @@ const getAuditHistorySingleItem = (requestId: string, httpStatus = 200) =>
             transactionTimestamp: '2025-06-01T23:08:17Z',
           },
         ],
-        empty: false,
-        first: true,
-        last: true,
-        number: 0,
-        numberOfElements: 1,
-        pageable: {
-          offset: 0,
-          pageNumber: 0,
-          pageSize: 20,
-          paged: true,
-          sort: {
-            empty: false,
-            sorted: true,
-            unsorted: false,
-          },
-        },
-        size: 20,
-        sort: {
-          empty: false,
-          sorted: true,
-          unsorted: false,
-        },
         totalElements: 1,
-        totalPages: 1,
+        nextCursor: null,
+        size: 20,
       },
     },
   })
@@ -94,7 +72,6 @@ const getAuditHistoryMultipleItems = (requestId: string, httpStatus = 200) =>
       method: 'GET',
       urlPath: `/prisoner-finance-sync-api/audit/history`,
       queryParameters: {
-        page: { equalTo: '0' },
         size: { equalTo: '20' },
       },
     },
@@ -122,30 +99,9 @@ const getAuditHistoryMultipleItems = (requestId: string, httpStatus = 200) =>
             transactionTimestamp: '2025-06-02T23:08:17Z',
           },
         ],
-        empty: false,
-        first: true,
-        last: true,
-        number: 0,
-        numberOfElements: 2,
-        pageable: {
-          offset: 0,
-          pageNumber: 0,
-          pageSize: 20,
-          paged: true,
-          sort: {
-            empty: false,
-            sorted: true,
-            unsorted: false,
-          },
-        },
-        size: 20,
-        sort: {
-          empty: false,
-          sorted: true,
-          unsorted: false,
-        },
         totalElements: 2,
-        totalPages: 1,
+        nextCursor: null,
+        size: 20,
       },
     },
   })
@@ -161,11 +117,9 @@ const getAuditHistoryEmpty = (httpStatus = 200) =>
       headers: { 'Content-Type': 'application/json;charset=UTF-8' },
       jsonBody: {
         content: [],
-        empty: true,
         totalElements: 0,
-        totalPages: 0,
+        nextCursor: null,
         size: 20,
-        number: 0,
       },
     },
   })
@@ -176,7 +130,6 @@ const getAuditHistoryManyPages = () =>
       method: 'GET',
       urlPath: `/prisoner-finance-sync-api/audit/history`,
       queryParameters: {
-        page: { equalTo: '0' },
         size: { equalTo: '20' },
       },
     },
@@ -196,11 +149,30 @@ const getAuditHistoryManyPages = () =>
           },
         ],
         totalElements: 25,
-        totalPages: 2,
+        nextCursor: 'cursor-for-page-2',
         size: 20,
-        number: 0,
-        first: true,
-        last: false,
+      },
+    },
+  })
+
+const getAuditHistoryPageTwo = () =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPath: `/prisoner-finance-sync-api/audit/history`,
+      queryParameters: {
+        cursor: { equalTo: 'cursor-for-page-2' },
+        size: { equalTo: '20' },
+      },
+    },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        content: [{}],
+        totalElements: 25,
+        nextCursor: 'cursor-for-page-3',
+        size: 20,
       },
     },
   })
@@ -212,4 +184,5 @@ export default {
   stubGetAuditHistoryMultipleItems: getAuditHistoryMultipleItems,
   stubGetAuditHistoryEmpty: getAuditHistoryEmpty,
   stubGetAuditHistoryManyPages: getAuditHistoryManyPages,
+  stubGetAuditHistoryPageTwo: getAuditHistoryPageTwo,
 }

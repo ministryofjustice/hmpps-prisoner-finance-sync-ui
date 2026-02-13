@@ -1,0 +1,45 @@
+.cursor-navigation {
+  margin: govuk-spacing(6) 0;
+  clear: both;
+
+  &__links {
+    display: flex;
+    gap: govuk-spacing(6);
+    margin-bottom: govuk-spacing(1);
+    align-items: center;
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      font-weight: bold;
+      text-decoration: none;
+      white-space: nowrap;
+
+      &:hover {
+        text-decoration: underline;
+      }
+
+      .govuk-pagination__icon {
+        fill: currentColor;
+        flex-shrink: 0;
+        width: 15px;
+        height: 13px;
+        display: block;
+      }
+
+      .govuk-pagination__icon--prev {
+        margin-right: govuk-spacing(2);
+      }
+
+      .govuk-pagination__icon--next {
+        margin-left: govuk-spacing(2);
+      }
+    }
+  }
+
+  &__summary {
+    margin: 0;
+    @include govuk-typography-common;
+    @include govuk-typography-weight-regular;
+  }
+}

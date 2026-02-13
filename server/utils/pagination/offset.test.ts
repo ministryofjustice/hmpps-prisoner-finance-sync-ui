@@ -1,5 +1,5 @@
-import paginationFromPageResponse from './pagination'
-import { Page } from '../interfaces/page'
+import paginationFromPageResponse from './offset'
+import { Page } from '../../interfaces/page'
 
 describe('paginationFromPageResponse', () => {
   const baseUrl = new URL('http://localhost/search')
