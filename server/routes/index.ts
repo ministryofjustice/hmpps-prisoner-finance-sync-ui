@@ -42,8 +42,10 @@ export default function routes({ auditService, auditHistoryService }: Services):
     const pageNumber = parseInt(page, 10) || 1
     const prevCursors = cursor ? prev || '' : ''
 
+    const apiFilters = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== ''))
+
     const cursorPage = await auditHistoryService.getMatchingPayloads({
-      ...filters,
+      ...apiFilters,
       cursor: cursor || null,
       size: 20,
     })

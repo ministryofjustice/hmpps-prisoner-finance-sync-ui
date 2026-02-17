@@ -7,7 +7,7 @@ import nodeListForEach from './utils'
 govukFrontend.initAll()
 mojFrontend.initAll()
 
-const $filters = document.querySelectorAll('[data-module="moj-filter"]')
+const $filters = document.querySelectorAll('[data-module="list-filter"]')
 nodeListForEach($filters, $filter => {
   // eslint-disable-next-line no-new
   new ListFilter($filter)
