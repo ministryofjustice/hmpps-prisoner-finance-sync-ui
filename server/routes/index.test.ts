@@ -86,9 +86,10 @@ describe('GET /audit', () => {
 
         expect($('h1').text()).toContain('NOMIS Sync transaction history')
 
-        expect($('[name="startDate"]').val()).toEqual('')
-        expect($('[name="endDate"]').val()).toEqual('')
-        expect($('[name="legacyTransactionId"]').val()).toEqual('')
+        expect($('#startDate').val()).toBeFalsy()
+        expect($('#endDate').val()).toBeFalsy()
+        expect($('#legacyTransactionId').val()).toEqual('')
+        expect($('#prisonId').val()).toEqual('')
 
         const tableData = $('tbody tr')
           .map((i, row) => {

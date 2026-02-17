@@ -68,6 +68,18 @@ test.describe('Audit History Page', () => {
     await expect(page).toHaveURL(/.*legacyTransactionId=12345/)
   })
 
+  test('Filter by Prison ID updates query parameters', async ({ page }) => {
+    await prisonerFinanceSyncApi.stubGetAuditHistorySingleItem(requestId)
+    await login(page)
+    await page.goto(`/audit/`)
+
+    const auditPage = await AuditHistoryPage.verifyOnPage(page)
+
+    await auditPage.filterByPrisonId('PRISON')
+
+    await expect(page).toHaveURL(/.*prisonId=PRISON/)
+  })
+
   test('Displays "No results" message when API returns empty', async ({ page }) => {
     await prisonerFinanceSyncApi.stubGetAuditHistoryEmpty()
 

@@ -4,9 +4,9 @@ import AbstractPage from './abstractPage'
 export default class AuditHistoryPage extends AbstractPage {
   readonly header: Locator
 
-  readonly searchInput: Locator
+  readonly legacyTransactionIdInput: Locator
 
-  readonly searchButton: Locator
+  readonly prisonIdInput: Locator
 
   readonly startDateInput: Locator
 
@@ -24,9 +24,8 @@ export default class AuditHistoryPage extends AbstractPage {
     super(page)
     this.header = page.locator('h1', { hasText: 'NOMIS Sync transaction history' })
 
-    this.searchInput = page.locator('#legacyTransactionId')
-    this.searchButton = page.getByRole('button', { name: 'Search' })
-
+    this.legacyTransactionIdInput = page.locator('#legacyTransactionId')
+    this.prisonIdInput = page.locator('#prisonId')
     this.startDateInput = page.locator('#startDate')
     this.endDateInput = page.locator('#endDate')
     this.applyFiltersButton = page.getByRole('button', { name: 'Apply filters' }).first()
@@ -48,8 +47,13 @@ export default class AuditHistoryPage extends AbstractPage {
   }
 
   async searchByTransactionId(id: string): Promise<void> {
-    await this.searchInput.fill(id)
-    await this.searchButton.click()
+    await this.legacyTransactionIdInput.fill(id)
+    await this.applyFiltersButton.click()
+  }
+
+  async filterByPrisonId(id: string): Promise<void> {
+    await this.prisonIdInput.fill(id)
+    await this.applyFiltersButton.click()
   }
 
   async clickNextPage(): Promise<void> {
