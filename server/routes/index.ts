@@ -3,7 +3,7 @@ import type { Services } from '../services'
 import { Page } from '../services/auditService'
 import paginationFromCursor from '../utils/pagination/cursor'
 
-export default function routes({ auditService, auditHistoryService }: Services): Router {
+export default function routes({ auditService, auditHistoryService, prisonerTransactionService }: Services): Router {
   const router = Router()
 
   router.get('/', async (req, res, next) => {
@@ -60,6 +60,23 @@ export default function routes({ auditService, auditHistoryService }: Services):
       prisonId: filters.prisonId || '',
       payloadSummaryData: cursorPage.content,
       pagination,
+    })
+  })
+
+  router.get('/prisoner/:prisonerNumber/transactions', async (req, res, next) => {
+    const { prisonerNumber } = req.params
+    const { accountType } = req.query
+
+    const selectedAccountTypes = [accountType].flat().filter(Boolean) as string[]
+
+    const transactions = await prisonerTransactionService.getTransactions(prisonerNumber, selectedAccountTypes)
+
+    return res.render('pages/transactions/index', {
+      prisonerNumber,
+      transactions,
+      filters: {
+        accountType: selectedAccountTypes.reduce((acc, type) => ({ ...acc, [type]: true }), {}),
+      },
     })
   })
 

@@ -1,0 +1,142 @@
+{% extends "../../partials/layout.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
+{% set pageTitle = "Prisoner Transactions" %}
+
+{% block content %}
+  <div class="prisoner-transactions-page">
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">
+          <span class="govuk-caption-l">Prisoner finance</span>
+          Transaction history
+        </h1>
+      </div>
+    </div>
+
+    <div class="moj-filter-layout">
+
+      <div class="moj-filter-layout__filter">
+        <div class="moj-filter">
+          <div class="moj-filter__header">
+            <div class="moj-filter__header-title">
+              <h2 class="govuk-heading-m">Filter</h2>
+            </div>
+            <div class="moj-filter__header-action"></div>
+          </div>
+
+          <div class="moj-filter__content">
+            {% if selectedFilters.length %}
+              <div class="moj-filter__selected">
+                <div class="moj-filter__selected-heading">
+                  <div class="moj-filter__heading-title">
+                    <h2 class="govuk-heading-m">Selected filters</h2>
+                  </div>
+                  <div class="moj-filter__heading-action">
+                    <p><a class="govuk-link govuk-link--no-visited-state" href="/prisoner/{{ prisonerNumber }}/transactions">Clear filters</a></p>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+
+            <form method="GET">
+              <div class="moj-filter__options">
+
+                {{ govukCheckboxes({
+                  idPrefix: "accountType",
+                  name: "accountType",
+                  classes: "govuk-checkboxes--small",
+                  fieldset: {
+                    legend: { text: "Account type", classes: "govuk-fieldset__legend--s" }
+                  },
+                  items: [
+                    { value: "Spends", text: "Spends", checked: 'Spends' in filters.accountType },
+                    { value: "Cash", text: "Cash / Private", checked: 'Cash' in filters.accountType },
+                    { value: "Savings", text: "Savings", checked: 'Savings' in filters.accountType }
+                  ]
+                }) }}
+
+                {{ govukButton({
+                  text: "Apply filters",
+                  classes: "govuk-button--blue govuk-!-margin-top-4"
+                }) }}
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="moj-filter-layout__content">
+
+        <div class="moj-action-bar">
+          <div class="moj-action-bar__filter"></div>
+        </div>
+
+        <table class="govuk-table" data-module="moj-sortable-table">
+          <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header" aria-sort="descending">Date</th>
+            <th scope="col" class="govuk-table__header">Description</th>
+            <th scope="col" class="govuk-table__header">Location</th>
+            <th scope="col" class="govuk-table__header">Type</th>
+
+            <th scope="col" class="govuk-table__header govuk-table__header--numeric">Money in</th>
+            <th scope="col" class="govuk-table__header govuk-table__header--numeric">Money out</th>
+            <th scope="col" class="govuk-table__header govuk-table__header--numeric">Balance</th>
+          </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+          {% for row in transactions %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">{{ row.date }}</td>
+              <td class="govuk-table__cell">{{ row.description }}</td>
+              <td class="govuk-table__cell">{{ row.location }}</td>
+              <td class="govuk-table__cell">
+                {# Case-insensitive check just in case, or match Service data strictly #}
+                {% if row.account == 'Spends' %}
+                  <strong class="govuk-tag govuk-tag--blue">Spends</strong>
+                  {% elif row.account == 'Savings' %}
+                  <strong class="govuk-tag govuk-tag--green">Savings</strong>
+                {% else %}
+                  <strong class="govuk-tag govuk-tag--grey">Cash</strong>
+                {% endif %}
+              </td>
+
+              <td class="govuk-table__cell govuk-table__cell--numeric">
+                {% if row.credit > 0 %}
+                  {# APPLIED FIXED(2) HERE #}
+                  £{{ row.credit | fixed(2) }}
+                {% else %}
+                  <span class="govuk-hint">£0.00</span>
+                {% endif %}
+              </td>
+
+              <td class="govuk-table__cell govuk-table__cell--numeric">
+                {% if row.debit > 0 %}
+                  -£{{ row.debit | fixed(2) }}
+                {% else %}
+                  <span class="govuk-hint">£0.00</span>
+                {% endif %}
+              </td>
+
+              <td class="govuk-table__cell govuk-table__cell--numeric">
+                <strong>£{{ row.currentBalance | fixed(2) }}</strong>
+              </td>
+            </tr>
+          {% else %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell" colspan="7">
+                <p class="govuk-body">No transactions found for the selected criteria.</p>
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+{% endblock %}

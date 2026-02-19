@@ -45,4 +45,9 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('isoDateToDatePickerDate', isoDateToDatePickerDate)
 
   njkEnv.addFilter('formatTransactionType', formatTransactionType)
+
+  njkEnv.addFilter('fixed', (num: number, length: number) => {
+    if (num === null || num === undefined) return ''
+    return Number(num).toFixed(length)
+  })
 }
