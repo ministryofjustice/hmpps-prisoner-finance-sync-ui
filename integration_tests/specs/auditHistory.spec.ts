@@ -89,7 +89,7 @@ test.describe('Audit History Page', () => {
 
     await auditPage.filterByTransactionType('ADV')
 
-    await expect(page).toHaveURL(/.*transactionType=ADV/)
+    await expect(page).toHaveURL(/.*transactionType=ADV.*/)
   })
 
   test('Displays "No results" message when API returns empty', async ({ page }) => {
