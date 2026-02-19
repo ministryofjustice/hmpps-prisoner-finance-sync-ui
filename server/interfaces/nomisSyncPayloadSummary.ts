@@ -1,5 +1,6 @@
 export interface NomisSyncPayloadSummary {
   legacyTransactionId?: number
+  transactionType: string
   synchronizedTransactionId: string
   caseloadId: string
   timestamp: string

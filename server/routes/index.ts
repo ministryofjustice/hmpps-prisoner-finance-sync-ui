@@ -56,6 +56,7 @@ export default function routes({ auditService, auditHistoryService }: Services):
     return res.render('pages/audit/history', {
       startDate: filters.startDate || '',
       endDate: filters.endDate || '',
+      transactionType: filters.transactionType || '',
       legacyTransactionId: filters.legacyTransactionId || '',
       prisonId: filters.prisonId || '',
       payloadSummaryData: cursorPage.content,
