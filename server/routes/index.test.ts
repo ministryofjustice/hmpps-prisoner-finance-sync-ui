@@ -107,8 +107,7 @@ describe('GET /audit', () => {
         expect(tableData).toEqual([
           [
             mockPayloadSummary.content[0].legacyTransactionId.toString(),
-            mockPayloadSummary.content[0].transactionType.toString(),
-            mockPayloadSummary.content[0].synchronizedTransactionId,
+            mockPayloadSummary.content[0].transactionType,
             mockPayloadSummary.content[0].caseloadId,
             mockPayloadSummary.content[0].timestamp,
             formatTransactionType(mockPayloadSummary.content[0].requestTypeIdentifier),
