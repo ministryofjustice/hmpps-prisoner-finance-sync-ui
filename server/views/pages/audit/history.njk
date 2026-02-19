@@ -39,6 +39,13 @@
                 }) }}
 
                 {{ govukInput({
+                  id: "transactionType",
+                  name: "transactionType",
+                  label: { text: "Transaction Type", classes: "govuk-label--s" },
+                  value: transactionType
+                }) }}
+
+                {{ govukInput({
                   id: "prisonId",
                   name: "prisonId",
                   label: { text: "Prison ID", classes: "govuk-label--s" },
@@ -88,7 +95,7 @@
             <thead class="govuk-table__head">
             <tr class="govuk-table__row">
               <th class="govuk-table__header">NOMIS Id</th>
-              <th class="govuk-table__header">Syncronised Transaction Id</th>
+              <th class="govuk-table__header">Transaction Type</th>
               <th class="govuk-table__header">Prison Id</th>
               <th class="govuk-table__header">Timestamp</th>
               <th class="govuk-table__header">Type</th>
@@ -99,7 +106,7 @@
             {% for row in payloadSummaryData %}
               <tr class="govuk-table__row">
                 <td class="govuk-table__cell">{{ row.legacyTransactionId }}</td>
-                <td class="govuk-table__cell">{{ row.synchronizedTransactionId }}</td>
+                <td class="govuk-table__cell">{{ row.transactionType }}</td>
                 <td class="govuk-table__cell">{{ row.caseloadId }}</td>
                 <td class="govuk-table__cell">{{ row.timestamp }}</td>
                 <td class="govuk-table__cell">{{ row.requestTypeIdentifier | formatTransactionType }}</td>

@@ -6,6 +6,8 @@ export default class AuditHistoryPage extends AbstractPage {
 
   readonly legacyTransactionIdInput: Locator
 
+  readonly transactionTypeInput: Locator
+
   readonly prisonIdInput: Locator
 
   readonly startDateInput: Locator
@@ -26,6 +28,7 @@ export default class AuditHistoryPage extends AbstractPage {
 
     this.legacyTransactionIdInput = page.locator('#legacyTransactionId')
     this.prisonIdInput = page.locator('#prisonId')
+    this.transactionTypeInput = page.locator('#transactionType')
     this.startDateInput = page.locator('#startDate')
     this.endDateInput = page.locator('#endDate')
     this.applyFiltersButton = page.getByRole('button', { name: 'Apply filters' }).first()
@@ -53,6 +56,11 @@ export default class AuditHistoryPage extends AbstractPage {
 
   async filterByPrisonId(id: string): Promise<void> {
     await this.prisonIdInput.fill(id)
+    await this.applyFiltersButton.click()
+  }
+
+  async filterByTransactionType(transactionType: string): Promise<void> {
+    await this.transactionTypeInput.fill(transactionType)
     await this.applyFiltersButton.click()
   }
 

@@ -53,6 +53,7 @@ describe('GET /audit', () => {
     content: [
       {
         legacyTransactionId: 12345,
+        transactionType: '',
         synchronizedTransactionId: randomUUID().toString(),
         caseloadId: 'BWI',
         timestamp: new Date().toISOString(),
@@ -88,6 +89,7 @@ describe('GET /audit', () => {
 
         expect($('#startDate').val()).toBeFalsy()
         expect($('#endDate').val()).toBeFalsy()
+        expect($('#transactionType').val()).toBeFalsy()
         expect($('#legacyTransactionId').val()).toEqual('')
         expect($('#prisonId').val()).toEqual('')
 
@@ -105,7 +107,7 @@ describe('GET /audit', () => {
         expect(tableData).toEqual([
           [
             mockPayloadSummary.content[0].legacyTransactionId.toString(),
-            mockPayloadSummary.content[0].synchronizedTransactionId,
+            mockPayloadSummary.content[0].transactionType,
             mockPayloadSummary.content[0].caseloadId,
             mockPayloadSummary.content[0].timestamp,
             formatTransactionType(mockPayloadSummary.content[0].requestTypeIdentifier),
