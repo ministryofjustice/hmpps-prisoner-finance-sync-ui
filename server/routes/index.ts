@@ -13,5 +13,22 @@ export default function routes(services: Services): Router {
   router.get('/audit', auditController.history)
   router.get('/audit/:requestId', auditController.detail)
 
+  router.get('/prisoner/:prisonerNumber/transactions', async (req, res, next) => {
+    const { prisonerNumber } = req.params
+    const { accountType } = req.query
+
+    const selectedAccountTypes = [accountType].flat().filter(Boolean) as string[]
+
+    const transactions = await services.prisonerTransactionService.getTransactions(prisonerNumber, selectedAccountTypes)
+
+    return res.render('pages/transactions/index', {
+      prisonerNumber,
+      transactions,
+      filters: {
+        accountType: selectedAccountTypes.reduce((acc, type) => ({ ...acc, [type]: true }), {}),
+      },
+    })
+  })
+
   return router
 }
