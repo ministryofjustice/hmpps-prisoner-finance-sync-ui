@@ -131,6 +131,12 @@ for the in-memory DB used by Auth
 - `npm run lint` runs `eslint`.
 - `npm run typecheck` runs the TypeScript compiler `tsc`.
 
+### Run all tests
+
+the script `./run_tests.sh` setup and run all unit and integration tests.
+
+For a manual setup follow the next 2 sections
+
 ### Run unit tests
 
 `npm run test`
