@@ -42,3 +42,17 @@ export const parseDatePickerStringToIsoString = (datePickerDate: string): string
 
   return formatDate(date, 'yyyy-MM-dd')
 }
+
+export const isValidDatePickerDate = (datePickerDate: string): boolean => {
+  if (!datePickerDate) return true
+
+  const strictPattern = /^(\d{1,2})([-/,. ])(\d{1,2})\2(\d{4})$/
+  if (!strictPattern.test(datePickerDate)) return false
+
+  const dateMatches = datePickerDate.match(strictPattern)
+  const separator = dateMatches[2]
+
+  const parsedDate = parse(datePickerDate, `dd${separator}MM${separator}yyyy`, startOfToday())
+
+  return isValid(parsedDate) && formatDate(parsedDate, `dd${separator}MM${separator}yyyy`) === datePickerDate
+}
