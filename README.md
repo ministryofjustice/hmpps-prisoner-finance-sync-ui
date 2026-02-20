@@ -126,6 +126,10 @@ To request specific users and roles then raise a PR
 to [update the seed data](https://github.com/ministryofjustice/hmpps-auth/blob/main/src/main/resources/db/dev/data/auth/V900_3__users.sql)
 for the in-memory DB used by Auth
 
+### Pre-Commit hooks
+
+Run `npm run setup` to install the precommit hooks
+
 ### Run linter
 
 - `npm run lint` runs `eslint`.
@@ -151,7 +155,7 @@ Then run the server in test mode by:
 
 `npm run start-feature` (or `npm run start-feature:dev` to run with auto-restart on changes)
 
-After first install ensure playwright is initialised: 
+After first install ensure playwright is initialised:
 
 `npm run int-test-init:ci`
 
