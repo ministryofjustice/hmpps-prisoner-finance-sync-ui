@@ -221,6 +221,24 @@ describe('GET /audit', () => {
   })
 })
 
+it('should reject invalid legacyTransactionId and render validation errors', () => {
+  auditService.logPageView.mockResolvedValue(null)
+
+  const query = 'legacyTransactionId=bob'
+
+  return request(app)
+    .get(`/audit?${query}`)
+    .expect('Content-Type', /html/)
+    .expect(200)
+    .expect(res => {
+      const $ = cheerio.load(res.text)
+
+      expect(auditHistoryService.getMatchingPayloads).not.toHaveBeenCalled()
+      expect($('[name="legacyTransactionId"]').val()).toEqual('bob')
+      expect($('#legacyTransactionId-error').text()).toContain('Transaction ID must be a number')
+    })
+})
+
 describe('GET /audit/:requestId', () => {
   const requestId = '07b4e637-79ce-4e17-ab72-c384239576f8'
 

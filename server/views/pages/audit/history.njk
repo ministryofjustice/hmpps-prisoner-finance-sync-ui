@@ -2,6 +2,7 @@
 
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
 {% from "../../components/cursor-pagination.njk" import cursorPagination %}
 
@@ -35,37 +36,42 @@
                   id: "legacyTransactionId",
                   name: "legacyTransactionId",
                   label: { text: "NOMIS Transaction ID", classes: "govuk-label--s" },
-                  value: legacyTransactionId
+                  value: legacyTransactionId,
+                  errorMessage: { text: errorMap.legacyTransactionId } if errorMap.legacyTransactionId else null
                 }) }}
 
                 {{ govukInput({
                   id: "transactionType",
                   name: "transactionType",
                   label: { text: "Transaction Type", classes: "govuk-label--s" },
-                  value: transactionType
+                  value: transactionType,
+                  errorMessage: { text: errorMap.transactionType } if errorMap.transactionType else null
                 }) }}
 
                 {{ govukInput({
                   id: "prisonId",
                   name: "prisonId",
                   label: { text: "Prison ID", classes: "govuk-label--s" },
-                  value: prisonId
+                  value: prisonId,
+                  errorMessage: { text: errorMap.prisonId } if errorMap.prisonId else null
                 }) }}
 
                 {{ mojDatePicker({
                   id: 'startDate',
                   name: 'startDate',
                   leadingZeros: 'true',
-                  label: { text: "Request date from", classes: "govuk-label--s" },
-                  value: startDate or (startDate | isoDateToDatePickerDate)
+                  label: { text: "Start date", classes: "govuk-label--s" },
+                  value: startDate or (startDate | isoDateToDatePickerDate),
+                  errorMessage: { text: errorMap.startDate } if errorMap.startDate else null
                 }) }}
 
                 {{ mojDatePicker({
                   id: 'endDate',
                   name: 'endDate',
                   leadingZeros: 'true',
-                  label: { text: "Request date to", classes: "govuk-label--s" },
-                  value: endDate or (endDate | isoDateToDatePickerDate)
+                  label: { text: "End date", classes: "govuk-label--s" },
+                  value: endDate or (endDate | isoDateToDatePickerDate),
+                  errorMessage: { text: errorMap.endDate } if errorMap.endDate else null
                 }) }}
 
                 {{ govukButton({
