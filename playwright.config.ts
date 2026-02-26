@@ -43,11 +43,11 @@ export default defineConfig({
     baseURL: 'http://localhost:3007',
   },
 
-  webServer: {
+  webServer: !process.env.CI && {
     command: 'npm run start-feature',
     port: 3007,
-    timeout: 60 * 1000,
-    reuseExistingServer: !process.env.CI,
+    timeout: 60_000,
+    reuseExistingServer: true,
   },
 
   /* Configure projects */
