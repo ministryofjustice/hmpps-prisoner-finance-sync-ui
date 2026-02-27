@@ -14,7 +14,7 @@ Documentation to create new services is located [here](https://tech-docs.hmpps.s
 This project is community managed by the mojdt `#typescript` slack channel.
 Please raise any questions or queries there. Contributions welcome!
 
-Our security policy is located [here](https://github.com/ministryofjustice/hmpps-prisoner-finance-sync-ui/security/policy).
+Our security policy is located [here](https://github.com/ministryofjustice/hmpps-template-typescript/security/policy).
 
 More information about the template project including features can be
 found [here](https://dsdmoj.atlassian.net/wiki/spaces/NDSS/pages/3488677932/Typescript+template+project).
@@ -88,7 +88,9 @@ When deployed to an environment with multiple pods we run applications with an i
 a distributed cache of sessions.
 The template app is, by default, configured not to use REDIS when running locally.
 
-## Running the app via docker-compose
+## Developing against the template project
+
+### Running the app via docker-compose
 
 The easiest way to run the app is to use docker compose to create the service and all dependencies.
 
@@ -126,9 +128,23 @@ To request specific users and roles then raise a PR
 to [update the seed data](https://github.com/ministryofjustice/hmpps-auth/blob/main/src/main/resources/db/dev/data/auth/V900_3__users.sql)
 for the in-memory DB used by Auth
 
-### Pre-Commit hooks
+### Installing dependencies
 
-Run `npm run setup` to install the precommit hooks
+By default no pre or post install scripts will be run during `npm install`.
+Instead a list of configured install scripts will be run via the [npm script allowlist](https://github.com/ministryofjustice/hmpps-typescript-lib/tree/main/packages/npm-script-allowlist) tool.
+
+Instead of running `npm install`, run `npm run setup` - this will run an `npm ci` to install any dependencies and then run any configured install scripts.
+
+### Making changes
+
+The [hmpps precommit hooks library](https://github.com/ministryofjustice/hmpps-typescript-lib/tree/main/packages/precommit-hooks) will ensure that [prek](https://prek.j178.dev/cli/) is installed and initialised against the repo as part of `npm run setup`.
+
+This will run a set of precommit hooks before every commit as configured in `.pre-commit-config.yaml`.
+This will scan for potential secrets in the staged files and fail the commit if any are detected.
+
+There's some guidance for dealing with false positives in the [precommit hooks docs](https://github.com/ministryofjustice/hmpps-typescript-lib/tree/main/packages/precommit-hooks#dealing-with-false-positives).
+
+The secret scanner hook can also be configured as described [here](https://github.com/ministryofjustice/devsecops-hooks?tab=readme-ov-file#-configuration).
 
 ### Run linter
 
@@ -173,7 +189,7 @@ While there are multiple ways to keep your project up-to-date this [method](http
 
 In your service, add the template as a remote:
 
-`git remote add template https://github.com/ministryofjustice/hmpps-prisoner-finance-sync-ui`
+`git remote add template https://github.com/ministryofjustice/hmpps-template-typescript`
 
 Create a branch and switch to it, eg:
 
