@@ -31,6 +31,8 @@ cleanup() {
 
 trap cleanup EXIT INT TERM
 
+npm run build
+
 # -----------------------------
 # 1️⃣ Run unit tests
 # -----------------------------
@@ -42,7 +44,7 @@ echo "✅ Unit tests passed"
 # 2️⃣ Start WireMock
 # -----------------------------
 echo "🚀 Starting WireMock..."
-docker compose -f "$DOCKER_COMPOSE_FILE" up -d --remove-orphans wiremock
+docker compose -f "$DOCKER_COMPOSE_FILE" up -d --build --remove-orphans wiremock
 
 # -----------------------------
 # 3️⃣ Run integration tests under c8
