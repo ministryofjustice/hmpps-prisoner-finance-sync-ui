@@ -34,8 +34,8 @@ generic-service:
     AUDIT_SQS_REGION: 'eu-west-2'
     AUDIT_SERVICE_NAME: 'DPS099' # Your audit service name
 
-    PRISONER_FINANCE_SYNC_API_TIMEOUT_RESPONSE: '10000'
-    PRISONER_FINANCE_SYNC_API_TIMEOUT_DEADLINE: '10000'
+    PRISONER_FINANCE_SYNC_API_TIMEOUT_RESPONSE: '20000'
+    PRISONER_FINANCE_SYNC_API_TIMEOUT_DEADLINE: '20000'
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:
