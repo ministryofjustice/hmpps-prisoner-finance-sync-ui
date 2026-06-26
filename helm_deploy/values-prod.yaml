@@ -3,7 +3,7 @@
 
 generic-service:
   ingress:
-    host: prisoner-finance-sync-ui.hmpps.service.justice.gov.uk
+    host: prisoner-finance-sync.hmpps.service.justice.gov.uk
 
   env:
     INGRESS_URL: "https://prisoner-finance-sync.hmpps.service.justice.gov.uk"
