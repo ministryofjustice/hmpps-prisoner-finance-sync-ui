@@ -90,7 +90,7 @@ jobs:
           subscription-id: ${{ secrets.AZ_SUBSCRIPTION_ID }}
 
       - name: Deploy Portal Dashboard
-        uses: azure/cli@v2
+        uses: azure/cli@9eb25b8360668fb0ecbafa808d40e2197b2f5f52 # v3
         with:
           inlineScript: |
             az deployment group create \
