@@ -71,42 +71,11 @@ jobs:
       additional_docker_tag: ${{ inputs.additional_docker_tag }}
       push: ${{ inputs.push || inputs.push == null }}
       docker_multiplatform: false
-  deploy_dashboard:
-    name: Deploy Azure Dashboard
-    if: github.ref == 'refs/heads/main'
-    needs:
-      - build
-      - helm_lint
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-
-      - name: Login to Azure
-        uses: azure/login@532459ea530d8321f2fb9bb10d1e0bcf23869a43 # v3
-        with:
-          client-id: ${{ secrets.AZ_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZ_TENANT_ID }}
-          subscription-id: ${{ secrets.AZ_SUBSCRIPTION_ID }}
-
-      - name: Deploy Portal Dashboard
-        uses: azure/cli@9eb25b8360668fb0ecbafa808d40e2197b2f5f52 # v3
-        with:
-          inlineScript: |
-            az deployment group create \
-              --resource-group rg-monitoring \
-              --template-file dashboards/dashboard.json \
-              --parameters \
-                dashboardName="Prisoner Finance - Dashboard" \
-                location="${{ vars.AZURE_LOCATION }}" \
-                workspaceId="${{ vars.AZURE_WORKSPACE_ID}}" \
-                appInsightsId="${{ vars.AZURE_APPINSIGHTS_ID}}"
   deploy_dev:
     name: Deploy to the development environment
     needs:
       - build
       - helm_lint
-      - deploy_dashboard
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2 # WORKFLOW_VERSION
     secrets: inherit
     with:
@@ -135,4 +104,3 @@ jobs:
        environment: 'prod'
        app_version: '${{ needs.build.outputs.app_version }}'
        slack_notification: 'false' # if 'true', it needs a valid PROD_RELEASES_SLACK_CHANNEL variable to be set
-
