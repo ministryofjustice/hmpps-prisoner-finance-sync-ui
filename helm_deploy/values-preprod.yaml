@@ -13,7 +13,7 @@ generic-service:
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api-preprod.prison.service.justice.gov.uk"
     PRISONER_FINANCE_SYNC_API_URL: 'https://prisoner-finance-sync-api-preprod.hmpps.service.justice.gov.uk'
     ENVIRONMENT_NAME: PRE-PRODUCTION
-    AUDIT_ENABLED: "false"
+    AUDIT_ENABLED: "true"
 
 generic-prometheus-alerts:
   alertSeverity: hmpps-prisoner-finance-alerts-nonprod
