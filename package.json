@@ -45,7 +45,7 @@
     "date-fns": "4.4.0",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
-    "govuk-frontend": "6.3.0",
+    "govuk-frontend": "6.4.0",
     "helmet": "^8.2.0",
     "http-errors": "^2.0.1",
     "jwt-decode": "^4.0.0",
@@ -99,7 +99,7 @@
   },
   "overrides": {
     "@aws-sdk/xml-builder": {
-      "fast-xml-parser": "^5.4.1"
+      "fast-xml-parser": "^5.10.0"
     },
     "unrs-resolver": "1.12.2"
   }
