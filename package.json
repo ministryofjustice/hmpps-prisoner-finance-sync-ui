@@ -30,7 +30,7 @@
     "npm": "^11"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1085.0",
+    "@aws-sdk/client-sqs": "^3.1087.0",
     "@ministryofjustice/frontend": "9.0.0",
     "@ministryofjustice/hmpps-auth-clients": "^1.0.2",
     "@ministryofjustice/hmpps-monitoring": "^2.1.0",
@@ -46,7 +46,7 @@
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "govuk-frontend": "6.4.0",
-    "helmet": "^8.2.0",
+    "helmet": "^8.3.0",
     "http-errors": "^2.0.1",
     "jwt-decode": "^4.0.0",
     "nocache": "^4.0.0",
@@ -77,8 +77,8 @@
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-oauth2": "^1.8.0",
-    "@types/superagent": "^8.1.10",
-    "@types/supertest": "^7.2.0",
+    "@types/superagent": "^8.1.11",
+    "@types/supertest": "^7.2.1",
     "audit-ci": "^7.1.0",
     "aws-sdk-client-mock": "^4.1.0",
     "cheerio": "1.2.0",
