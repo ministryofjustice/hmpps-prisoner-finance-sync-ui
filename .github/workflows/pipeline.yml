@@ -3,6 +3,9 @@ name: Pipeline [test -> build -> deploy]
 on:
   push:
     branches:
+      - 'main'
+  pull_request:
+    branches:
       - '**'
   workflow_dispatch:
     inputs:
@@ -19,6 +22,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
   packages: write
 
 concurrency:
@@ -43,12 +47,20 @@ jobs:
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/node_unit_tests.yml@v2 # WORKFLOW_VERSION
     needs: [node_build]
     secrets: inherit
+    with:
+      npm_script: unit-test-coverage
+      test_results_artifact_name: unit-coverage
+
   # generic node integration tests using wiremock - feel free to override with local tests if required
   node_integration_tests:
     name: node integration tests
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/node_integration_tests.yml@v2 # WORKFLOW_VERSION
     needs: [node_build]
     secrets: inherit
+    with:
+      npm_script: integration-test-coverage
+      test_results_artifact_name: integration-coverage
+
   helm_lint:
     strategy:
       matrix:
@@ -71,6 +83,57 @@ jobs:
       additional_docker_tag: ${{ inputs.additional_docker_tag }}
       push: ${{ inputs.push || inputs.push == null }}
       docker_multiplatform: false
+
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+    needs:
+      - node_unit_tests
+      - node_integration_tests
+    if: github.event.pull_request
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install LCOV
+        run: sudo apt-get update && sudo apt-get install -y lcov
+
+      - run: echo 'stop_on_error = 0' > ~/.lcovrc
+
+      - name: Download Unit Coverage
+        uses: actions/download-artifact@v7
+        with:
+          name: unit-coverage
+          path: test_results/coverage/unit
+
+      - name: Unit Coverage
+        uses: zgosalvez/github-actions-report-lcov@v4
+        with:
+          title-prefix: 'Unit Coverage'
+          coverage-files: test_results/coverage/unit/lcov.info
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          update-comment: true
+          genhtml-ignore-errors: "coverage-files"
+
+      - name: Download Integration Coverage
+        uses: actions/download-artifact@v7
+        with:
+          name: integration-coverage
+          path: test_results/coverage/integration
+
+      - name: Integration Coverage
+        uses: zgosalvez/github-actions-report-lcov@v4
+        with:
+          title-prefix: 'Integration Coverage'
+          coverage-files: test_results/coverage/integration/coverage/lcov.info
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          update-comment: true
+          genhtml-ignore-errors: "coverage-files"
+
   deploy_dev:
     name: Deploy to the development environment
     needs:
