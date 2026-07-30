@@ -136,7 +136,7 @@ describe('AuditController', () => {
 
   describe('detail', () => {
     it('should log page view, fetch payload, and render detail page', async () => {
-      mockReq.params = { requestId: '123-abc' }
+      mockReq.params = { payloadId: '1' }
 
       const mockPayload: NomisSyncPayloadDetail = {
         requestId: '123-abc',
@@ -148,12 +148,12 @@ describe('AuditController', () => {
         body: { some: 'value' },
       }
 
-      auditHistoryService.getPayloadByRequestId.mockResolvedValue(mockPayload)
+      auditHistoryService.getPayloadById.mockResolvedValue(mockPayload)
 
       await auditController.detail(mockReq as Request, mockRes as Response)
 
       expect(auditService.logPageView).toHaveBeenCalledWith(AuditPage.AUDIT_DETAIL_PAGE, expect.any(Object))
-      expect(auditHistoryService.getPayloadByRequestId).toHaveBeenCalledWith('123-abc')
+      expect(auditHistoryService.getPayloadById).toHaveBeenCalledWith('1')
       expect(mockRes.render).toHaveBeenCalledWith('pages/audit/detail', { auditDetail: mockPayload })
     })
   })

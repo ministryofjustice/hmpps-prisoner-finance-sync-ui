@@ -12,10 +12,10 @@ export default class PrisonerFinanceSyncApiClient extends RestClient {
     super('Prisoner Finance Sync API', config.apis.prisonerFinanceSyncApi, logger, authenticationClient)
   }
 
-  async getPayloadByRequestId(requestId: string): Promise<NomisSyncPayloadDetail> {
+  async getPayloadById(id: string): Promise<NomisSyncPayloadDetail> {
     return this.get(
       {
-        path: `/audit/history/${requestId}`,
+        path: `/audit/history/${id}`,
       },
       asSystem(),
     )

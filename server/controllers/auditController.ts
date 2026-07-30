@@ -8,14 +8,14 @@ export default class AuditController {
   constructor(private readonly services: Services) {}
 
   public detail = async (req: Request, res: Response): Promise<void> => {
-    const requestId = req.params.requestId as string
+    const payloadId = req.params.payloadId as string
 
     await this.services.auditService.logPageView(Page.AUDIT_DETAIL_PAGE, {
       who: res.locals.user.username,
       correlationId: req.id,
     })
 
-    const auditDetail = await this.services.auditHistoryService.getPayloadByRequestId(requestId)
+    const auditDetail = await this.services.auditHistoryService.getPayloadById(payloadId)
     res.render('pages/audit/detail', { auditDetail })
   }
 

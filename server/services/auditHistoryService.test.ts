@@ -27,9 +27,10 @@ describe('AuditHistoryService', () => {
     jest.resetAllMocks()
   })
 
-  describe('getPayloadByRequestId', () => {
+  describe('getPayloadById', () => {
     it('should parse the body string into JSON when valid', async () => {
       const requestId = '123e4567-e89b-12d3-a456-426614174000'
+      const payloadId = '1'
 
       const apiResponse: NomisSyncPayloadDetail = {
         caseloadId: null,
@@ -44,17 +45,18 @@ describe('AuditHistoryService', () => {
         body: { some: 'json' },
       }
 
-      apiClient.getPayloadByRequestId.mockResolvedValue(apiResponse)
+      apiClient.getPayloadById.mockResolvedValue(apiResponse)
 
-      const result = await service.getPayloadByRequestId(requestId)
+      const result = await service.getPayloadById(payloadId)
 
-      expect(apiClient.getPayloadByRequestId).toHaveBeenCalledWith(requestId)
+      expect(apiClient.getPayloadById).toHaveBeenCalledWith(payloadId)
       expect(result).toEqual(expectedResult)
       expect(logger.error).not.toHaveBeenCalled()
     })
 
     it('should return the raw string body and log an error when JSON parsing fails', async () => {
       const requestId = '123e4567-e89b-12d3-a456-426614174000'
+      const payloadId = '1'
 
       const apiResponse: NomisSyncPayloadDetail = {
         caseloadId: null,
@@ -64,15 +66,15 @@ describe('AuditHistoryService', () => {
         body: '{"unclosed_json": "oops"',
       }
 
-      apiClient.getPayloadByRequestId.mockResolvedValue(apiResponse)
+      apiClient.getPayloadById.mockResolvedValue(apiResponse)
 
-      const result = await service.getPayloadByRequestId(requestId)
+      const result = await service.getPayloadById(payloadId)
 
       expect(result.body).toEqual('{"unclosed_json": "oops"')
 
       expect(logger.error).toHaveBeenCalledWith(
         expect.any(SyntaxError),
-        `Failed to parse JSON body for requestId: ${requestId}`,
+        `Failed to parse JSON body for payloadId: ${payloadId}`,
       )
     })
   })
