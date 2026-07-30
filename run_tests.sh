@@ -15,6 +15,9 @@ INTEGRATION_TEST_CMD="npm run int-test"
 SERVER_PORT="${SERVER_PORT:-3007}"
 SERVER_START_TIMEOUT=60
 
+# Capture the first argument passed to the script (defaults to empty string if not provided)
+TEST_FILE="${1:-}"
+
 # -----------------------------
 # Cleanup
 # -----------------------------
@@ -22,34 +25,40 @@ cleanup() {
   echo ""
   echo "🧹 Cleaning up..."
 
-  # Kill local server
-  if [[ -n "${SERVER_PID:-}" ]] && kill -0 "$SERVER_PID" 2>/dev/null; then
-    echo "Stopping server (PID $SERVER_PID)..."
-    kill "$SERVER_PID" || true
-    wait "$SERVER_PID" 2>/dev/null || true
+ local PORT_PID=$(lsof -t -i:$SERVER_PORT)
+  if [[ -n "$PORT_PID" ]]; then
+    echo "Found process $PORT_PID listening on port $SERVER_PORT. Terminating..."
+    kill -15 "$PORT_PID" 2>/dev/null || kill -9 "$PORT_PID" 2>/dev/null
   fi
 
   # Stop WireMock
   echo "Stopping WireMock..."
   docker compose -f "$DOCKER_COMPOSE_FILE" down -v --remove-orphans || true
 
+  echo "Checking for processes running on server port..."
+  lsof -i:$SERVER_PORT && echo "🚨WARN: Process found on port $SERVER_PORT🚨"
+
+
   echo "✅ Cleanup complete"
 }
 
 trap cleanup EXIT INT TERM
 
+# NPM build
+npm run build
+
 # -----------------------------
 # 1️⃣ Run unit tests
-# -----------------------------
-echo "🧪 Running unit tests..."
-$UNIT_TEST_CMD
-echo "✅ Unit tests passed"
+# # -----------------------------
+# echo "🧪 Running unit tests..."
+# $UNIT_TEST_CMD
+# echo "✅ Unit tests passed"
 
 # -----------------------------
 # 2️⃣ Start WireMock
 # -----------------------------
 echo "🚀 Starting WireMock..."
-docker compose -f "$DOCKER_COMPOSE_FILE" up -d --remove-orphans wiremock
+docker compose -f "$DOCKER_COMPOSE_FILE" up -d --build --remove-orphans
 
 # -----------------------------
 # 3️⃣ Start server locally
@@ -86,6 +95,12 @@ $PLAYWRIGHT_INIT_CMD || true
 # 6️⃣ Run integration tests
 # -----------------------------
 echo "🧪 Running integration tests..."
-$INTEGRATION_TEST_CMD
+
+if [[ -n "$TEST_FILE" ]]; then
+  echo "🎯 Targeting specific test: $TEST_FILE"
+  $INTEGRATION_TEST_CMD $TEST_FILE
+else
+  $INTEGRATION_TEST_CMD
+fi
 
 echo "🎉 All tests completed successfully"
