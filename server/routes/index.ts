@@ -11,7 +11,7 @@ export default function routes(services: Services): Router {
 
   router.get('/', homeController.index)
   router.get('/audit', auditController.history)
-  router.get('/audit/:requestId', auditController.detail)
+  router.get('/audit/:payloadId', auditController.detail)
 
   return router
 }

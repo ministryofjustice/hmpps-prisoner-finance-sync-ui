@@ -20,9 +20,10 @@ describe('PrisonerFinanceSyncApiClient', () => {
     jest.resetAllMocks()
   })
 
-  describe('getPayloadByRequestId', () => {
-    it('should call the API with the correct request ID', async () => {
+  describe('getPayloadById', () => {
+    it('should call the API with the correct payload id', async () => {
       const requestId = '123e4567-e89b-12d3-a456-426614174000'
+      const payloadId = '1'
       const expectedResponse: NomisSyncPayloadDetail = {
         caseloadId: 'MDI',
         requestId,
@@ -33,12 +34,12 @@ describe('PrisonerFinanceSyncApiClient', () => {
 
       const getSpy = jest.spyOn(client, 'get').mockResolvedValue(expectedResponse)
 
-      const response = await client.getPayloadByRequestId(requestId)
+      const response = await client.getPayloadById(payloadId)
 
       expect(response).toEqual(expectedResponse)
       expect(getSpy).toHaveBeenCalledWith(
         {
-          path: `/audit/history/${requestId}`,
+          path: `/audit/history/${payloadId}`,
         },
         {
           tokenType: 'SYSTEM_TOKEN',

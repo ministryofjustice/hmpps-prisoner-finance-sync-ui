@@ -9,14 +9,13 @@ import { AuditHistorySearchParams } from '../interfaces/auditHistorySearchParams
 export default class AuditHistoryService {
   constructor(private readonly prisonerFinanceSyncApiClient: PrisonerFinanceSyncApiClient) {}
 
-  async getPayloadByRequestId(requestId: string): Promise<NomisSyncPayloadDetail> {
-    const detail = await this.prisonerFinanceSyncApiClient.getPayloadByRequestId(requestId)
-
+  async getPayloadById(payloadId: string): Promise<NomisSyncPayloadDetail> {
+    const detail = await this.prisonerFinanceSyncApiClient.getPayloadById(payloadId)
     if (detail.body && typeof detail.body === 'string') {
       try {
         detail.body = JSON.parse(detail.body)
       } catch (error) {
-        logger.error(error, `Failed to parse JSON body for requestId: ${requestId}`)
+        logger.error(error, `Failed to parse JSON body for payloadId: ${payloadId}`)
       }
     }
 

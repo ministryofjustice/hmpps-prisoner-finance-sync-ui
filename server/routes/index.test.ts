@@ -239,8 +239,9 @@ it('should reject invalid legacyTransactionId and render validation errors', () 
     })
 })
 
-describe('GET /audit/:requestId', () => {
+describe('GET /audit/:payloadId', () => {
   const requestId = '07b4e637-79ce-4e17-ab72-c384239576f8'
+  const payloadId = '1'
 
   it('should render the detail page with parsed JSON body', () => {
     const mockPayload: NomisSyncPayloadDetail = {
@@ -253,11 +254,11 @@ describe('GET /audit/:requestId', () => {
       body: { some: 'value' },
     }
 
-    auditHistoryService.getPayloadByRequestId.mockResolvedValue(mockPayload)
+    auditHistoryService.getPayloadById.mockResolvedValue(mockPayload)
     auditService.logPageView.mockResolvedValue(null)
 
     return request(app)
-      .get(`/audit/${requestId}`)
+      .get(`/audit/${payloadId}`)
       .expect('Content-Type', /html/)
       .expect(200)
       .expect(res => {
@@ -269,20 +270,20 @@ describe('GET /audit/:requestId', () => {
         expect($('pre').text()).toContain('"some": "value"')
       })
       .expect(() => {
-        expect(auditHistoryService.getPayloadByRequestId).toHaveBeenCalledWith(requestId)
+        expect(auditHistoryService.getPayloadById).toHaveBeenCalledWith(payloadId)
       })
   })
 
   it('should handle API errors (e.g. 404 Not Found)', () => {
     const error = Object.assign(new Error('Not Found'), { status: 404 })
-    auditHistoryService.getPayloadByRequestId.mockRejectedValue(error)
+    auditHistoryService.getPayloadById.mockRejectedValue(error)
 
-    return request(app).get(`/audit/${requestId}`).expect(404)
+    return request(app).get(`/audit/${payloadId}`).expect(404)
   })
 
   it('should handle API errors (e.g. 500)', () => {
-    auditHistoryService.getPayloadByRequestId.mockRejectedValue(new Error('API Error'))
+    auditHistoryService.getPayloadById.mockRejectedValue(new Error('API Error'))
 
-    return request(app).get(`/audit/${requestId}`).expect(500)
+    return request(app).get(`/audit/${payloadId}`).expect(500)
   })
 })
