@@ -1,4 +1,4 @@
-import { isValid, parseISO, startOfToday, parse } from 'date-fns'
+import { isValid, parseISO, startOfToday, parse, format } from 'date-fns'
 import { formatDate } from './utils'
 
 export const parseIsoDate = (isoDate: string): Date => {
@@ -55,4 +55,9 @@ export const isValidDatePickerDate = (datePickerDate: string): boolean => {
   const parsedDate = parse(datePickerDate, `dd${separator}MM${separator}yyyy`, startOfToday())
 
   return isValid(parsedDate) && formatDate(parsedDate, `dd${separator}MM${separator}yyyy`) === datePickerDate
+}
+
+export const datePickerToISODate = (datePickerDate: string): string => {
+  const parsedDate = parse(datePickerDate, 'dd/MM/yyyy', new Date())
+  return format(parsedDate, 'yyyy-MM-dd')
 }

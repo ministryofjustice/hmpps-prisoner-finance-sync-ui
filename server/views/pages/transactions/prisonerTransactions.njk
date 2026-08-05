@@ -1,0 +1,46 @@
+// TODO: Add the pence to pounds to nunjucks setup
+// GET tests working. 
+
+<h1>Transactions</h1>
+
+{% if transactions | length > 0 %}
+
+  {% set rows = [] %}
+  {% for row in transactions %}
+    {%- set balance = row.accountBalance if displayTotalBalance else row.subAccountBalance -%}
+    {%- set balance = balance if balance is defined else null -%}
+    {%- set balance = (balance | penceToPound) if balance !== null else '-' -%}
+    {%- set amount = row.credit if row.credit > 0 else -1 * row.debit -%}
+    {%- set amountClasses = "amount" -%}
+    {%- if row.credit > 0 -%}
+      {%- set amountClasses = amountClasses + " amount-credit" -%}
+    {%- elif row.credit < 0 -%}
+      {%- set amountClasses = amountClasses + " amount-debit" -%}
+    {%- endif -%}
+    {%- set amount = (amount | penceToPound) -%}
+    {% set rowData = [
+      { text: row.date | formatDateForView },
+      { text: row.description },
+      { text: amount, format: "numeric", classes: amountClasses },
+      { text: balance, format: "numeric" },
+      { text: row.accountType | formatPrisonerAccountType }
+    ] %}
+    {% if showLocation %}{% set rowData = (rowData.push({ text: row.location | convertPrisonIdToName(prisonNames)}), rowData) %}{% endif %}
+    {% set rows = (rows.push(rowData), rows) %}
+  {% endfor %}
+  <table data-testid="prisoner-transactions-table">
+    <tr>
+        <th>Date</th>
+        <th>Description</th>
+        <th>Credit</th>
+        <th>Debit</th>
+        <th>Location</th>        
+        <th>Account Type</th>
+        <th>Sub Account Balance</th>
+        <th>Account Balance</th>
+    </tr>
+    {% for row in rows %}
+        <tr><td>{{row.date}}</td></tr>
+    {% endfor %}
+  </table>
+{% endif %}

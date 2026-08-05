@@ -64,3 +64,20 @@ export const formatTransactionType = (requestTypeIdentifier: string): string => 
     }
   }
 }
+
+export const penceToPound = (pence: number): string => {
+  if (pence === null || Number.isNaN(pence)) {
+    return 'NaN'
+  }
+
+  const sign = pence < 0 ? '-' : ''
+  const abs = Math.abs(pence)
+
+  const pounds = Math.floor(abs / 100)
+  const remainder = abs % 100
+
+  const pennies = remainder.toString().padStart(2, '0')
+
+  return `${sign}${pounds}.${pennies}`
+}
+
