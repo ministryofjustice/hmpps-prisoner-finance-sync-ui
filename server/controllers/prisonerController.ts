@@ -11,21 +11,21 @@ class PrisonerController {
 
         const prisonNumber = req.params.prisonNumber.toString()
 
-        const { startDate, endDate, credit, debit, page } = req.query as Record<string, string>
-
         const { subAccount = null } = res.locals
 
         const transactionPage = await this.services.PrisonerFinanceService.getPrisonerTransactionsByPrisonNumber({
             prisonNumber,
             subAccountReference: subAccount,
-            page,
-            startDate,
-            endDate,
-            credit,
-            debit,
+            page: "1",
+            startDate: null,
+            endDate: null,
+            credit: null,
+            debit: null,
         })
 
-        res.render('pages/transactions/prisonerTransactions', { transactionPage })
+        console.log(transactionPage)
+
+        res.render('pages/transactions/prisonerTransactions', { transactions: transactionPage.content })
     }
 }
 

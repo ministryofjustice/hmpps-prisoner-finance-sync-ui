@@ -3,7 +3,7 @@ import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
-import { formatTransactionType, initialiseName } from './utils'
+import { formatDateForView, formatTransactionType, initialiseName, penceToPound } from './utils'
 import config from '../config'
 import logger from '../../logger'
 import { isoDateToDatePickerDate } from './datePickerUtils'
@@ -13,6 +13,8 @@ export const setUpNunJucksFilters = (njkEnv: nunjucks.Environment, assetManifest
   njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
   njkEnv.addFilter('isoDateToDatePickerDate', isoDateToDatePickerDate)
   njkEnv.addFilter('formatTransactionType', formatTransactionType)
+  njkEnv.addFilter('penceToPound', penceToPound)
+  njkEnv.addFilter('formatDateForView', formatDateForView)
 }
 
 export default function nunjucksSetup(app: express.Express): void {
@@ -47,5 +49,6 @@ export default function nunjucksSetup(app: express.Express): void {
   )
 
   setUpNunJucksFilters(njkEnv, assetManifest)
+
 
 }

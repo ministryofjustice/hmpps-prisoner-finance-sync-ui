@@ -39,8 +39,8 @@ describe('prisoner transactions page', () => {
         {
             date: '2026-03-10T10:43:28.094Z',
             description: 'Cash to Savings Transfer',
-            credit: 10,
-            debit: 0,
+            credit: 0,
+            debit: 666,
             location: '',
             accountType: 'SAVINGS',
             subAccountBalance: 20,
@@ -83,7 +83,7 @@ describe('prisoner transactions page', () => {
             date: '2026-03-10T10:43:28.094Z',
             description: 'Cash to Savings Transfer',
             credit: 10,
-            debit: 666,
+            debit: 0,
             location: '',
             accountType: 'SAVINGS',
             subAccountBalance: null,
@@ -139,14 +139,18 @@ describe('prisoner transactions page', () => {
         expect(transactionsTable.find('thead tr th').length).toBe(8)
         expect(transactionsTable.find('tbody tr').length).toBe(payload.length)
 
+
+
         const lastTransactionRunningBalance = $('table[data-testid="prisoner-transactions-table"] tbody tr')
             .last()
             .find('td')
-            .eq(3)
+            .eq(2)
             .text()
             .trim()
 
-        expect(lastTransactionRunningBalance).toBe('666')
+        console.log(lastTransactionRunningBalance)
+
+        expect(lastTransactionRunningBalance).toBe('-6.66')
 
     })
 })

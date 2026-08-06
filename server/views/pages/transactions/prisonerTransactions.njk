@@ -18,29 +18,46 @@
       {%- set amountClasses = amountClasses + " amount-debit" -%}
     {%- endif -%}
     {%- set amount = (amount | penceToPound) -%}
-    {% set rowData = [
-      { text: row.date | formatDateForView },
-      { text: row.description },
-      { text: amount, format: "numeric", classes: amountClasses },
-      { text: balance, format: "numeric" },
-      { text: row.accountType | formatPrisonerAccountType }
-    ] %}
+    {% set rowData = {
+       displayDate: row.date | formatDateForView,
+       description : row.description,
+       amount: amount,
+       balance: balance,
+       accountType: row.accountType,
+       subAccountBalance : row.subAccountBalance,
+       accountBalance : row.accountBalance,
+       location : row.location
+    }
+     %}
     {% if showLocation %}{% set rowData = (rowData.push({ text: row.location | convertPrisonIdToName(prisonNames)}), rowData) %}{% endif %}
     {% set rows = (rows.push(rowData), rows) %}
   {% endfor %}
   <table data-testid="prisoner-transactions-table">
+     <thead>
     <tr>
         <th>Date</th>
         <th>Description</th>
-        <th>Credit</th>
-        <th>Debit</th>
+        <th>Amount</th>
+        <th>Balance</th>
         <th>Location</th>        
         <th>Account Type</th>
         <th>Sub Account Balance</th>
-        <th>Account Balance</th>
+        <th>Account Balance</th>        
     </tr>
+     </thead>
+       <tbody>
     {% for row in rows %}
-        <tr><td>{{row.date}}</td></tr>
+        <tr>
+            <td>{{row.displayDate}}</td>
+            <td>{{row.description}}</td>
+            <td>{{row.amount}}</td>
+            <td>{{row.balance}}</td>
+            <td>{{row.location}}</td>
+            <td>{{row.accountType}}</td>
+            <td>{{row.subAccountBalance}}</td>
+            <td>{{row.accountBalance}}</td>            
+        </tr>
     {% endfor %}
+      </tbody>
   </table>
 {% endif %}
