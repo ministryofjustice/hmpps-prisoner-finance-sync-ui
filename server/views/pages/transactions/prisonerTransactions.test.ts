@@ -121,17 +121,7 @@ describe('prisoner transactions page', () => {
             },
         )
 
-        let assetManifest = null
-        try {
-            const assetMetadataPath = path.resolve(__dirname, '../../assets/manifest.json')
-            assetManifest = JSON.parse(fs.readFileSync(assetMetadataPath, 'utf8'))
-        } catch (e) {
-            if (process.env.NODE_ENV !== 'test') {
-                console.log(assetManifest)
-            }
-        }
-
-        setUpNunJucksFilters(njkEnv, assetManifest)
+        setUpNunJucksFilters(njkEnv)
 
         const html = njkEnv.render('pages/transactions/prisonerTransactions.njk', params)
         $ = cheerio.load(html)
