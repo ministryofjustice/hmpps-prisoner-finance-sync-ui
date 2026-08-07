@@ -9,9 +9,6 @@ import fs from 'fs'
 
 describe('prisoner transactions page', () => {
 
-
-
-
     const payload: Array<PrisonerTransactionRow> = [
         {
             date: new Date('2026-03-10T10:43:28.094Z'),
@@ -134,11 +131,9 @@ describe('prisoner transactions page', () => {
             }
         }
 
-
         setUpNunJucksFilters(njkEnv, assetManifest)
 
         const html = njkEnv.render('pages/transactions/prisonerTransactions.njk', params)
-
         $ = cheerio.load(html)
     })
 
@@ -156,9 +151,6 @@ describe('prisoner transactions page', () => {
             .text()
             .trim()
 
-        console.log(lastTransactionRunningBalance)
-
         expect(lastTransactionRunningBalance).toBe('-6.66')
-
     })
 })

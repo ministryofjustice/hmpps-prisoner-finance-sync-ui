@@ -3,7 +3,6 @@
 {% block content %}
 
 {% if transactions | length > 0 %}
-
   {% set rows = [] %}
   {% for row in transactions %}        
     {%- set amountClasses = "amount" -%}    
@@ -32,31 +31,25 @@
      </thead>
        <tbody>
     {% for row in rows %}
-   
-
-
-
-
-  {% if row.isStatementBalance %}
-        <tr class="statement-balance-bold-row" >
-            <td>{{row.displayDate}}</td>
-            <td>{{row.description}}</td>
-            <td>{{row.amount}}</td>
-            <td>{{row.location}}</td>
-            <td>{{row.accountType}}</td>            
-        </tr>
+      {% if row.isStatementBalance %}
+          <tr class="statement-balance-bold-row" >
+              <td>{{row.displayDate}}</td>
+              <td>{{row.description}}</td>
+              <td>{{row.amount}}</td>
+              <td>{{row.location}}</td>
+              <td>{{row.accountType}}</td>            
+          </tr>
         {% else %}
-        <tr>
-            <td>{{row.displayDate}}</td>
-            <td>{{row.description}}</td>
-            <td>{{row.amount}}</td>
-            <td>{{row.location}}</td>
-            <td>{{row.accountType}}</td>            
-        </tr>
+          <tr>
+              <td>{{row.displayDate}}</td>
+              <td>{{row.description}}</td>
+              <td>{{row.amount}}</td>
+              <td>{{row.location}}</td>
+              <td>{{row.accountType}}</td>            
+          </tr>
         {% endif %}
     {% endfor %}
       </tbody>
   </table>
 {% endif %}
-
 {% endblock %}

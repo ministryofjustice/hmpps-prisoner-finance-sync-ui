@@ -22,9 +22,6 @@ class PrisonerController {
             amount: (t.credit) ?? t.debit
         }))
 
-        console.log(prisonerTransactions[0].date)
-        console.log(statementBalances[0].balanceDateTime)
-
         const statementBalanceRows: PrisonerTransactionRow[] = statementBalances.map(s => ({
             date: new Date(s.balanceDateTime),
             description: '',
@@ -42,11 +39,7 @@ class PrisonerController {
     public getTransactions = async (req: Request, res: Response, next: NextFunction) => {
 
         const prisonNumber = req.params.prisonNumber.toString()
-
         const subAccount = req.path.split("/").slice(-1)[0]
-
-        console.log(subAccount)
-
         const transactionPage = await this.services.PrisonerFinanceService.getPrisonerTransactionsByPrisonNumber({
             prisonNumber,
             subAccountReference: subAccount,
@@ -58,16 +51,9 @@ class PrisonerController {
         })
 
         const prisonAccount = (await this.services.GeneralLedgerService.getPrisonerAccount(prisonNumber))[0]
-
-        console.log(JSON.stringify(prisonAccount.subAccounts))
-
         const subAccountId = prisonAccount.subAccounts.find(sa => sa.reference.toLowerCase() === subAccount.toLowerCase()).id;
-
         const statementBalances = await this.services.GeneralLedgerService.getPrisonerSubAccountStatementBalances(subAccountId)
-
         const mergeTransactions = this.combineTransactions(transactionPage.content, statementBalances)
-
-        console.log(mergeTransactions)
 
         res.render('pages/transactions/prisonerTransactions', { transactions: mergeTransactions })
     }
