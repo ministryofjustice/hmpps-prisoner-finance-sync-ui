@@ -19,6 +19,12 @@
     {% if showLocation %}{% set rowData = (rowData.push({ text: row.location | convertPrisonIdToName(prisonNames)}), rowData) %}{% endif %}
     {% set rows = (rows.push(rowData), rows) %}
   {% endfor %}
+  <h3>{{prisonNumber}}</h3>
+  <br>
+  <a href='/{{prisonNumber}}/money/cash'>Cash</a>  
+  <a href='/{{prisonNumber}}/money/spends'>Spends</a>
+  <a href='/{{prisonNumber}}/money/savings'>Savings</a>
+  <br>
   <table data-testid="prisoner-transactions-table" class="statement-balance-table">
      <thead>
     <tr>

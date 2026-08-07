@@ -4,6 +4,7 @@ export enum Page {
   INDEX_PAGE = 'INDEX_PAGE',
   AUDIT_HISTORY_PAGE = 'AUDIT_HISTORY_PAGE',
   AUDIT_DETAIL_PAGE = 'AUDIT_DETAIL_PAGE',
+  AUDIT_COMBINED_TRANSACTIONS_PAGE = 'AUDIT_COMBINED_TRANSACTIONS_PAGE'
 }
 
 export interface PageViewEventDetails {
@@ -15,7 +16,7 @@ export interface PageViewEventDetails {
 }
 
 export default class AuditService {
-  constructor(private readonly hmppsAuditClient: HmppsAuditClient) {}
+  constructor(private readonly hmppsAuditClient: HmppsAuditClient) { }
 
   async logAuditEvent(event: AuditEvent) {
     await this.hmppsAuditClient.sendMessage(event)
