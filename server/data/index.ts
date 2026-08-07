@@ -17,6 +17,7 @@ import HmppsAuditClient from './hmppsAuditClient'
 import logger from '../../logger'
 import PrisonerFinanceSyncApiClient from './prisonerFinanceSyncApiClient'
 import PrisonerFinanceApiClient from './prisonerFinanceApiClient'
+import GeneralLedgerApiClient from './generalLedgerApiClient'
 
 export const dataAccess = () => {
   const hmppsAuthClient = new AuthenticationClient(
@@ -30,7 +31,8 @@ export const dataAccess = () => {
     hmppsAuthClient,
     prisonerFinanceSyncApiClient: new PrisonerFinanceSyncApiClient(hmppsAuthClient),
     hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
-    prisonerFinanceApiClient: new PrisonerFinanceApiClient(hmppsAuthClient)
+    prisonerFinanceApiClient: new PrisonerFinanceApiClient(hmppsAuthClient),
+    generalLedgerApiClient: new GeneralLedgerApiClient(hmppsAuthClient)
   }
 }
 

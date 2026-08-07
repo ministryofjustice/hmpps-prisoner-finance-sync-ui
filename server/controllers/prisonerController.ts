@@ -1,17 +1,51 @@
 import { NextFunction, Request, Response } from 'express'
-import { Page } from '../services/auditService'
 import type { Services } from '../services'
 import { PrisonerTransactionResponse } from '../interfaces/prisonerTransactionResponse'
-import buildPaginationItems from '../utils/mojPaginationHelper'
+import { StatementBalanceResponse } from '../interfaces/statementBalanceResponse'
+import { PrisonerTransactionRow } from '../interfaces/prisonerTransactionsRow'
+
 
 class PrisonerController {
     constructor(private readonly services: Services) { }
+
+    private combineTransactions(
+        prisonerTransactions: PrisonerTransactionResponse[],
+        statementBalances: StatementBalanceResponse[]): PrisonerTransactionRow[] {
+
+        const transactionRows: PrisonerTransactionRow[] = prisonerTransactions.map(t => ({
+            date: new Date(t.date),
+            description: t.description,
+            location: t.location,
+            accountType: t.accountType,
+            subAccountBalance: t.subAccountBalance,
+            isStatementBalance: false,
+            amount: (t.credit) ?? t.debit
+        }))
+
+        console.log(prisonerTransactions[0].date)
+        console.log(statementBalances[0].balanceDateTime)
+
+        const statementBalanceRows: PrisonerTransactionRow[] = statementBalances.map(s => ({
+            date: new Date(s.balanceDateTime),
+            description: '',
+            location: '',
+            accountType: '',
+            subAccountBalance: '',
+            isStatementBalance: true,
+            amount: s.amount
+        }))
+
+        return [...transactionRows, ...statementBalanceRows].sort((a, b) => a.date.getTime() - b.date.getTime())
+
+    }
 
     public getTransactions = async (req: Request, res: Response, next: NextFunction) => {
 
         const prisonNumber = req.params.prisonNumber.toString()
 
-        const { subAccount = null } = res.locals
+        const subAccount = req.path.split("/").slice(-1)[0]
+
+        console.log(subAccount)
 
         const transactionPage = await this.services.PrisonerFinanceService.getPrisonerTransactionsByPrisonNumber({
             prisonNumber,
@@ -23,9 +57,19 @@ class PrisonerController {
             debit: null,
         })
 
-        console.log(transactionPage)
+        const prisonAccount = (await this.services.GeneralLedgerService.getPrisonerAccount(prisonNumber))[0]
 
-        res.render('pages/transactions/prisonerTransactions', { transactions: transactionPage.content })
+        console.log(JSON.stringify(prisonAccount.subAccounts))
+
+        const subAccountId = prisonAccount.subAccounts.find(sa => sa.reference.toLowerCase() === subAccount.toLowerCase()).id;
+
+        const statementBalances = await this.services.GeneralLedgerService.getPrisonerSubAccountStatementBalances(subAccountId)
+
+        const mergeTransactions = this.combineTransactions(transactionPage.content, statementBalances)
+
+        console.log(mergeTransactions)
+
+        res.render('pages/transactions/prisonerTransactions', { transactions: mergeTransactions })
     }
 }
 

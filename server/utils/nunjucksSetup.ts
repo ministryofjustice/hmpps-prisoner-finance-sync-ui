@@ -9,6 +9,7 @@ import logger from '../../logger'
 import { isoDateToDatePickerDate } from './datePickerUtils'
 
 export const setUpNunJucksFilters = (njkEnv: nunjucks.Environment, assetManifest: Record<string, string> = null) => {
+
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
   njkEnv.addFilter('isoDateToDatePickerDate', isoDateToDatePickerDate)

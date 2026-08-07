@@ -11,6 +11,8 @@ export default class PrisonerFinanceApiClient extends RestClient {
         super('prisonerFinanceApi', config.apis.prisonerFinanceApi, logger, authenticationClient)
     }
 
+
+
     async getPrisonerTransactionsByPrisonNumber({
         prisonNumber,
         subAccountReference,
@@ -35,7 +37,7 @@ export default class PrisonerFinanceApiClient extends RestClient {
                     ...(startDate && { startDate: datePickerToISODate(startDate) }),
                     ...(endDate && { endDate: datePickerToISODate(endDate) }),
                     pageNumber: page,
-                    pageSize: '25',
+                    pageSize: '999',
                     ...(debit && { debit }),
                     ...(credit && { credit }),
                     ...(subAccountReference && { subAccountReference }),

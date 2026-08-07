@@ -1,63 +1,62 @@
-// TODO: Add the pence to pounds to nunjucks setup
-// GET tests working. 
+{% extends "../../partials/layout.njk" %}
 
-<h1>Transactions</h1>
+{% block content %}
 
 {% if transactions | length > 0 %}
 
   {% set rows = [] %}
-  {% for row in transactions %}
-    {%- set balance = row.accountBalance if displayTotalBalance else row.subAccountBalance -%}
-    {%- set balance = balance if balance is defined else null -%}
-    {%- set balance = (balance | penceToPound) if balance !== null else '-' -%}
-    {%- set amount = row.credit if row.credit > 0 else -1 * row.debit -%}
-    {%- set amountClasses = "amount" -%}
-    {%- if row.credit > 0 -%}
-      {%- set amountClasses = amountClasses + " amount-credit" -%}
-    {%- elif row.credit < 0 -%}
-      {%- set amountClasses = amountClasses + " amount-debit" -%}
-    {%- endif -%}
-    {%- set amount = (amount | penceToPound) -%}
+  {% for row in transactions %}        
+    {%- set amountClasses = "amount" -%}    
+    {%- set amount = (row.amount | penceToPound) -%}
     {% set rowData = {
-       displayDate: row.date | formatDateForView,
+       displayDate: row.date,
        description : row.description,
-       amount: amount,
-       balance: balance,
-       accountType: row.accountType,
-       subAccountBalance : row.subAccountBalance,
-       accountBalance : row.accountBalance,
-       location : row.location
+       amount: amount,       
+       accountType: row.accountType,       
+       location : row.location,
+       isStatementBalance: row.isStatementBalance
     }
      %}
     {% if showLocation %}{% set rowData = (rowData.push({ text: row.location | convertPrisonIdToName(prisonNames)}), rowData) %}{% endif %}
     {% set rows = (rows.push(rowData), rows) %}
   {% endfor %}
-  <table data-testid="prisoner-transactions-table">
+  <table data-testid="prisoner-transactions-table" class="statement-balance-table">
      <thead>
     <tr>
         <th>Date</th>
         <th>Description</th>
-        <th>Amount</th>
-        <th>Balance</th>
+        <th>Amount</th>        
         <th>Location</th>        
-        <th>Account Type</th>
-        <th>Sub Account Balance</th>
-        <th>Account Balance</th>        
+        <th>Account Type</th>        
     </tr>
      </thead>
        <tbody>
     {% for row in rows %}
+   
+
+
+
+
+  {% if row.isStatementBalance %}
+        <tr class="statement-balance-bold-row" >
+            <td>{{row.displayDate}}</td>
+            <td>{{row.description}}</td>
+            <td>{{row.amount}}</td>
+            <td>{{row.location}}</td>
+            <td>{{row.accountType}}</td>            
+        </tr>
+        {% else %}
         <tr>
             <td>{{row.displayDate}}</td>
             <td>{{row.description}}</td>
             <td>{{row.amount}}</td>
-            <td>{{row.balance}}</td>
             <td>{{row.location}}</td>
-            <td>{{row.accountType}}</td>
-            <td>{{row.subAccountBalance}}</td>
-            <td>{{row.accountBalance}}</td>            
+            <td>{{row.accountType}}</td>            
         </tr>
+        {% endif %}
     {% endfor %}
       </tbody>
   </table>
 {% endif %}
+
+{% endblock %}

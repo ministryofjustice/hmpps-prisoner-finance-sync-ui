@@ -3,48 +3,47 @@ import * as cheerio from 'cheerio'
 import nunjucks from 'nunjucks'
 import { PrisonerTransactionResponse } from '../../../interfaces/prisonerTransactionResponse'
 import { setUpNunJucksFilters } from '../../../utils/nunjucksSetup'
+import { PrisonerTransactionRow } from '../../../interfaces/prisonerTransactionsRow'
+import path from 'path'
+import fs from 'fs'
 
 describe('prisoner transactions page', () => {
-    const payload: Array<PrisonerTransactionResponse> = [
+
+
+
+
+    const payload: Array<PrisonerTransactionRow> = [
         {
-            date: '2026-03-10T10:43:28.094Z',
+            date: new Date('2026-03-10T10:43:28.094Z'),
             description: '',
-            credit: 0,
-            debit: 10,
             location: 'LEI',
             accountType: 'CASH',
-            subAccountBalance: 0,
-            accountBalance: 10,
+            amount: 10,
+            isStatementBalance: false
         },
         {
-            date: '2026-03-10T10:43:28.094Z',
+            date: new Date('2026-03-10T10:43:28.094Z'),
             description: '',
-            credit: 20,
-            debit: 0,
             location: 'MDI',
             accountType: 'SAVINGS',
-            subAccountBalance: 20,
-            accountBalance: 17,
+            amount: 17,
+            isStatementBalance: false
         },
         {
-            date: '2026-03-10T10:43:28.094Z',
+            date: new Date('2026-03-10T10:43:28.094Z'),
             description: 'Cash to Savings Transfer',
-            credit: 0,
-            debit: 10,
             location: '',
             accountType: 'CASH',
-            subAccountBalance: 10,
-            accountBalance: 19,
+            amount: -10,
+            isStatementBalance: false
         },
         {
-            date: '2026-03-10T10:43:28.094Z',
+            date: new Date('2026-03-10T10:43:28.094Z'),
             description: 'Cash to Savings Transfer',
-            credit: 0,
-            debit: 666,
             location: '',
             accountType: 'SAVINGS',
-            subAccountBalance: 20,
-            accountBalance: 40,
+            amount: -666,
+            isStatementBalance: false
         },
     ]
 
@@ -125,7 +124,18 @@ describe('prisoner transactions page', () => {
             },
         )
 
-        setUpNunJucksFilters(njkEnv)
+        let assetManifest = null
+        try {
+            const assetMetadataPath = path.resolve(__dirname, '../../assets/manifest.json')
+            assetManifest = JSON.parse(fs.readFileSync(assetMetadataPath, 'utf8'))
+        } catch (e) {
+            if (process.env.NODE_ENV !== 'test') {
+                console.log(assetManifest)
+            }
+        }
+
+
+        setUpNunJucksFilters(njkEnv, assetManifest)
 
         const html = njkEnv.render('pages/transactions/prisonerTransactions.njk', params)
 
@@ -136,10 +146,8 @@ describe('prisoner transactions page', () => {
 
         const transactionsTable = $('table[data-testid="prisoner-transactions-table"]')
 
-        expect(transactionsTable.find('thead tr th').length).toBe(8)
+        expect(transactionsTable.find('thead tr th').length).toBe(5)
         expect(transactionsTable.find('tbody tr').length).toBe(payload.length)
-
-
 
         const lastTransactionRunningBalance = $('table[data-testid="prisoner-transactions-table"] tbody tr')
             .last()
