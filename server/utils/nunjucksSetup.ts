@@ -17,7 +17,7 @@ export const setUpNunJucksFilters = (njkEnv: nunjucks.Environment, assetManifest
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('isoDateToDatePickerDate', isoDateToDatePickerDate)
   njkEnv.addFilter('formatTransactionType', formatTransactionType)
-  njkEnv.addFilter('penceToPound', penceToPound)  
+  njkEnv.addFilter('penceToPound', penceToPound)
   njkEnv.addFilter('formatDate', formatDate)
 }
 

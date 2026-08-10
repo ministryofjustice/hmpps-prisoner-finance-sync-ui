@@ -1,4 +1,4 @@
-import { format, isToday, isTomorrow, isYesterday, parse, parseISO } from 'date-fns'
+import { format, isToday, isTomorrow, isYesterday, parse } from 'date-fns'
 
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
