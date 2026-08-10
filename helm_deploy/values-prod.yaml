@@ -9,8 +9,10 @@ generic-service:
     INGRESS_URL: "https://prisoner-finance-sync.hmpps.service.justice.gov.uk"
     HMPPS_AUTH_URL: "https://sign-in.hmpps.service.justice.gov.uk/auth"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api.prison.service.justice.gov.uk"
-    PRISONER_FINANCE_SYNC_API_URL: 'https://prisoner-finance-sync-api.hmpps.service.justice.gov.uk'
+    PRISONER_FINANCE_SYNC_API_URL: "https://prisoner-finance-sync-api.hmpps.service.justice.gov.uk"
     AUDIT_ENABLED: "true"
+    PRISONER_FINANCE_API_URL: "https://prisoner-finance-api.hmpps.service.justice.gov.uk"
+    PRISONER_FINANCE_GENERAL_LEDGER_API_URL: "https://prisoner-finance-general-ledger-api.hmpps.service.justice.gov.uk"
 
 generic-prometheus-alerts:
   alertSeverity: hmpps-prisoner-finance-alerts
