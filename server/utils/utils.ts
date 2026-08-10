@@ -29,7 +29,7 @@ export const parseDate = (date: string, fromFormat = 'yyyy-MM-dd') => {
   return parse(date, fromFormat, new Date())
 }
 
-export const formatDate = (date: unknown, fmt = 'EEEE, d MMMM yyyy', inContextName = false) => {
+export const formatDate = (date: unknown, fmt = 'EEEE, HH:mm - d MMMM yyyy', inContextName = false) => {
   if (!date) return null
 
   let richDate = date as Date
@@ -84,4 +84,3 @@ export const penceToPound = (pence: number): string => {
 export const formatDateForView = (utcString: string): string => {
   return format(parseISO(utcString), 'dd/MM/yyyy HH:mm').replace(' ', '\n')
 }
-

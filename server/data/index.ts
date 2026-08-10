@@ -32,7 +32,7 @@ export const dataAccess = () => {
     prisonerFinanceSyncApiClient: new PrisonerFinanceSyncApiClient(hmppsAuthClient),
     hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
     prisonerFinanceApiClient: new PrisonerFinanceApiClient(hmppsAuthClient),
-    generalLedgerApiClient: new GeneralLedgerApiClient(hmppsAuthClient)
+    generalLedgerApiClient: new GeneralLedgerApiClient(hmppsAuthClient),
   }
 }
 

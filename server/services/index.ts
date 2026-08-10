@@ -10,15 +10,15 @@ export const services = () => {
     hmppsAuditClient,
     prisonerFinanceSyncApiClient,
     prisonerFinanceApiClient,
-    generalLedgerApiClient }
-    = dataAccess()
+    generalLedgerApiClient,
+  } = dataAccess()
 
   return {
     applicationInfo,
     auditService: new AuditService(hmppsAuditClient),
     auditHistoryService: new AuditHistoryService(prisonerFinanceSyncApiClient),
     PrisonerFinanceService: new PrisonerFinanceService(prisonerFinanceApiClient),
-    GeneralLedgerService: new GeneralLedgerService(generalLedgerApiClient)
+    GeneralLedgerService: new GeneralLedgerService(generalLedgerApiClient),
   }
 }
 

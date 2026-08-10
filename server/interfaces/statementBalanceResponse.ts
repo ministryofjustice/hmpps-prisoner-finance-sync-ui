@@ -1,5 +1,5 @@
 export interface StatementBalanceResponse {
-    balanceDateTime: string
-    amount: number | null
-    subAccountId: string
+  balanceDateTime: string
+  amount: number | null
+  subAccountId: string
 }

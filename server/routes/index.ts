@@ -2,7 +2,6 @@ import { Router } from 'express'
 import type { Services } from '../services'
 import AuditController from '../controllers/auditController'
 import HomeController from '../controllers/homeController'
-import prisonerController from '../controllers/prisonerController'
 import PrisonerController from '../controllers/prisonerController'
 
 export default function routes(services: Services): Router {

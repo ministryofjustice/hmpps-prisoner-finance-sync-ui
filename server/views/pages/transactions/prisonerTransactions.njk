@@ -1,4 +1,5 @@
 {% extends "../../partials/layout.njk" %}
+{%- from "moj/components/sub-navigation/macro.njk" import mojSubNavigation -%}
 
 {% block content %}
 
@@ -19,43 +20,58 @@
     {% if showLocation %}{% set rowData = (rowData.push({ text: row.location | convertPrisonIdToName(prisonNames)}), rowData) %}{% endif %}
     {% set rows = (rows.push(rowData), rows) %}
   {% endfor %}
-  <h3>{{prisonNumber}}</h3>
+  <h3 class="govuk-heading-l">{{prisonNumber}}</h3>
   <br>
-  <a href='/{{prisonNumber}}/money/cash'>Cash</a>  
-  <a href='/{{prisonNumber}}/money/spends'>Spends</a>
-  <a href='/{{prisonNumber}}/money/savings'>Savings</a>
-  <br>
-  <table data-testid="prisoner-transactions-table" class="statement-balance-table">
-     <thead>
-    <tr>
-        <th>Date</th>
-        <th>Description</th>
-        <th>Amount</th>        
-        <th>Location</th>        
-        <th>Account Type</th>        
-    </tr>
-     </thead>
-       <tbody>
-    {% for row in rows %}
+
+  {{ mojSubNavigation({
+  label: "Sub navigation",
+  items: [{
+    text: "Cash",
+    href: "/" + prisonNumber + "/money/cash",
+    active: true if(subAccount == 'cash') else false
+  }, {
+    text: "Spends",
+    href: "/" + prisonNumber + "/money/spends",
+    active: true if(subAccount == 'spends') else false
+  }, {
+    text: "Savings",
+    href: "/" + prisonNumber + "/money/savings",
+    active: true if(subAccount == 'savings') else false
+  }]
+  }) 
+}}
+ 
+<table class="govuk-table" data-testid="prisoner-transactions-table">
+            <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header">Date</th>
+              <th class="govuk-table__header">Description</th>
+              <th class="govuk-table__header">Amount</th>
+              <th class="govuk-table__header">Location</th>
+              <th class="govuk-table__header">Account Type</th>              
+            </tr>
+            </thead>
+            <tbody class="govuk-table__body">            
+            {% for row in rows %}
       {% if row.isStatementBalance %}
-          <tr class="statement-balance-bold-row" >
-              <td>{{row.displayDate}}</td>
-              <td>{{row.description}}</td>
-              <td>{{row.amount}}</td>
-              <td>{{row.location}}</td>
-              <td>{{row.accountType}}</td>            
+          <tr class="govuk-table__row statement-balance-bold-row" >
+              <td class="govuk-table__cell">{{row.displayDate | formatDate}}</td>
+              <td class="govuk-table__cell">{{row.description}}</td>
+              <td class="govuk-table__cell">{{row.amount}}</td>
+              <td class="govuk-table__cell">{{row.location}}</td>
+              <td class="govuk-table__cell">{{row.accountType}}</td>            
           </tr>
         {% else %}
           <tr>
-              <td>{{row.displayDate}}</td>
-              <td>{{row.description}}</td>
-              <td>{{row.amount}}</td>
-              <td>{{row.location}}</td>
-              <td>{{row.accountType}}</td>            
+              <td class="govuk-table__cell">{{row.displayDate | formatDate}}</td>
+              <td class="govuk-table__cell">{{row.description}}</td>
+              <td class="govuk-table__cell">{{row.amount}}</td>
+              <td class="govuk-table__cell">{{row.location}}</td>
+              <td class="govuk-table__cell">{{row.accountType}}</td>            
           </tr>
         {% endif %}
-    {% endfor %}
-      </tbody>
-  </table>
+    {% endfor %}                       
+            </tbody>
+          </table>
 {% endif %}
 {% endblock %}
