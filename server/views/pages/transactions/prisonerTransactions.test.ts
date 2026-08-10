@@ -1,9 +1,6 @@
 import { expect } from '@playwright/test'
 import * as cheerio from 'cheerio'
 import nunjucks from 'nunjucks'
-import path from 'path'
-import fs from 'fs'
-import { PrisonerTransactionResponse } from '../../../interfaces/prisonerTransactionResponse'
 import { setUpNunJucksFilters } from '../../../utils/nunjucksSetup'
 import { PrisonerTransactionRow } from '../../../interfaces/prisonerTransactionsRow'
 
@@ -43,49 +40,6 @@ describe('prisoner transactions page', () => {
     },
   ]
 
-  const payloadWithoutLastRunningBalance: Array<PrisonerTransactionResponse> = [
-    {
-      date: '2026-03-10T10:43:28.094Z',
-      description: '',
-      credit: 0,
-      debit: 10,
-      location: 'LEI',
-      accountType: 'CASH',
-      subAccountBalance: 0,
-      accountBalance: 40,
-    },
-    {
-      date: '2026-03-10T10:43:28.094Z',
-      description: '',
-      credit: 20,
-      debit: 0,
-      location: 'MDI',
-      accountType: 'SAVINGS',
-      subAccountBalance: 20,
-      accountBalance: 33,
-    },
-    {
-      date: '2026-03-10T10:43:28.094Z',
-      description: 'Cash to Savings Transfer',
-      credit: 0,
-      debit: 10,
-      location: '',
-      accountType: 'CASH',
-      subAccountBalance: 10,
-      accountBalance: 23,
-    },
-    {
-      date: '2026-03-10T10:43:28.094Z',
-      description: 'Cash to Savings Transfer',
-      credit: 10,
-      debit: 0,
-      location: '',
-      accountType: 'SAVINGS',
-      subAccountBalance: null,
-      accountBalance: null,
-    },
-  ]
-
   let $: cheerio.CheerioAPI
   let njkEnv: nunjucks.Environment
   const prisonNumber = 'A12345'
@@ -97,17 +51,6 @@ describe('prisoner transactions page', () => {
     currentBalance: 1000,
     holdBalance: 0,
     prisonNames: [{ prisonId: 'LEI', prisonName: 'Leeds (HMP)' }],
-  }
-
-  const paramsWithoutLastRunningBalance = {
-    prisonNumber,
-    applicationName: 'Hmpps Prisoner Finance Ui',
-    transactions: payloadWithoutLastRunningBalance,
-    prisoner: { firstName: 'BOB', lastName: 'Taylor' },
-    currentBalance: 1000,
-    holdBalance: 0,
-    prisonNames: [{ prisonId: 'LEI', prisonName: 'Leeds (HMP)' }],
-    displayTotalBalance: false,
   }
 
   beforeAll(() => {
