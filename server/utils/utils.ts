@@ -80,7 +80,3 @@ export const penceToPound = (pence: number): string => {
 
   return `${sign}${pounds}.${pennies}`
 }
-
-export const formatDateForView = (utcString: string): string => {
-  return format(parseISO(utcString), 'dd/MM/yyyy HH:mm').replace(' ', '\n')
-}
