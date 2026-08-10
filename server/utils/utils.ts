@@ -29,7 +29,7 @@ export const parseDate = (date: string, fromFormat = 'yyyy-MM-dd') => {
   return parse(date, fromFormat, new Date())
 }
 
-export const formatDate = (date: unknown, fmt = 'EEEE, d MMMM yyyy', inContextName = false) => {
+export const formatDate = (date: unknown, fmt = 'EEEE, HH:mm - d MMMM yyyy', inContextName = false) => {
   if (!date) return null
 
   let richDate = date as Date
@@ -63,4 +63,20 @@ export const formatTransactionType = (requestTypeIdentifier: string): string => 
       return 'Unknown'
     }
   }
+}
+
+export const penceToPound = (pence: number): string => {
+  if (pence === null || Number.isNaN(pence)) {
+    return 'NaN'
+  }
+
+  const sign = pence < 0 ? '-' : ''
+  const abs = Math.abs(pence)
+
+  const pounds = Math.floor(abs / 100)
+  const remainder = abs % 100
+
+  const pennies = remainder.toString().padStart(2, '0')
+
+  return `${sign}${pounds}.${pennies}`
 }

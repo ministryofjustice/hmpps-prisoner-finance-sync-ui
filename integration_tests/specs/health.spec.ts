@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 import prisonerFinanceSyncApi from '../mockApis/prisonerFinanceSyncApi'
+import prisonerFinanceApi from '../mockApis/prisonerFinanceApi'
+import generalLedgerApi from '../mockApis/generalLedgerApi'
 import hmppsAuth from '../mockApis/hmppsAuth'
 import tokenVerification from '../mockApis/tokenVerification'
 
@@ -12,7 +14,13 @@ test.describe('Health', () => {
 
   test.describe('All healthy', () => {
     test.beforeEach(async () => {
-      await Promise.all([hmppsAuth.stubPing(), prisonerFinanceSyncApi.stubPing(), tokenVerification.stubPing()])
+      await Promise.all([
+        hmppsAuth.stubPing(),
+        prisonerFinanceSyncApi.stubPing(),
+        tokenVerification.stubPing(),
+        prisonerFinanceApi.stubPing(),
+        generalLedgerApi.stubPing(),
+      ])
     })
 
     test('Health check is accessible and status is UP', async ({ page }) => {

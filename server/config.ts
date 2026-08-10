@@ -81,6 +81,24 @@ export default {
       },
       agent: new AgentConfig(Number(get('PRISONER_FINANCE_SYNC_API_TIMEOUT_RESPONSE', 5000))),
     },
+    prisonerFinanceApi: {
+      url: get('PRISONER_FINANCE_API_URL', 'http://localhost:8080', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('PRISONER_FINANCE_API_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('PRISONER_FINANCE_API_TIMEOUT_DEADLINE', 5000)),
+      },
+      agent: new AgentConfig(Number(get('PRISONER_FINANCE_API_TIMEOUT_RESPONSE', 5000))),
+    },
+    generalLedgerApi: {
+      url: get('PRISONER_FINANCE_GENERAL_LEDGER_API_URL', 'http://localhost:8080', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('PRISONER_FINANCE_GENERAL_LEDGER_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('PRISONER_FINANCE_GENERAL_LEDGER_TIMEOUT_DEADLINE', 5000)),
+      },
+      agent: new AgentConfig(Number(get('PRISONER_FINANCE_GENERAL_LEDGER_TIMEOUT_RESPONSE', 5000))),
+    },
   },
   sqs: {
     audit: auditConfig(),

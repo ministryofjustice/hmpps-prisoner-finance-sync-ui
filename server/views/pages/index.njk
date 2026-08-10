@@ -12,16 +12,30 @@
   </div>
 </div>
 
-<div class="card-group govuk-grid-row">
-  <div class="govuk-grid-column-one-third card-group__item">
-    {{ card({
+
+<div class="govuk-width-container">
+    <ul class="govuk-grid-row card-group">
+        <li class="govuk-grid-column-one-third card-group__item">
+              {{ card({
       "href": "/audit",
       "clickable": "true",
       "heading": "View audit history",
       "description": "View captured synchronisation history. Filter logs by date and prison to audit synchronised transactions.",
       "data-qa": "audit-history-card"
     }) }}
-  </div>
+        </li>
+        <li class="govuk-grid-column-one-third card-group__item">
+            {{ card({
+      "href": "/A9971EC/money/cash",
+      "clickable": "true",
+      "heading": "McLuvin cash transactions",
+      "description": "An example of statement cash transactions for McLuvin.",
+      "data-qa": "audit-transaction-card"
+    }) }}
+        </li>       
+    </ul>
+</div>
+
 </div>
 
 {% endblock %}
