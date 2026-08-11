@@ -19,7 +19,7 @@ class PrisonerController {
       accountType: t.accountType,
       subAccountBalance: t.subAccountBalance,
       isStatementBalance: false,
-      amount: t.credit ?? t.debit,
+      amount: t.debit ? -t.debit : t.credit,
     }))
 
     const statementBalanceRows: PrisonerTransactionRow[] = statementBalances.map(s => ({

@@ -72,7 +72,7 @@ describe('prisoner transactions page', () => {
   it('should render the page elements correctly', () => {
     const transactionsTable = $('table[data-testid="prisoner-transactions-table"]')
 
-    expect(transactionsTable.find('thead tr th').length).toBe(5)
+    expect(transactionsTable.find('thead tr th').length).toBe(6)
     expect(transactionsTable.find('tbody tr').length).toBe(payload.length)
 
     const lastTransactionRunningBalance = $('table[data-testid="prisoner-transactions-table"] tbody tr')

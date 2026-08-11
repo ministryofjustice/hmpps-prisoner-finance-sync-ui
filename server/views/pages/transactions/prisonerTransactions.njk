@@ -14,7 +14,8 @@
        amount: amount,       
        accountType: row.accountType,       
        location : row.location,
-       isStatementBalance: row.isStatementBalance
+       isStatementBalance: row.isStatementBalance,
+       subAccountBalance : row.subAccountBalance | penceToPound
     }
      %}
     {% if showLocation %}{% set rowData = (rowData.push({ text: row.location | convertPrisonIdToName(prisonNames)}), rowData) %}{% endif %}
@@ -47,6 +48,7 @@
               <th class="govuk-table__header">Date</th>
               <th class="govuk-table__header">Description</th>
               <th class="govuk-table__header">Amount</th>
+              <th class="govuk-table__header">Sub Account Balance</th>
               <th class="govuk-table__header">Location</th>
               <th class="govuk-table__header">Account Type</th>              
             </tr>
@@ -58,6 +60,7 @@
               <td class="govuk-table__cell">{{row.displayDate | formatDate}}</td>
               <td class="govuk-table__cell">{{row.description}}</td>
               <td class="govuk-table__cell">{{row.amount}}</td>
+              <td class="govuk-table__cell">{{row.subAccountBalance}}</td>
               <td class="govuk-table__cell">{{row.location}}</td>
               <td class="govuk-table__cell">{{row.accountType}}</td>            
           </tr>
@@ -66,6 +69,7 @@
               <td class="govuk-table__cell">{{row.displayDate | formatDate}}</td>
               <td class="govuk-table__cell">{{row.description}}</td>
               <td class="govuk-table__cell">{{row.amount}}</td>
+              <td class="govuk-table__cell">{{row.subAccountBalance}}</td>
               <td class="govuk-table__cell">{{row.location}}</td>
               <td class="govuk-table__cell">{{row.accountType}}</td>            
           </tr>
