@@ -27,7 +27,7 @@ class PrisonerController {
       description: '',
       location: '',
       accountType: '',
-      subAccountBalance: '',
+      subAccountBalance: s.amount,
       isStatementBalance: true,
       amount: s.amount,
     }))
