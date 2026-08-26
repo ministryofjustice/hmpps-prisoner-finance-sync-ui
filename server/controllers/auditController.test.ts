@@ -1,14 +1,17 @@
 import { Request, Response, NextFunction } from 'express'
-import AuditController from './auditController'
-import AuditService, { Page as AuditPage } from '../services/auditService'
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import AuditHistoryService from '../services/auditHistoryService'
 import { CursorPage } from '../interfaces/cursorPage'
 import { NomisSyncPayloadSummary } from '../interfaces/nomisSyncPayloadSummary'
 import { NomisSyncPayloadDetail } from '../interfaces/nomisSyncPayloadDetail'
 import type { Services } from '../services'
+import AuditController from './auditController'
+import Page from '../routes/page'
 
-jest.mock('../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 jest.mock('../services/auditHistoryService')
+
+const auditService = new AuditService(undefined) as jest.Mocked<AuditService>
 
 describe('AuditController', () => {
   let auditController: AuditController
@@ -16,7 +19,6 @@ describe('AuditController', () => {
   let mockRes: Partial<Response>
   let mockNext: NextFunction
 
-  const auditService = new AuditService(null) as jest.Mocked<AuditService>
   const auditHistoryService = new AuditHistoryService(null) as jest.Mocked<AuditHistoryService>
 
   beforeEach(() => {
@@ -152,7 +154,7 @@ describe('AuditController', () => {
 
       await auditController.detail(mockReq as Request, mockRes as Response)
 
-      expect(auditService.logPageView).toHaveBeenCalledWith(AuditPage.AUDIT_DETAIL_PAGE, expect.any(Object))
+      expect(auditService.logPageView).toHaveBeenCalledWith(Page.AUDIT_DETAIL_PAGE, expect.any(Object))
       expect(auditHistoryService.getPayloadById).toHaveBeenCalledWith('1')
       expect(mockRes.render).toHaveBeenCalledWith('pages/audit/detail', { auditDetail: mockPayload })
     })

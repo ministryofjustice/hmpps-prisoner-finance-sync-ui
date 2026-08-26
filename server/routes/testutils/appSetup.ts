@@ -1,16 +1,16 @@
 import express, { Express } from 'express'
 import { NotFound } from 'http-errors'
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 
-import { randomUUID } from 'crypto'
 import routes from '../index'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
 import type { Services } from '../../services'
-import AuditService from '../../services/auditService'
 import { HmppsUser } from '../../interfaces/hmppsUser'
 import setUpWebSession from '../../middleware/setUpWebSession'
+import type { ApplicationInfo } from '../../applicationInfo'
 
-jest.mock('../../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 
 export const user: HmppsUser = {
   name: 'FIRST LAST',
@@ -21,6 +21,15 @@ export const user: HmppsUser = {
   authSource: 'nomis',
   staffId: 1234,
   userRoles: [],
+}
+
+const applicationInfo: ApplicationInfo = {
+  applicationName: 'hmpps-prisoner-finance-sync-ui',
+  buildNumber: '123',
+  gitRef: 'abc123',
+  gitShortHash: 'abc',
+  productId: 'DPSXYZ',
+  branchName: 'main',
 }
 
 export const flashProvider = jest.fn()
@@ -37,17 +46,23 @@ function appSetup(services: Services, production: boolean, userSupplier: () => H
     req.flash = flashProvider
     res.locals = {
       user: { ...req.user } as HmppsUser,
+      cspNonce: '',
+      csrfToken: '',
+      asset_path: '',
+      applicationName: '',
+      environmentName: '',
+      environmentNameColour: '',
     }
     next()
   })
-  app.use((req, res, next) => {
-    req.id = randomUUID()
+  app.use((req, _res, next) => {
+    req.id = '4d0fd4da-ecc1-454d-8308-cdee6b8b91f7'
     next()
   })
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
-  app.use(routes(services))
-  app.use((req, res, next) => next(new NotFound()))
+  app.use(routes({ applicationInfo, ...services }))
+  app.use((_req, _res, next) => next(new NotFound()))
   app.use(errorHandler(production))
 
   return app

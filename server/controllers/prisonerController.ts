@@ -3,7 +3,7 @@ import type { Services } from '../services'
 import { PrisonerTransactionResponse } from '../interfaces/prisonerTransactionResponse'
 import { StatementBalanceResponse } from '../interfaces/statementBalanceResponse'
 import { PrisonerTransactionRow } from '../interfaces/prisonerTransactionsRow'
-import { Page } from '../services/auditService'
+import Page from '../routes/page'
 
 class PrisonerController {
   constructor(private readonly services: Services) {}
@@ -43,7 +43,7 @@ class PrisonerController {
 
     const prisonNumber = req.params.prisonNumber.toString()
     const subAccount = req.path.split('/').slice(-1)[0]
-    const transactionPage = await this.services.PrisonerFinanceService.getPrisonerTransactionsByPrisonNumber({
+    const transactionPage = await this.services.prisonerFinanceService.getPrisonerTransactionsByPrisonNumber({
       prisonNumber,
       subAccountReference: subAccount,
       page: '1',
@@ -53,12 +53,12 @@ class PrisonerController {
       debit: null,
     })
 
-    const prisonAccount = (await this.services.GeneralLedgerService.getPrisonerAccount(prisonNumber))[0]
+    const prisonAccount = (await this.services.generalLedgerService.getPrisonerAccount(prisonNumber))[0]
     const subAccountId = prisonAccount.subAccounts.find(
       sa => sa.reference.toLowerCase() === subAccount.toLowerCase(),
     ).id
     const statementBalances =
-      await this.services.GeneralLedgerService.getPrisonerSubAccountStatementBalances(subAccountId)
+      await this.services.generalLedgerService.getPrisonerSubAccountStatementBalances(subAccountId)
     const mergeTransactions = this.combineTransactions(transactionPage.content, statementBalances)
 
     res.render('pages/transactions/prisonerTransactions', {

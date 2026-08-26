@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
-import { Page } from '../services/auditService'
 import paginationFromCursor from '../utils/pagination/cursor'
 import type { Services } from '../services'
 import { auditFilterSchema, formatValidationErrors } from '../validators/auditFilterValidator'
+import Page from '../routes/page'
 
 export default class AuditController {
   constructor(private readonly services: Services) {}

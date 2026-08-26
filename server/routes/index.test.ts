@@ -1,19 +1,20 @@
 import type { Express } from 'express'
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { randomUUID } from 'crypto'
 import { appWithAllRoutes, user } from './testutils/appSetup'
-import AuditService, { Page as AuditPage } from '../services/auditService'
 import { CursorPage } from '../interfaces/cursorPage'
 import AuditHistoryService from '../services/auditHistoryService'
 import { NomisSyncPayloadDetail } from '../interfaces/nomisSyncPayloadDetail'
 import { NomisSyncPayloadSummary } from '../interfaces/nomisSyncPayloadSummary'
 import { formatTransactionType } from '../utils/utils'
+import Page from './page'
 
-jest.mock('../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 jest.mock('../services/auditHistoryService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
+const auditService = new AuditService(undefined) as jest.Mocked<AuditService>
 const auditHistoryService = new AuditHistoryService(null) as jest.Mocked<AuditHistoryService>
 
 let app: Express
@@ -43,7 +44,19 @@ describe('GET /', () => {
       .expect(res => {
         expect(res.text).toContain('Prisoner Finance Sync')
         expect(res.text).toContain('View audit history')
-        expect(auditService.logPageView).toHaveBeenCalledWith(AuditPage.INDEX_PAGE, expect.anything())
+
+        /*
+        expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+          correlationId: '4d0fd4da-ecc1-454d-8308-cdee6b8b91f7',
+          details: { build: 'abc123', userRoles: [] },
+          subjectId: '12345',
+          subjectType: 'SEARCH_TERM',
+          action: 'SEARCH_OFFENDERS',
+          who: 'user1',
+        })
+        */
+
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.INDEX_PAGE, expect.anything())
       })
   })
 })
@@ -183,6 +196,10 @@ describe('GET /audit', () => {
       .expect('Content-Type', /html/)
       .expect(200)
       .expect(() => {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.AUDIT_HISTORY_PAGE, {
+          who: user.username,
+          correlationId: expect.any(String),
+        })
         expect(auditHistoryService.getMatchingPayloads).toHaveBeenCalledWith({
           prisonId,
           cursor: null,
@@ -192,7 +209,7 @@ describe('GET /audit', () => {
   })
 
   it('service errors are handled', () => {
-    auditService.logPageView.mockResolvedValue(null)
+    auditService.logPageView.mockResolvedValue(undefined)
     auditHistoryService.getMatchingPayloads.mockRejectedValue(new Error('Some problem calling external api!'))
 
     return request(app)

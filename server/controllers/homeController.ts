@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
-import { Page } from '../services/auditService'
 import type { Services } from '../services'
+import Page from '../routes/page'
 
 export default class HomeController {
   constructor(private readonly services: Services) {}

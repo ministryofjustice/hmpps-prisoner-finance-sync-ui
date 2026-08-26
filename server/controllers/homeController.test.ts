@@ -1,16 +1,17 @@
 import { Request, Response } from 'express'
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import HomeController from './homeController'
-import AuditService, { Page as AuditPage } from '../services/auditService'
 import type { Services } from '../services'
+import Page from '../routes/page'
 
-jest.mock('../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
+
+const auditService = new AuditService(undefined) as jest.Mocked<AuditService>
 
 describe('HomeController', () => {
   let homeController: HomeController
   let mockReq: Partial<Request>
   let mockRes: Partial<Response>
-
-  const auditService = new AuditService(null) as jest.Mocked<AuditService>
 
   beforeEach(() => {
     homeController = new HomeController({ auditService } as unknown as Services)
@@ -33,7 +34,7 @@ describe('HomeController', () => {
     it('should log page view for INDEX_PAGE and render the home page', async () => {
       await homeController.index(mockReq as Request, mockRes as Response)
 
-      expect(auditService.logPageView).toHaveBeenCalledWith(AuditPage.INDEX_PAGE, {
+      expect(auditService.logPageView).toHaveBeenCalledWith(Page.INDEX_PAGE, {
         who: 'test-user',
         correlationId: '123',
       })
