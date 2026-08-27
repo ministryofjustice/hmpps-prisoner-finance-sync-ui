@@ -63,7 +63,7 @@ describe('prisoner transactions page', () => {
       },
     )
 
-    setUpNunJucksFilters(njkEnv)
+    setUpNunJucksFilters(njkEnv, { '/assets/css/index.css': '/assets/css/index.scss' })
 
     const html = njkEnv.render('pages/transactions/prisonerTransactions.njk', params)
     $ = cheerio.load(html)

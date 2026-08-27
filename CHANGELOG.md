@@ -1,5 +1,111 @@
 # Change log
 
+**August 26th 2026** - Adding audit client library
+
+Removing the local version of the audit client and replacing with the hmpps-audit-client.
+
+There's a breaking change: the `what` field has been replaced with `action`.
+The audit client is disabled by default in the hosted version of the template project.
+
+See PR [#804](https://github.com/ministryofjustice/hmpps-template-typescript/pull/804)
+
+**August 19th 2026** - Allow setting default log level per environment
+
+Provide a mechanism to specify the log level via environmental variables.
+Note: this also changes the default log level to be `debug`
+
+See PR [#804](https://github.com/ministryofjustice/hmpps-template-typescript/pull/804)
+
+**August 14th 2026** - Move to npm 12
+
+As part of this we can remove reliance on the [hmpps allowlist scripts library](https://github.com/ministryofjustice/hmpps-typescript-lib/tree/main/packages/npm-script-allowlist) as this functionality is included in npm.
+See [here](https://docs.npmjs.com/cli/v12/commands/npm-install-scripts) for more information
+
+Note: ensure `engine-strict=true` is set in .npmrc so installs fail on npm < 12; the allowlist script functionality relies on disabling `ignore-scripts`, which is unsafe in npm < 12.
+
+See PR [#806](https://github.com/ministryofjustice/hmpps-template-typescript/pull/806)
+
+**July 29th 2026** - Move to devsecops-hooks 2.0.2
+
+There's been a big rewrite of the [secret scanner precommit hook](https://github.com/ministryofjustice/devsecops-hooks) to simplify things.
+
+It now no longer uses docker which is much quicker but requires gitleaks to be installed locally on dev machines.
+
+The hook will prevent the commit if gitleaks isn't installed and provide a prompt to visit: https://github.com/gitleaks/gitleaks#installing
+
+For Mac users, gitleaks can be installed via brew: `brew install gitleaks`
+
+See PR [#792](https://github.com/ministryofjustice/hmpps-template-typescript/pull/792)
+
+**June 25th 2026** - Fancier wiremock interface
+
+Should make it easier to write stubs correctly, especially when you want to match query parameters
+(using `urlPattern` is sensitive to parameter order so is not very effective).
+
+Since most apis will want a /health/ping stub, it’s convenient to have something to reuse and
+for the health check integration tests to be simpler to update.
+
+See PR [#774](https://github.com/ministryofjustice/hmpps-template-typescript/pull/774)
+
+**June 25th 2026** - Fix appinsights logging
+
+Logger was inadvertently being loaded before the azure-telemetry model, causing instrumentation to be incorrectly configured. Removing this logging fixes AppTraces reporting in Azure
+
+See PR [#778](https://github.com/ministryofjustice/hmpps-template-typescript/pull/778)
+
+**May 12th 2026** - Add codeql scan for typescript
+
+Adding an action for codeql security scanning of the application source code
+
+See PR [#742](https://github.com/ministryofjustice/hmpps-template-typescript/pull/742) and [#743](https://github.com/ministryofjustice/hmpps-template-typescript/pull/743)
+
+**May 11th 2026** - Build docker image on PR branches
+
+Moving to automatically build docker images on PR branches to more quickly identify issues which would result in broken deployments.
+
+See PR [#738](https://github.com/ministryofjustice/hmpps-template-typescript/pull/738)
+
+**April 23rd 2026** - Improve type safety
+
+Update type definitions in the codebase so that they are compatible with strict mode if enabled in [tsconfig.json](/tsconfig.json).
+
+See PR [#718](https://github.com/ministryofjustice/hmpps-template-typescript/pull/718)
+
+**April 22nd 2026** - Remove npm from final image using new alpine-runtime image.
+
+Consolidate to a 2-stage Docker build with an `alpine-runtime` final stage, removing npm from the shipped image, reducing attack surface, and limiting the number of vulnerabilities found by scanning tools.
+
+See PR [#693](https://github.com/ministryofjustice/hmpps-template-typescript/pull/693)
+
+**April 21st 2026** - Use .npmrc during docker build
+
+Ensure repo `.npmrc` is present when building docker image to inherit security settings.
+
+See PR [#719](https://github.com/ministryofjustice/hmpps-template-typescript/pull/719)
+
+**April 14th 2026** - Move to Typescript v6.
+
+See PR [#715](https://github.com/ministryofjustice/hmpps-template-typescript/pull/715)
+
+**April 13th 2026** - Fix renovate config for stability days.
+
+Ensure renovate config matches npmrc config for stability days
+
+See PR [#711](https://github.com/ministryofjustice/hmpps-template-typescript/pull/711)
+
+**March 30th 2026** - `.npmrc` security improvements.
+
+Adding new support for:
+
+* [disabling git dependencies](https://docs.npmjs.com/cli/v11/commands/npm-install#allow-git)
+  * These can allow malicious actors to alias common executables with nefarious versions
+* [Set a minimum release age of dependencies](https://docs.npmjs.com/cli/v11/commands/npm-install#min-release-age)
+  * To reduce risk of incorporating maliciously published packages
+
+To override min-release-age for manual audit fixes, might need to do: `npm audit fix --min-release-age=null`
+
+See PR [#706](https://github.com/ministryofjustice/hmpps-template-typescript/pull/706)
+
 **February 26th 2026** - Run lint, tests and type checking on package-lock changes.
 
 There was an issue where precommit hooks weren't firing for package-lock changes.
@@ -51,7 +157,7 @@ This has an improvement which means `.allowed-scripts.mjs` no longer needs to be
 
 See PR [#643](https://github.com/ministryofjustice/hmpps-template-typescript/pull/643)
 
-**December 4th 2025** - Remove mocha-junit-reporter and reporter-config.json.
+**December 4th 2025** - Move to use shared HMPPS typescript base image
 
 Replaced the custom Node.js base image setup with the standardized `hmpps-node:24-alpine` base image from GitHub Container Registry `hmpps-base-container-images`. This simplifies maintenance and ensures consistency across projects.
 

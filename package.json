@@ -14,7 +14,7 @@
     "start-feature:dev": "node esbuild/esbuild --watch --env feature.env",
     "lint": "eslint . --cache --max-warnings 0",
     "lint-fix": "eslint . --cache --max-warnings 0 --fix",
-    "typecheck": "tsc && tsc -p integration_tests",
+    "typecheck": "tsc && tsc -p integration_tests && tsc -p assets/js",
     "test": "jest",
     "test:ci": "jest --runInBand",
     "security_audit": "npx audit-ci --config audit-ci.json",
@@ -23,19 +23,20 @@
     "int-test-init:ci": "npx playwright install",
     "clean": "rm -rf dist test_results",
     "rebuild": "npm run clean && npm run setup && npm run build",
-    "setup": "npm ci && hmpps-npm-script-run-allowlist"
+    "setup": "npm ci"
   },
   "engines": {
     "node": "^24",
-    "npm": "^11"
+    "npm": "^12"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1115.0",
-    "@ministryofjustice/frontend": "10.0.1",
-    "@ministryofjustice/hmpps-auth-clients": "^1.0.2",
+    "@aws-sdk/client-sqs": "^3.1114.0",
+    "@ministryofjustice/frontend": "^10.0.1",
+    "@ministryofjustice/hmpps-audit-client": "2.0.0-beta.4",
+    "@ministryofjustice/hmpps-auth-clients": "3.0.0",
+    "@ministryofjustice/hmpps-azure-telemetry": "^1.0.2",
     "@ministryofjustice/hmpps-monitoring": "^2.1.0",
     "@ministryofjustice/hmpps-rest-client": "^2.2.0",
-    "applicationinsights": "^2.9.8",
     "bunyan": "^1.8.15",
     "bunyan-format": "^0.2.1",
     "compression": "^1.8.1",
@@ -53,7 +54,7 @@
     "nunjucks": "^3.2.4",
     "passport": "^0.7.0",
     "passport-oauth2": "^1.8.0",
-    "redis": "^5.12.1",
+    "redis": "6.2.1",
     "superagent": "^10.3.0",
     "zod": "4.4.3"
   },
@@ -61,7 +62,7 @@
     "@axe-core/playwright": "4.13.0",
     "@jgoz/esbuild-plugin-typecheck": "^4.0.4",
     "@ministryofjustice/eslint-config-hmpps": "^1.0.3",
-    "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.6",
+    "@ministryofjustice/frontend-types": "2.0.1",
     "@ministryofjustice/hmpps-precommit-hooks": "3.0.2",
     "@playwright/test": "^1.62.1",
     "@tsconfig/node24": "^24.0.5",
@@ -83,7 +84,7 @@
     "aws-sdk-client-mock": "^4.1.0",
     "cheerio": "1.2.0",
     "del": "8.0.1",
-    "esbuild": "0.28.2",
+    "esbuild": "^0.28.2",
     "esbuild-plugin-copy": "^2.1.1",
     "esbuild-plugin-manifest": "^1.0.5",
     "esbuild-sass-plugin": "^3.7.0",
@@ -95,12 +96,23 @@
     "nock": "^14.0.17",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.12",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
   "overrides": {
     "@aws-sdk/xml-builder": {
       "fast-xml-parser": "^5.11.0"
     },
+    "@opentelemetry/core": "2.10.0",
+    "brace-expansion": "5.0.9",
+    "js-yaml": "5.3.0",
     "unrs-resolver": "1.12.2"
+  },
+  "allowScripts": {
+    "@parcel/watcher@2.6.0": true,
+    "dtrace-provider@0.8.8": false,
+    "fsevents@2.3.3": true,
+    "fsevents@2.3.2": true,
+    "unrs-resolver@1.12.2": true,
+    "esbuild@0.28.2": true
   }
 }
