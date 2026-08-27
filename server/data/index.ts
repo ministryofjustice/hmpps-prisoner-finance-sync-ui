@@ -1,23 +1,13 @@
-/* eslint-disable import/first */
-/*
- * Do appinsights first as it does some magic instrumentation work, i.e. it affects other 'require's
- * In particular, applicationinsights automatically collects bunyan logs
- */
 import { AuthenticationClient, InMemoryTokenStore, RedisTokenStore } from '@ministryofjustice/hmpps-auth-clients'
-import { initialiseAppInsights, buildAppInsightsClient } from '../utils/azureAppInsights'
-import applicationInfoSupplier from '../applicationInfo'
-
-const applicationInfo = applicationInfoSupplier()
-initialiseAppInsights()
-buildAppInsightsClient(applicationInfo)
-
 import { createRedisClient } from './redisClient'
 import config from '../config'
-import HmppsAuditClient from './hmppsAuditClient'
 import logger from '../../logger'
 import PrisonerFinanceSyncApiClient from './prisonerFinanceSyncApiClient'
 import PrisonerFinanceApiClient from './prisonerFinanceApiClient'
 import GeneralLedgerApiClient from './generalLedgerApiClient'
+import applicationInfoSupplier from '../applicationInfo'
+
+const applicationInfo = applicationInfoSupplier()
 
 export const dataAccess = () => {
   const hmppsAuthClient = new AuthenticationClient(
@@ -30,7 +20,6 @@ export const dataAccess = () => {
     applicationInfo,
     hmppsAuthClient,
     prisonerFinanceSyncApiClient: new PrisonerFinanceSyncApiClient(hmppsAuthClient),
-    hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
     prisonerFinanceApiClient: new PrisonerFinanceApiClient(hmppsAuthClient),
     generalLedgerApiClient: new GeneralLedgerApiClient(hmppsAuthClient),
   }
@@ -38,4 +27,4 @@ export const dataAccess = () => {
 
 export type DataAccess = ReturnType<typeof dataAccess>
 
-export { AuthenticationClient, HmppsAuditClient, PrisonerFinanceSyncApiClient, PrisonerFinanceApiClient }
+export { AuthenticationClient, PrisonerFinanceSyncApiClient, PrisonerFinanceApiClient }
