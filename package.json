@@ -30,7 +30,7 @@
     "npm": "^12"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1114.0",
+    "@aws-sdk/client-sqs": "^3.1121.0",
     "@ministryofjustice/frontend": "^10.0.1",
     "@ministryofjustice/hmpps-audit-client": "2.0.0-beta.4",
     "@ministryofjustice/hmpps-auth-clients": "3.0.0",
@@ -46,7 +46,7 @@
     "date-fns": "4.4.0",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
-    "govuk-frontend": "6.4.0",
+    "govuk-frontend": "6.5.0",
     "helmet": "^8.3.0",
     "http-errors": "^2.0.1",
     "jwt-decode": "^4.0.0",
@@ -56,7 +56,7 @@
     "passport-oauth2": "^1.8.0",
     "redis": "6.2.1",
     "superagent": "^10.3.0",
-    "zod": "4.4.3"
+    "zod": "4.5.2"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",
@@ -88,11 +88,11 @@
     "esbuild-plugin-copy": "^2.1.1",
     "esbuild-plugin-manifest": "^1.0.5",
     "esbuild-sass-plugin": "^3.7.0",
-    "jest": "^30.4.2",
+    "jest": "^30.5.0",
     "jest-html-reporter": "^4.4.0",
     "jest-junit": "^17.0.0",
     "jsonwebtoken": "^9.0.3",
-    "lint-staged": "^17.3.0",
+    "lint-staged": "^17.4.1",
     "nock": "^14.0.17",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.12",
@@ -100,11 +100,11 @@
   },
   "overrides": {
     "@aws-sdk/xml-builder": {
-      "fast-xml-parser": "^5.11.0"
+      "fast-xml-parser": "^5.11.1"
     },
     "@opentelemetry/core": "2.10.0",
     "brace-expansion": "5.0.9",
-    "js-yaml": "5.3.0",
+    "js-yaml": "5.4.1",
     "unrs-resolver": "1.12.2"
   },
   "allowScripts": {
