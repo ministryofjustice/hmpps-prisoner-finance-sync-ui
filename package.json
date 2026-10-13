@@ -93,7 +93,7 @@
     "jest-junit": "^17.0.0",
     "jsonwebtoken": "^9.0.3",
     "lint-staged": "^17.5.1",
-    "nock": "^14.0.17",
+    "nock": "^15.0.1",
     "supertest": "^7.3.0",
     "ts-jest": "^29.4.12",
     "typescript": "^6.0.3"
