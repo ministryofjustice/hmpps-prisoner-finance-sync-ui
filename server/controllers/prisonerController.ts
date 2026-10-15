@@ -35,6 +35,21 @@ class PrisonerController {
     return [...transactionRows, ...statementBalanceRows].sort((a, b) => a.date.getTime() - b.date.getTime())
   }
 
+  public getHolds = async (req: Request, res: Response, next: NextFunction) => {
+    await this.services.auditService.logPageView(Page.AUDIT_COMBINED_TRANSACTIONS_PAGE, {
+      who: res.locals.user.username,
+      correlationId: req.id,
+    })
+
+    const prisonNumber = req.params.prisonNumber.toString()
+    const holdsPage = await this.services.prisonerHoldsService.getHolds(prisonNumber)
+
+    res.render('pages/transactions/prisonerHolds', {
+      holds: holdsPage.content,
+      prisonNumber,
+    })
+  }
+
   public getTransactions = async (req: Request, res: Response, next: NextFunction) => {
     await this.services.auditService.logPageView(Page.AUDIT_COMBINED_TRANSACTIONS_PAGE, {
       who: res.locals.user.username,

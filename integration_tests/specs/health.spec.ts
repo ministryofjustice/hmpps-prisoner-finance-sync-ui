@@ -6,9 +6,10 @@ import hmppsAuth from '../mockApis/hmppsAuth'
 import tokenVerification from '../mockApis/tokenVerification'
 
 import { resetStubs } from '../testUtils'
+import holdsapi from '../mockApis/holdsApi'
 
 // NB: add new mock apis here:
-const mockApis = [hmppsAuth, tokenVerification, prisonerFinanceSyncApi, prisonerFinanceApi, generalLedgerApi]
+const mockApis = [hmppsAuth, tokenVerification, prisonerFinanceSyncApi, prisonerFinanceApi, generalLedgerApi, holdsapi]
 
 test.describe('Health', () => {
   test.afterEach(async () => {

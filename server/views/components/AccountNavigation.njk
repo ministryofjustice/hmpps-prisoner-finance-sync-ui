@@ -1,0 +1,29 @@
+{%- from "moj/components/sub-navigation/macro.njk" import mojSubNavigation -%}
+
+
+{% macro AccountNavigation(prisonNumber, activeTileText) %}
+  {{ mojSubNavigation({
+  label: "Sub navigation",
+  items: [{
+    text: "Cash",
+    href: "/" + prisonNumber + "/money/cash",
+    active: true if(activeTileText | lower == 'cash') else false
+  }, {
+    text: "Spends",
+    href: "/" + prisonNumber + "/money/spends",
+    active: true if(activeTileText | lower == 'spends') else false
+  }, {
+    text: "Savings",
+    href: "/" + prisonNumber + "/money/savings",
+    active: true if(activeTileText | lower == 'savings') else false
+  },
+  {
+    text: "Holds",
+    href: "/" + prisonNumber + "/money/holds",
+    active: true if(activeTileText | lower == 'holds') else false
+  }
+  ]
+  })
+}}
+
+{% endmacro %}
