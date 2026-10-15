@@ -32,22 +32,33 @@ export const parseDate = (date: string, fromFormat = 'yyyy-MM-dd') => {
 export const formatDate = (date: unknown, fmt = 'EEEE, HH:mm - d MMMM yyyy', inContextName = false) => {
   if (!date) return null
 
-  let richDate = date as Date
-  if (typeof date === 'string') {
-    richDate = parseDate(date as string)
+  let richDate: Date
+
+  if (date instanceof Date) {
+    richDate = date
+  } else if (typeof date === 'string') {
+    // Native Date handles full ISO-8601 strings: '2026-10-06T10:59:34.119937Z'
+    richDate = new Date(date)
+
+    // Fallback: if native parsing fails, try parse() with a custom format
+    if (Number.isNaN(richDate.getTime())) {
+      richDate = parse(date, 'yyyy-MM-dd', new Date())
+    }
+  } else {
+    richDate = new Date(date as number)
+  }
+
+  // Prevent RangeError: Invalid time value
+  if (Number.isNaN(richDate.getTime())) {
+    return null
   }
 
   if (inContextName) {
-    if (isToday(richDate)) {
-      return 'today'
-    }
-    if (isTomorrow(richDate)) {
-      return 'tomorrow'
-    }
-    if (isYesterday(richDate)) {
-      return 'yesterday'
-    }
+    if (isToday(richDate)) return 'today'
+    if (isTomorrow(richDate)) return 'tomorrow'
+    if (isYesterday(richDate)) return 'yesterday'
   }
+
   return format(richDate, fmt)
 }
 

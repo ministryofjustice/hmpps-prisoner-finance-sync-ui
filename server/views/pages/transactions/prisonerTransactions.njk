@@ -17,9 +17,6 @@
       subAccountBalance : row.subAccountBalance | penceToPound
   }
     %}
-  {% if showLocation %}
-      {% set rowData = (rowData.push({ text: row.location | convertPrisonIdToName(prisonNames)}), rowData) %}
-  {% endif %}
   {% set rows = (rows.push(rowData), rows) %}
 {% endfor %}
 
