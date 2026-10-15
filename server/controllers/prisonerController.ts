@@ -3,7 +3,8 @@ import type { Services } from '../services'
 import { PrisonerTransactionResponse } from '../interfaces/prisonerTransactionResponse'
 import { StatementBalanceResponse } from '../interfaces/statementBalanceResponse'
 import { PrisonerTransactionRow } from '../interfaces/prisonerTransactionsRow'
-import Page from '../routes/page'
+import AuditPage from '../routes/page'
+import { SubjectType } from '../data/hmppsAuditClient'
 
 class PrisonerController {
   constructor(private readonly services: Services) {}
@@ -36,12 +37,15 @@ class PrisonerController {
   }
 
   public getHolds = async (req: Request, res: Response, next: NextFunction) => {
-    await this.services.auditService.logPageView(Page.AUDIT_COMBINED_TRANSACTIONS_PAGE, {
+    const prisonNumber = req.params.prisonNumber.toString()
+
+    await this.services.auditService.logPageView(AuditPage.AUDIT_HOLDS_PAGE, {
       who: res.locals.user.username,
       correlationId: req.id,
+      subjectType: SubjectType.PRISONER,
+      subjectId: prisonNumber,
     })
 
-    const prisonNumber = req.params.prisonNumber.toString()
     const holdsPage = await this.services.prisonerHoldsService.getHolds(prisonNumber)
 
     res.render('pages/transactions/prisonerHolds', {
@@ -51,12 +55,15 @@ class PrisonerController {
   }
 
   public getTransactions = async (req: Request, res: Response, next: NextFunction) => {
-    await this.services.auditService.logPageView(Page.AUDIT_COMBINED_TRANSACTIONS_PAGE, {
+    const prisonNumber = req.params.prisonNumber.toString()
+
+    await this.services.auditService.logPageView(AuditPage.AUDIT_HOLDS_PAGE, {
       who: res.locals.user.username,
       correlationId: req.id,
+      subjectType: SubjectType.PRISONER,
+      subjectId: prisonNumber,
     })
 
-    const prisonNumber = req.params.prisonNumber.toString()
     const subAccount = req.path.split('/').slice(-1)[0]
     const transactionPage = await this.services.prisonerFinanceService.getPrisonerTransactionsByPrisonNumber({
       prisonNumber,

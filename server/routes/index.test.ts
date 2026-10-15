@@ -1,5 +1,4 @@
 import type { Express } from 'express'
-import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { randomUUID } from 'crypto'
@@ -9,9 +8,11 @@ import AuditHistoryService from '../services/auditHistoryService'
 import { NomisSyncPayloadDetail } from '../interfaces/nomisSyncPayloadDetail'
 import { NomisSyncPayloadSummary } from '../interfaces/nomisSyncPayloadSummary'
 import { formatTransactionType } from '../utils/utils'
-import Page from './page'
+import AuditPage from './page'
+import AuditService from '../services/auditService'
+import { SubjectType } from '../data/hmppsAuditClient'
 
-jest.mock('@ministryofjustice/hmpps-audit-client')
+jest.mock('../services/auditService')
 jest.mock('../services/auditHistoryService')
 
 const auditService = new AuditService(undefined) as jest.Mocked<AuditService>
@@ -44,7 +45,7 @@ describe('GET /', () => {
       .expect(res => {
         expect(res.text).toContain('Prisoner Finance Sync')
         expect(res.text).toContain('View audit history')
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.INDEX_PAGE, expect.anything())
+        expect(auditService.logPageView).toHaveBeenCalledWith(AuditPage.INDEX_PAGE, expect.anything())
       })
   })
 })
@@ -184,9 +185,10 @@ describe('GET /audit', () => {
       .expect('Content-Type', /html/)
       .expect(200)
       .expect(() => {
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.AUDIT_HISTORY_PAGE, {
+        expect(auditService.logPageView).toHaveBeenCalledWith(AuditPage.AUDIT_HISTORY_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
+          subjectType: SubjectType.SEARCH_TERM,
         })
         expect(auditHistoryService.getMatchingPayloads).toHaveBeenCalledWith({
           prisonId,

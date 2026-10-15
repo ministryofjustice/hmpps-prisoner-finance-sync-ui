@@ -2,7 +2,8 @@ import { Request, Response, NextFunction } from 'express'
 import paginationFromCursor from '../utils/pagination/cursor'
 import type { Services } from '../services'
 import { auditFilterSchema, formatValidationErrors } from '../validators/auditFilterValidator'
-import Page from '../routes/page'
+import AuditPage from '../routes/page'
+import { SubjectType } from '../data/hmppsAuditClient'
 
 export default class AuditController {
   constructor(private readonly services: Services) {}
@@ -10,9 +11,10 @@ export default class AuditController {
   public detail = async (req: Request, res: Response): Promise<void> => {
     const payloadId = req.params.payloadId as string
 
-    await this.services.auditService.logPageView(Page.AUDIT_DETAIL_PAGE, {
+    await this.services.auditService.logPageView(AuditPage.AUDIT_DETAIL_PAGE, {
       who: res.locals.user.username,
       correlationId: req.id,
+      subjectType: SubjectType.SEARCH_TERM,
     })
 
     const auditDetail = await this.services.auditHistoryService.getPayloadById(payloadId)
@@ -21,9 +23,10 @@ export default class AuditController {
 
   public history = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      await this.services.auditService.logPageView(Page.AUDIT_HISTORY_PAGE, {
+      await this.services.auditService.logPageView(AuditPage.AUDIT_HISTORY_PAGE, {
         who: res.locals.user.username,
         correlationId: req.id,
+        subjectType: SubjectType.SEARCH_TERM,
       })
 
       const viewFilters = {

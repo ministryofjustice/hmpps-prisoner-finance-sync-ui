@@ -32,7 +32,7 @@
     <thead class="govuk-table__head">
     <tr class="govuk-table__row">
         <th class="govuk-table__header">NOM_ID</th>
-        <th class="govuk-table__header">SubAccountRef</th>
+        <th class="govuk-table__header">Ref</th>
         <th class="govuk-table__header">CreatedAt</th>
         <th class="govuk-table__header">CreatedBy</th>
         <th class="govuk-table__header">FromDate</th>
@@ -46,11 +46,10 @@
     </thead>
     <tbody class="govuk-table__body">
     {% for row in rows %}
-        <tr class="govuk-table__row statement-balance-bold-row" >
-            <td class="govuk-table__cell">{{ row.id }}</td>
+        <tr class="govuk-table__row" >
             <td class="govuk-table__cell">{{ row.legacyHoldNumber }}</td>
             <td class="govuk-table__cell">{{ row.subAccountRef }}</td>
-            <td class="govuk-table__cell">{{ row.createdAt | formatDate}}</td>
+            <td class="govuk-table__cell">{{ row.createdAt | formatDateForView | safe}}</td>
             <td class="govuk-table__cell">{{ row.createdBy }}</td>
             <td class="govuk-table__cell">{{ row.holdFromDate | formatDate}}</td>
             <td class="govuk-table__cell">{{ row.holdUntilDate | formatDate}}</td>

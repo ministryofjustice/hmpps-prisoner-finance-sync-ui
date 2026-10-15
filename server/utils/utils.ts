@@ -1,4 +1,4 @@
-import { format, isToday, isTomorrow, isYesterday, parse } from 'date-fns'
+import { format, isToday, isTomorrow, isValid, isYesterday, parse, parseISO } from 'date-fns'
 
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0]!.toUpperCase() + word.toLowerCase().slice(1) : word
@@ -29,37 +29,15 @@ export const parseDate = (date: string, fromFormat = 'yyyy-MM-dd') => {
   return parse(date, fromFormat, new Date())
 }
 
-export const formatDate = (date: unknown, fmt = 'EEEE, HH:mm - d MMMM yyyy', inContextName = false) => {
-  if (!date) return null
-
-  let richDate: Date
-
-  if (date instanceof Date) {
-    richDate = date
-  } else if (typeof date === 'string') {
-    // Native Date handles full ISO-8601 strings: '2026-10-06T10:59:34.119937Z'
-    richDate = new Date(date)
-
-    // Fallback: if native parsing fails, try parse() with a custom format
-    if (Number.isNaN(richDate.getTime())) {
-      richDate = parse(date, 'yyyy-MM-dd', new Date())
-    }
-  } else {
-    richDate = new Date(date as number)
-  }
-
-  // Prevent RangeError: Invalid time value
-  if (Number.isNaN(richDate.getTime())) {
-    return null
-  }
-
-  if (inContextName) {
-    if (isToday(richDate)) return 'today'
-    if (isTomorrow(richDate)) return 'tomorrow'
-    if (isYesterday(richDate)) return 'yesterday'
-  }
-
+export const formatDate = (date?: string | Date, fmt = 'd MMMM yyyy') => {
+  if (!date) return undefined
+  const richDate = typeof date === 'string' ? parseISO(date) : date
+  if (!isValid(richDate)) return undefined
   return format(richDate, fmt)
+}
+
+export const formatDateForView = (utcString: string, formatDateStr: string = 'dd/MM/yyyy HH:mm'): string => {
+  return format(parseISO(utcString), formatDateStr).replace(' ', '<br>')
 }
 
 export const formatTransactionType = (requestTypeIdentifier: string): string => {
