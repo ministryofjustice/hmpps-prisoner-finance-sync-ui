@@ -57,7 +57,7 @@ class PrisonerController {
   public getTransactions = async (req: Request, res: Response, next: NextFunction) => {
     const prisonNumber = req.params.prisonNumber.toString()
 
-    await this.services.auditService.logPageView(AuditPage.AUDIT_HOLDS_PAGE, {
+    await this.services.auditService.logPageView(AuditPage.AUDIT_COMBINED_TRANSACTIONS_PAGE, {
       who: res.locals.user.username,
       correlationId: req.id,
       subjectType: SubjectType.PRISONER,
