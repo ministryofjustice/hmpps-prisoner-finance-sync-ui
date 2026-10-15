@@ -6,6 +6,8 @@ import PrisonerFinanceSyncApiClient from './prisonerFinanceSyncApiClient'
 import PrisonerFinanceApiClient from './prisonerFinanceApiClient'
 import GeneralLedgerApiClient from './generalLedgerApiClient'
 import applicationInfoSupplier from '../applicationInfo'
+import HoldsApiClient from './holdsApiClient'
+import HmppsAuditClient from './hmppsAuditClient'
 
 const applicationInfo = applicationInfoSupplier()
 
@@ -22,9 +24,17 @@ export const dataAccess = () => {
     prisonerFinanceSyncApiClient: new PrisonerFinanceSyncApiClient(hmppsAuthClient),
     prisonerFinanceApiClient: new PrisonerFinanceApiClient(hmppsAuthClient),
     generalLedgerApiClient: new GeneralLedgerApiClient(hmppsAuthClient),
+    holdsApiClient: new HoldsApiClient(hmppsAuthClient),
+    hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
   }
 }
 
 export type DataAccess = ReturnType<typeof dataAccess>
 
-export { AuthenticationClient, PrisonerFinanceSyncApiClient, PrisonerFinanceApiClient }
+export {
+  AuthenticationClient,
+  PrisonerFinanceSyncApiClient,
+  PrisonerFinanceApiClient,
+  HoldsApiClient,
+  HmppsAuditClient,
+}

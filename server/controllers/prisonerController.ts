@@ -3,7 +3,8 @@ import type { Services } from '../services'
 import { PrisonerTransactionResponse } from '../interfaces/prisonerTransactionResponse'
 import { StatementBalanceResponse } from '../interfaces/statementBalanceResponse'
 import { PrisonerTransactionRow } from '../interfaces/prisonerTransactionsRow'
-import Page from '../routes/page'
+import AuditPage from '../routes/page'
+import { SubjectType } from '../data/hmppsAuditClient'
 
 class PrisonerController {
   constructor(private readonly services: Services) {}
@@ -35,13 +36,34 @@ class PrisonerController {
     return [...transactionRows, ...statementBalanceRows].sort((a, b) => a.date.getTime() - b.date.getTime())
   }
 
-  public getTransactions = async (req: Request, res: Response, next: NextFunction) => {
-    await this.services.auditService.logPageView(Page.AUDIT_COMBINED_TRANSACTIONS_PAGE, {
+  public getHolds = async (req: Request, res: Response, next: NextFunction) => {
+    const prisonNumber = req.params.prisonNumber.toString()
+
+    await this.services.auditService.logPageView(AuditPage.AUDIT_HOLDS_PAGE, {
       who: res.locals.user.username,
       correlationId: req.id,
+      subjectType: SubjectType.PRISONER,
+      subjectId: prisonNumber,
     })
 
+    const holdsPage = await this.services.prisonerHoldsService.getHolds(prisonNumber)
+
+    res.render('pages/transactions/prisonerHolds', {
+      holds: holdsPage.content,
+      prisonNumber,
+    })
+  }
+
+  public getTransactions = async (req: Request, res: Response, next: NextFunction) => {
     const prisonNumber = req.params.prisonNumber.toString()
+
+    await this.services.auditService.logPageView(AuditPage.AUDIT_COMBINED_TRANSACTIONS_PAGE, {
+      who: res.locals.user.username,
+      correlationId: req.id,
+      subjectType: SubjectType.PRISONER,
+      subjectId: prisonNumber,
+    })
+
     const subAccount = req.path.split('/').slice(-1)[0]
     const transactionPage = await this.services.prisonerFinanceService.getPrisonerTransactionsByPrisonNumber({
       prisonNumber,

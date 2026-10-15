@@ -1,0 +1,65 @@
+{% extends "../../partials/layout.njk" %}
+{% from "../../components/AccountNavigation.njk" import AccountNavigation %}
+
+{% block content %}
+
+{% set rows = [] %}
+{% for row in holds %}
+{% set rowData = {
+        legacyHoldNumber: row.legacyHoldNumber,
+        subAccountRef : row.subAccountRef,
+        createdAt: row.createdAt,
+        createdBy: row.createdBy,
+        holdFromDate : row.holdFromDate,
+        holdUntilDate: row.holdUntilDate,
+        isReleased: row.isReleased,
+        description: row.description,
+        holdType: row.holdType,
+        amount: row.amount | penceToPound,
+        holdLocation: row.holdLocation
+    }
+%}
+{% set rows = (rows.push(rowData), rows) %}
+{% endfor %}
+
+<h3 class="govuk-heading-l">{{prisonNumber}}</h3>
+<br>
+
+{{ AccountNavigation(prisonNumber, subAccount) }}
+
+
+<table class="govuk-table" data-testid="prisoner-transactions-table">
+    <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+        <th class="govuk-table__header">NOM_ID</th>
+        <th class="govuk-table__header">Ref</th>
+        <th class="govuk-table__header">CreatedAt</th>
+        <th class="govuk-table__header">CreatedBy</th>
+        <th class="govuk-table__header">FromDate</th>
+        <th class="govuk-table__header">UntilDate</th>
+        <th class="govuk-table__header">IsReleased</th>
+        <th class="govuk-table__header">Description</th>
+        <th class="govuk-table__header">Type</th>
+        <th class="govuk-table__header">Amount</th>
+        <th class="govuk-table__header">Location</th>
+    </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+    {% for row in rows %}
+        <tr class="govuk-table__row" >
+            <td class="govuk-table__cell">{{ row.legacyHoldNumber }}</td>
+            <td class="govuk-table__cell">{{ row.subAccountRef }}</td>
+            <td class="govuk-table__cell">{{ row.createdAt | formatDateForView | safe}}</td>
+            <td class="govuk-table__cell">{{ row.createdBy }}</td>
+            <td class="govuk-table__cell">{{ row.holdFromDate | formatDate}}</td>
+            <td class="govuk-table__cell">{{ row.holdUntilDate | formatDate}}</td>
+            <td class="govuk-table__cell">{{ row.isReleased }}</td>
+            <td class="govuk-table__cell">{{ row.description }}</td>
+            <td class="govuk-table__cell">{{ row.holdType }}</td>
+            <td class="govuk-table__cell">{{ row.amount | penceToPound }}</td>
+            <td class="govuk-table__cell">{{ row.holdLocation }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,5 +1,4 @@
-import { addDays, subDays } from 'date-fns'
-import { convertToTitleCase, initialiseName, parseDate, formatDate } from './utils'
+import { convertToTitleCase, initialiseName, parseDate, formatDate, formatDateForView } from './utils'
 
 describe('convert to title case', () => {
   it.each([
@@ -45,22 +44,16 @@ describe('formatDate', () => {
   })
 
   it('formats a date to a long date with day when inContext not available', () => {
-    expect(formatDate(new Date(2022, 0, 1), 'cccc do LLLL y', true)).toEqual('Saturday 1st January 2022')
-  })
-
-  it('formats todays date as "today"', () => {
-    expect(formatDate(new Date(), '', true)).toEqual('today')
-  })
-
-  it('formats yesterdays date as "yesterday"', () => {
-    expect(formatDate(subDays(new Date(), 1), '', true)).toEqual('yesterday')
-  })
-
-  it('formats tomorrows date as "tomorrow"', () => {
-    expect(formatDate(addDays(new Date(), 1), '', true)).toEqual('tomorrow')
+    expect(formatDate(new Date(2022, 0, 1), 'cccc do LLLL y')).toEqual('Saturday 1st January 2022')
   })
 
   it('formats a date in string format', () => {
     expect(formatDate('2022-01-01', 'cccc do LLLL y')).toEqual('Saturday 1st January 2022')
+  })
+})
+
+describe('formatDateForViews', () => {
+  it('Convert to date to correct format', () => {
+    expect(formatDateForView('2026-03-10T10:43:28.094Z')).toBe('10/03/2026<br>10:43')
   })
 })

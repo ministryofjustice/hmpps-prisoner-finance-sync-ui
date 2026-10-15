@@ -15,6 +15,7 @@ export default function routes(services: Services): Router {
   router.get('/', homeController.index)
   router.get('/audit', auditController.history)
   router.get('/audit/:payloadId', auditController.detail)
+  router.get('/:prisonNumber/money/holds', prisonerController.getHolds)
   router.get('/:prisonNumber/money/:subAccount', prisonerController.getTransactions)
 
   return router

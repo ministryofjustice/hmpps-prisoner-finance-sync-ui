@@ -1,6 +1,5 @@
 import express, { Express } from 'express'
 import { NotFound } from 'http-errors'
-import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 
 import routes from '../index'
 import nunjucksSetup from '../../utils/nunjucksSetup'
@@ -9,6 +8,7 @@ import type { Services } from '../../services'
 import { HmppsUser } from '../../interfaces/hmppsUser'
 import setUpWebSession from '../../middleware/setUpWebSession'
 import type { ApplicationInfo } from '../../applicationInfo'
+import AuditService from '../../services/auditService'
 
 jest.mock('@ministryofjustice/hmpps-audit-client')
 
