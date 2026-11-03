@@ -79,7 +79,7 @@
             "mode": "raw",
             "query": "pageViews\n| where timestamp >= $__timeFrom and timestamp < $__timeTo\n| where cloud_RoleName == \"hmpps-prisoner-finance\"\n| where isnotempty(user_Id)\n| summarize TotalUniqueUsers = dcount(user_Id)",
             "resources": [
-              "/subscriptions/c27cfedb-f5e9-45e6-9642-0fad1a5c94e7/resourceGroups/nomisapi-t3-rg/providers/Microsoft.Insights/components/nomisapi-t3"
+              "/subscriptions/__AZ_SUBSCRIPTION_ID__/resourceGroups/__DASHBOARD_RESOURCE_GROUP__/providers/Microsoft.Insights/components/__DASHBOARD_RESOURCE_NAME__"
             ],
             "resultFormat": "table",
             "timeColumn": "timestamp"
@@ -93,9 +93,9 @@
               {
                 "metricNamespace": "Microsoft.Insights/components",
                 "region": "northeurope",
-                "resourceGroup": "nomisapi-t3-rg",
-                "resourceName": "nomisapi-t3",
-                "subscription": "c27cfedb-f5e9-45e6-9642-0fad1a5c94e7"
+                "resourceGroup": "__DASHBOARD_RESOURCE_GROUP__",
+                "resourceName": "__DASHBOARD_RESOURCE_NAME__",
+                "subscription": "__AZ_SUBSCRIPTION_ID__"
               }
             ],
             "timeGrain": "auto"
@@ -118,7 +118,7 @@
           },
           "queryType": "Azure Log Analytics",
           "refId": "A",
-          "subscription": "c27cfedb-f5e9-45e6-9642-0fad1a5c94e7"
+          "subscription": "__AZ_SUBSCRIPTION_ID__"
         }
       ],
       "title": "Unique users",
@@ -184,7 +184,7 @@
             "mode": "raw",
             "query": "pageViews\n| where timestamp >= $__timeFrom and timestamp < $__timeTo\n| where cloud_RoleName == \"hmpps-prisoner-finance\"\n| where isnotempty(user_Id)\n| summarize visits = count()",
             "resources": [
-              "/subscriptions/c27cfedb-f5e9-45e6-9642-0fad1a5c94e7/resourceGroups/nomisapi-t3-rg/providers/Microsoft.Insights/components/nomisapi-t3"
+              "/subscriptions/__AZ_SUBSCRIPTION_ID__/resourceGroups/__DASHBOARD_RESOURCE_GROUP__/providers/Microsoft.Insights/components/__DASHBOARD_RESOURCE_NAME__"
             ],
             "resultFormat": "table",
             "timeColumn": "timestamp"
@@ -198,9 +198,9 @@
               {
                 "metricNamespace": "Microsoft.Insights/components",
                 "region": "northeurope",
-                "resourceGroup": "nomisapi-t3-rg",
-                "resourceName": "nomisapi-t3",
-                "subscription": "c27cfedb-f5e9-45e6-9642-0fad1a5c94e7"
+                "resourceGroup": "__DASHBOARD_RESOURCE_GROUP__",
+                "resourceName": "__DASHBOARD_RESOURCE_NAME__",
+                "subscription": "__AZ_SUBSCRIPTION_ID__"
               }
             ],
             "timeGrain": "auto"
@@ -211,7 +211,7 @@
           },
           "queryType": "Azure Log Analytics",
           "refId": "A",
-          "subscription": "c27cfedb-f5e9-45e6-9642-0fad1a5c94e7"
+          "subscription": "__AZ_SUBSCRIPTION_ID__"
         }
       ],
       "title": "Total Visits",
@@ -306,7 +306,7 @@
             "mode": "raw",
             "query": "pageViews\n| where timestamp >= $__timeFrom and timestamp < $__timeTo\n| where cloud_RoleName == \"hmpps-prisoner-finance\"\n| summarize visits = count() by bin(timestamp, 5m)\n| order by timestamp asc",
             "resources": [
-              "/subscriptions/c27cfedb-f5e9-45e6-9642-0fad1a5c94e7/resourceGroups/nomisapi-t3-rg/providers/Microsoft.Insights/components/nomisapi-t3"
+              "/subscriptions/__AZ_SUBSCRIPTION_ID__/resourceGroups/__DASHBOARD_RESOURCE_GROUP__/providers/Microsoft.Insights/components/__DASHBOARD_RESOURCE_NAME__"
             ],
             "resultFormat": "time_series",
             "timeColumn": "timestamp"
@@ -320,9 +320,9 @@
               {
                 "metricNamespace": "Microsoft.Insights/components",
                 "region": "northeurope",
-                "resourceGroup": "nomisapi-t3-rg",
-                "resourceName": "nomisapi-t3",
-                "subscription": "c27cfedb-f5e9-45e6-9642-0fad1a5c94e7"
+                "resourceGroup": "__DASHBOARD_RESOURCE_GROUP__",
+                "resourceName": "__DASHBOARD_RESOURCE_NAME__",
+                "subscription": "__AZ_SUBSCRIPTION_ID__"
               }
             ],
             "timeGrain": "auto"
@@ -333,7 +333,7 @@
           },
           "queryType": "Azure Log Analytics",
           "refId": "A",
-          "subscription": "c27cfedb-f5e9-45e6-9642-0fad1a5c94e7"
+          "subscription": "__AZ_SUBSCRIPTION_ID__"
         }
       ],
       "title": "Visits over time",
@@ -428,7 +428,7 @@
             "mode": "raw",
             "query": "pageViews\n| where timestamp >= $__timeFrom and timestamp < $__timeTo\n| where cloud_RoleName == \"hmpps-prisoner-finance\"\n| summarize visits = dcount(user_Id) by bin(timestamp, 30m)\n| order by timestamp asc",
             "resources": [
-              "/subscriptions/c27cfedb-f5e9-45e6-9642-0fad1a5c94e7/resourceGroups/nomisapi-t3-rg/providers/Microsoft.Insights/components/nomisapi-t3"
+              "/subscriptions/__AZ_SUBSCRIPTION_ID__/resourceGroups/__DASHBOARD_RESOURCE_GROUP__/providers/Microsoft.Insights/components/__DASHBOARD_RESOURCE_NAME__"
             ],
             "resultFormat": "time_series",
             "timeColumn": "timestamp"
@@ -442,9 +442,9 @@
               {
                 "metricNamespace": "Microsoft.Insights/components",
                 "region": "northeurope",
-                "resourceGroup": "nomisapi-t3-rg",
-                "resourceName": "nomisapi-t3",
-                "subscription": "c27cfedb-f5e9-45e6-9642-0fad1a5c94e7"
+                "resourceGroup": "__DASHBOARD_RESOURCE_GROUP__",
+                "resourceName": "__DASHBOARD_RESOURCE_NAME__",
+                "subscription": "__AZ_SUBSCRIPTION_ID__"
               }
             ],
             "timeGrain": "auto"
@@ -455,7 +455,7 @@
           },
           "queryType": "Azure Log Analytics",
           "refId": "A",
-          "subscription": "c27cfedb-f5e9-45e6-9642-0fad1a5c94e7"
+          "subscription": "__AZ_SUBSCRIPTION_ID__"
         }
       ],
       "title": "Distinct Visits by user over time (30 min interval)",
@@ -548,7 +548,7 @@
             "mode": "raw",
             "query": "pageViews\n| where timestamp >= $__timeFrom and timestamp < $__timeTo\n| where cloud_RoleName == \"hmpps-prisoner-finance\"\n| extend clean_path = iff(isempty(tostring(parse_url(url).Path)), \"/\", tostring(parse_url(url).Path))\n| extend normalized_path = replace_regex(clean_path, @\"/prisoner/[^/]+\", \"/prisoner/*\")\n| summarize visits = count() by clean_path = normalized_path\n",
             "resources": [
-              "/subscriptions/c27cfedb-f5e9-45e6-9642-0fad1a5c94e7/resourceGroups/nomisapi-t3-rg/providers/Microsoft.Insights/components/nomisapi-t3"
+              "/subscriptions/__AZ_SUBSCRIPTION_ID__/resourceGroups/__DASHBOARD_RESOURCE_GROUP__/providers/Microsoft.Insights/components/__DASHBOARD_RESOURCE_NAME__"
             ],
             "resultFormat": "table",
             "timeColumn": "timestamp"
@@ -562,9 +562,9 @@
               {
                 "metricNamespace": "Microsoft.Insights/components",
                 "region": "northeurope",
-                "resourceGroup": "nomisapi-t3-rg",
-                "resourceName": "nomisapi-t3",
-                "subscription": "c27cfedb-f5e9-45e6-9642-0fad1a5c94e7"
+                "resourceGroup": "__DASHBOARD_RESOURCE_GROUP__",
+                "resourceName": "__DASHBOARD_RESOURCE_NAME__",
+                "subscription": "__AZ_SUBSCRIPTION_ID__"
               }
             ],
             "timeGrain": "auto"
@@ -575,7 +575,7 @@
           },
           "queryType": "Azure Log Analytics",
           "refId": "A",
-          "subscription": "c27cfedb-f5e9-45e6-9642-0fad1a5c94e7"
+          "subscription": "__AZ_SUBSCRIPTION_ID__"
         }
       ],
       "title": "Visits by Page",
@@ -594,7 +594,7 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Prisoner-Finance-Dev55092408",
+  "title": "Prisoner-Finance-Dev-pipeline",
   "uid": "subscriptions~c27cfedb-f5e9-45e6-9642-0fad1a5c94e7~resourceGroups~dashboards~providers~Microsoft.Dashboard~dashboards~Prisoner-Finance-Dev55092408",
   "version": 7,
   "weekStart": "",
