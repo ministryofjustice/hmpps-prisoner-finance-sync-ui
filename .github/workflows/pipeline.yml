@@ -91,6 +91,7 @@ jobs:
     if: needs.check_publish.outputs.enabled == 'true'
     needs:
       - check_publish
+    environment: dev
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
