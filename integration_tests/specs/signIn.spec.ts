@@ -23,6 +23,13 @@ test.describe('SignIn', () => {
     await expect(page.getByRole('heading')).toHaveText('Sign in')
   })
 
+  test('Unauthorised user directed to auth', async ({ page }) => {
+    await login(page, { name: 'A TestUser', roles: ['ROLE_SOME_UNREQUIRED_ROLE'] })
+
+    await expect(page.getByRole('heading', { name: 'Authorisation Error' })).toBeVisible()
+    await expect(page.locator('#main-content')).toContainText('You are not authorised to use this application')
+  })
+
   test('User name visible in header', async ({ page }) => {
     await login(page, { name: 'A TestUser' })
 
