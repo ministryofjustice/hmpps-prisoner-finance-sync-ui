@@ -120,7 +120,7 @@ jobs:
 
             az deployment group create \
             --subscription "${{ secrets.ARM_SUBSCRIPION_ID }}" \
-            --resource-group "${{ vars.DASHBOARD_RESOURCE_GROUP }}" \
+            --resource-group "dashboards" \
             --template-file "./deploy/dashboards/prisoner-finance-template-arm.json" \
             --parameters serializedData="$(jq -c . ./deploy/dashboards/dashboard-dev.json)"
 
