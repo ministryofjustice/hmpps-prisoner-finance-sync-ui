@@ -14,6 +14,9 @@
       "defaultValue": {
         "sourceDashboardId": "/subscriptions/c27cfedb-f5e9-45e6-9642-0fad1a5c94e7/resourceGroups/dashboards/providers/Microsoft.Dashboard/dashboards/Prisoner-Finance-Dev"
       }
+    },
+    "serializedData": {
+      "type": "string"
     }
   },
   "resources": [
